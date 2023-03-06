@@ -7,6 +7,7 @@ import '../../utils/font_styles.dart';
 import '../widgets/custom_container.dart';
 import '../widgets/spaces.dart';
 import '../widgets/text_widget.dart';
+import 'logout_dialog.dart';
 
 class SidebarDrawer extends StatelessWidget {
   const SidebarDrawer({Key? key}) : super(key: key);
@@ -71,7 +72,7 @@ class SidebarDrawer extends StatelessWidget {
 
   Widget buildMenuItems(BuildContext context) {
     return Padding(
-      padding: symmetricEdgeInsets(horizontal: 40,vertical: 58),
+      padding: symmetricEdgeInsets(horizontal: 40, vertical: 58),
       child: Column(
         children: [
           ListTile(
@@ -206,6 +207,31 @@ class SidebarDrawer extends StatelessWidget {
             ),
             onTap: () {
               Navigator.pop(context);
+            },
+          ),
+          verticalSpace(150),
+          ListTile(
+            leading: CustomSizedBox(
+              width: 20,
+              height: 20,
+              child: SvgPicture.asset(
+                'assets/svg/logout.svg',
+              ),
+            ),
+            minLeadingWidth: 2.w,
+            title: TextWidget(
+              text: 'LogOut',
+              color: Color(0xFFCC4A50),
+              textSize: MyFontSize.size16,
+              fontWeight: MyFontWeight.medium,
+            ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return const LogOutDialog();
+                },
+              );
             },
           ),
         ],
