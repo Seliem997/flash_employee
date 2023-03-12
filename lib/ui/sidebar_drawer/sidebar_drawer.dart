@@ -11,6 +11,7 @@ import '../contact_us/contact_us_screen.dart';
 import '../widgets/custom_container.dart';
 import '../widgets/spaces.dart';
 import '../widgets/text_widget.dart';
+import 'logout_dialog.dart';
 
 class SidebarDrawer extends StatelessWidget {
   const SidebarDrawer({Key? key}) : super(key: key);
@@ -218,6 +219,31 @@ class SidebarDrawer extends StatelessWidget {
             ),
             onTap: () {
               navigateTo(context, ContactUsScreen());
+            },
+          ),
+          verticalSpace(150),
+          ListTile(
+            leading: CustomSizedBox(
+              width: 20,
+              height: 20,
+              child: SvgPicture.asset(
+                'assets/svg/logout.svg',
+              ),
+            ),
+            minLeadingWidth: 2.w,
+            title: TextWidget(
+              text: 'LogOut',
+              color: Color(0xFFCC4A50),
+              textSize: MyFontSize.size16,
+              fontWeight: MyFontWeight.medium,
+            ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return const LogOutDialog();
+                },
+              );
             },
           ),
         ],
