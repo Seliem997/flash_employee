@@ -21,5 +21,4 @@ class MyFontSize {
   static double size18 = 12.8.sp;
   static double size19 = 13.5.sp;
   static double size20 = 14.sp;
-
 }
