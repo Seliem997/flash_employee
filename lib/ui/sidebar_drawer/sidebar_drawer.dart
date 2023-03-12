@@ -1,9 +1,13 @@
+import 'package:flash_employee/ui/duty/duty_screen.dart';
+import 'package:flash_employee/ui/profile/profile_screen.dart';
+import 'package:flash_employee/ui/widgets/navigate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../utils/colors.dart';
 import '../../utils/font_styles.dart';
+import '../contact_us/contact_us_screen.dart';
 import '../widgets/custom_container.dart';
 import '../widgets/spaces.dart';
 import '../widgets/text_widget.dart';
@@ -30,13 +34,13 @@ class SidebarDrawer extends StatelessWidget {
     return CustomContainer(
       backgroundColor: AppColor.babyBlue,
       width: 272,
-      height: 170,
+      height: 175,
       padding: onlyEdgeInsets(top: 32, bottom: 16, start: 24, end: 18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const CircleAvatar(
-            radius: 40,
+            radius: 35,
             backgroundImage: AssetImage('assets/images/profile.png'),
           ),
           verticalSpace(12),
@@ -46,7 +50,7 @@ class SidebarDrawer extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextWidget(
-                    text: 'Profile Name',
+                    text: 'Mahmoud Ali',
                     color: AppColor.black,
                     fontWeight: MyFontWeight.semiBold,
                     textSize: MyFontSize.size15,
@@ -56,7 +60,7 @@ class SidebarDrawer extends StatelessWidget {
                     text: '01234567890',
                     color: const Color(0xff1E1E1E),
                     fontWeight: MyFontWeight.regular,
-                    textSize: MyFontSize.size9,
+                    textSize: MyFontSize.size12,
                   ),
                 ],
               ),
@@ -71,13 +75,13 @@ class SidebarDrawer extends StatelessWidget {
 
   Widget buildMenuItems(BuildContext context) {
     return Padding(
-      padding: symmetricEdgeInsets(horizontal: 40,vertical: 58),
+      padding: symmetricEdgeInsets(horizontal: 30, vertical: 42),
       child: Column(
         children: [
           ListTile(
             leading: CustomSizedBox(
-              width: 20,
-              height: 20,
+              width: 25,
+              height: 25,
               child: SvgPicture.asset(
                 'assets/svg/profile.svg',
                 color: AppColor.grey,
@@ -87,26 +91,33 @@ class SidebarDrawer extends StatelessWidget {
             title: TextWidget(
               text: 'Profile',
               color: AppColor.grey,
-              textSize: MyFontSize.size16,
+              textSize: 18,
               fontWeight: MyFontWeight.medium,
             ),
             onTap: () {
-              Navigator.pop(context);
+              // navigateTo(context, ProfileScreen());
+              // Navigator.pop(context);
             },
           ),
           ListTile(
+            selected: true,
+            minVerticalPadding: 0,
+            selectedTileColor: AppColor.primary.withOpacity(.2),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
             leading: CustomSizedBox(
-              width: 20,
-              height: 20,
+              width: 25,
+              height: 25,
               child: SvgPicture.asset(
                 'assets/svg/home_light.svg',
+                color: Color(0xff097AC9),
               ),
             ),
             minLeadingWidth: 2.w,
             title: TextWidget(
               text: 'Home',
-              color: AppColor.grey,
-              textSize: MyFontSize.size16,
+              color: Color(0xff097AC9),
+              textSize: 18,
               fontWeight: MyFontWeight.medium,
             ),
             onTap: () {
@@ -115,8 +126,8 @@ class SidebarDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: CustomSizedBox(
-              width: 20,
-              height: 20,
+              width: 25,
+              height: 25,
               child: SvgPicture.asset(
                 'assets/svg/wallet.svg',
               ),
@@ -125,7 +136,7 @@ class SidebarDrawer extends StatelessWidget {
             title: TextWidget(
               text: 'Income',
               color: AppColor.grey,
-              textSize: MyFontSize.size16,
+              textSize: 18,
               fontWeight: MyFontWeight.medium,
             ),
             onTap: () {
@@ -134,8 +145,8 @@ class SidebarDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: CustomSizedBox(
-              width: 20,
-              height: 20,
+              width: 25,
+              height: 25,
               child: SvgPicture.asset(
                 'assets/svg/invoices.svg',
               ),
@@ -144,7 +155,7 @@ class SidebarDrawer extends StatelessWidget {
             title: TextWidget(
               text: 'Invoices',
               color: AppColor.grey,
-              textSize: MyFontSize.size16,
+              textSize: 18,
               fontWeight: MyFontWeight.medium,
             ),
             onTap: () {
@@ -153,8 +164,8 @@ class SidebarDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: CustomSizedBox(
-              width: 20,
-              height: 20,
+              width: 25,
+              height: 25,
               child: SvgPicture.asset(
                 'assets/svg/inventory.svg',
               ),
@@ -163,7 +174,7 @@ class SidebarDrawer extends StatelessWidget {
             title: TextWidget(
               text: 'Inventory',
               color: AppColor.grey,
-              textSize: MyFontSize.size16,
+              textSize: 18,
               fontWeight: MyFontWeight.medium,
             ),
             onTap: () {
@@ -172,8 +183,8 @@ class SidebarDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: CustomSizedBox(
-              width: 20,
-              height: 20,
+              width: 25,
+              height: 25,
               child: SvgPicture.asset(
                 'assets/svg/calendar.svg',
               ),
@@ -182,17 +193,18 @@ class SidebarDrawer extends StatelessWidget {
             title: TextWidget(
               text: 'Duty',
               color: AppColor.grey,
-              textSize: MyFontSize.size16,
+              textSize: 18,
               fontWeight: MyFontWeight.medium,
             ),
             onTap: () {
-              Navigator.pop(context);
+              navigateTo(context, DutyScreen());
+              // Navigator.pop(context);
             },
           ),
           ListTile(
             leading: CustomSizedBox(
-              width: 20,
-              height: 20,
+              width: 25,
+              height: 25,
               child: SvgPicture.asset(
                 'assets/svg/messages.svg',
               ),
@@ -201,11 +213,11 @@ class SidebarDrawer extends StatelessWidget {
             title: TextWidget(
               text: 'Contact us',
               color: AppColor.grey,
-              textSize: MyFontSize.size16,
+              textSize: 18,
               fontWeight: MyFontWeight.medium,
             ),
             onTap: () {
-              Navigator.pop(context);
+              navigateTo(context, ContactUsScreen());
             },
           ),
         ],

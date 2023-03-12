@@ -17,9 +17,12 @@ class CustomContainer extends StatelessWidget {
     this.borderColor = Colors.transparent,
     this.image,
     this.clipBehavior = Clip.none,
+    this.borderRadius,
+    this.isCircle = false,
   }) : super(key: key);
 
-  final double? width, height, radiusCircular;
+  final double? width, height;
+  final double radiusCircular;
   final Widget? child;
   final EdgeInsetsGeometry? padding, margin;
   final Color? backgroundColor, borderColor;
@@ -27,6 +30,8 @@ class CustomContainer extends StatelessWidget {
   final GestureTapCallback? onTap;
   final DecorationImage? image;
   final Clip clipBehavior;
+  final BorderRadiusGeometry? borderRadius;
+  final bool isCircle;
 
   @override
   Widget build(BuildContext context) {
@@ -38,15 +43,16 @@ class CustomContainer extends StatelessWidget {
             ? (height! / screenHeight) * 100.h // deduct safe area space
             : null,
         clipBehavior: clipBehavior,
-        padding: padding ?? const EdgeInsets.all(8),
+        padding: padding ?? EdgeInsets.zero,
         alignment: alignment,
         margin: margin ?? const EdgeInsets.all(0),
         decoration: BoxDecoration(
-            image: image,
-            color: backgroundColor ?? Colors.white,
-            borderRadius: BorderRadius.circular(radiusCircular!),
-            border: Border.all(color: borderColor!)
-            /*boxShadow: const [
+          image: image,
+          color: backgroundColor ?? Colors.white,
+          borderRadius: borderRadius ?? BorderRadius.circular(radiusCircular),
+          border: Border.all(color: borderColor!),
+          shape: isCircle ? BoxShape.circle : BoxShape.rectangle,
+          /*boxShadow: const [
             BoxShadow(
               color: AppColor.tertiary,
               offset: Offset(
@@ -57,7 +63,7 @@ class CustomContainer extends StatelessWidget {
               spreadRadius: 0.4,
             ),
           ],*/
-            ),
+        ),
         child: child,
       ),
     );
@@ -65,7 +71,8 @@ class CustomContainer extends StatelessWidget {
 }
 
 class CustomSizedBox extends StatelessWidget {
-  const CustomSizedBox({Key? key, this.width, this.height, required this.child, this.onTap})
+  const CustomSizedBox(
+      {Key? key, this.width, this.height, required this.child, this.onTap})
       : super(key: key);
   final double? width, height;
   final GestureTapCallback? onTap;

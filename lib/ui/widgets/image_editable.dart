@@ -41,7 +41,7 @@ class ImageEditable extends StatelessWidget {
                     ? AssetImage(
                         isVehicle
                             ? "assets/images/tesla_model.png"
-                            : 'assets/images/User.png',
+                            : 'assets/images/profile.png',
                       )
                     : CachedNetworkImageProvider(imageUrl) as ImageProvider,
                 fit: BoxFit.cover,

@@ -10,6 +10,7 @@ class TextWidget extends StatelessWidget {
     this.height = 1.0,
     this.fontWeight = FontWeight.w400,
     this.isTitle = false,
+    this.underLine = false,
     this.textAlign,
     this.width,
     this.textScaleFactor,
@@ -21,6 +22,7 @@ class TextWidget extends StatelessWidget {
   final double? width;
   final double? textScaleFactor;
   final bool isTitle;
+  final bool underLine;
   final int maxLines;
   final FontWeight fontWeight;
   final TextAlign? textAlign;
@@ -35,6 +37,7 @@ class TextWidget extends StatelessWidget {
         textScaleFactor: textScaleFactor,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(
+          decoration: underLine ? TextDecoration.underline : null,
           fontSize: textSize,
           color: color,
           height: height,

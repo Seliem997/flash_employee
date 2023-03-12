@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.flash.employeeapp.flash_employee">
    <application
-        android:label="flash_employee"
+        android:label="Flash Wash Employee"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

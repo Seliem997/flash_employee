@@ -29,9 +29,9 @@ class _AppSplashState extends State<AppSplash> {
     return Scaffold(
       body: Center(
         child: CustomSizedBox(
-          width: 279,
-            height: 258,
-            child: Image.asset('assets/images/logo.png')),
+            // width: 279,
+            // height: 258,
+            child: Image.asset('assets/images/logo_animation.gif')),
       ),
     );
   }

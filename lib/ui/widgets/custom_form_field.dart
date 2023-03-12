@@ -23,7 +23,8 @@ class DefaultFormField extends StatelessWidget {
       this.textInputAction,
       this.hintStyle,
       this.textAlign = TextAlign.start,
-      this.inputFormatters = const [], this.icon})
+      this.inputFormatters = const [],
+      this.icon})
       : super(key: key);
 
   final TextEditingController? controller;
@@ -45,7 +46,7 @@ class DefaultFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding ?? EdgeInsets.symmetric(horizontal: 3.w, vertical: 5),
+      padding: padding ?? EdgeInsets.symmetric(horizontal: 5.w, vertical: 1),
       decoration: BoxDecoration(
           color: enabled
               ? filled
@@ -73,7 +74,8 @@ class DefaultFormField extends StatelessWidget {
           hintText: hintText,
           filled: filled,
           fillColor: fillColor,
-          hintStyle: hintStyle ?? TextStyle(color: Colors.grey[500]),
+          hintStyle:
+              hintStyle ?? TextStyle(color: Colors.grey[500], fontSize: 12),
         ),
       ),
     );
