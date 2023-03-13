@@ -1,9 +1,12 @@
 import 'package:flash_employee/utils/colors.dart';
 import 'package:flutter/material.dart';
 
+import '../../services/authentication_service.dart';
 import '../../utils/font_styles.dart';
+import '../user/login/login.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_container.dart';
+import '../widgets/navigate.dart';
 import '../widgets/spaces.dart';
 import '../widgets/text_widget.dart';
 
@@ -17,7 +20,7 @@ class LogOutDialog extends StatelessWidget {
         width: 321,
         height: 233,
         radiusCircular: 12,
-        padding: symmetricEdgeInsets(horizontal: 24,vertical: 38),
+        padding: symmetricEdgeInsets(horizontal: 24, vertical: 38),
         child: Column(
           children: [
             TextWidget(
@@ -43,7 +46,9 @@ class LogOutDialog extends StatelessWidget {
                   height: 33,
                   width: 155,
                   backgroundColor: const Color(0xFF616161),
-                  onPressed: (){Navigator.pop(context);},
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                 ),
                 horizontalSpace(16),
                 DefaultButton(
@@ -53,7 +58,11 @@ class LogOutDialog extends StatelessWidget {
                   height: 33,
                   width: 96,
                   backgroundColor: const Color(0xFFB85F66),
-                  onPressed: (){Navigator.pop(context);},
+                  onPressed: () {
+                    AuthenticationService auth = AuthenticationService();
+                    auth.signOut();
+                    navigateAndFinish(context, const LoginScreen());
+                  },
                 ),
               ],
             ),

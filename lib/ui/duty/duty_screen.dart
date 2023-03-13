@@ -2,7 +2,9 @@ import 'package:flash_employee/ui/widgets/custom_form_field.dart';
 import 'package:flash_employee/ui/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
+import '../../providers/user_provider.dart';
 import '../../utils/colors.dart';
 import '../../utils/font_styles.dart';
 import '../sidebar_drawer/sidebar_drawer.dart';
@@ -15,6 +17,8 @@ class DutyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final UserProvider userDataProvider = Provider.of<UserProvider>(context);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -32,10 +36,11 @@ class DutyScreen extends StatelessWidget {
         children: [
           Padding(
             padding: symmetricEdgeInsets(horizontal: 25, vertical: 10),
-            child: ListView(
+            child: ListView.separated(
               shrinkWrap: true,
-              children: [
-                CustomContainer(
+              itemCount: userDataProvider.duties?.length ?? 0,
+              itemBuilder: (context, index) {
+                return CustomContainer(
                   padding: EdgeInsets.zero,
                   margin: EdgeInsets.only(bottom: 10),
                   backgroundColor: Color(0xffD9EDFA),
@@ -50,13 +55,14 @@ class DutyScreen extends StatelessWidget {
                             bottomLeft: Radius.circular(5)),
                         backgroundColor: AppColor.primary,
                         alignment: Alignment.center,
-                        child: const TextWidget(
-                          text: "Su",
+                        child: TextWidget(
+                          text: userDataProvider.duties![index].day!,
                           textSize: 15,
                           fontWeight: FontWeight.w500,
                           color: Colors.white,
                         ),
                       ),
+                      horizontalSpace(10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -64,15 +70,17 @@ class DutyScreen extends StatelessWidget {
                             backgroundColor: Color(0xffD9EDFA),
                             child: Row(
                               children: [
-                                const TextWidget(
-                                  text: "First Shift :",
+                                TextWidget(
+                                  text:
+                                      "${userDataProvider.duties![index].shift!} Shift :",
                                   textSize: 15,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.black,
                                 ),
                                 horizontalSpace(10),
-                                const TextWidget(
-                                  text: "9:30 PM - 11:00 PM",
+                                TextWidget(
+                                  text:
+                                      "${userDataProvider.duties![index].startAt!} - ${userDataProvider.duties![index].endAt!}",
                                   textSize: 14,
                                   fontWeight: FontWeight.w400,
                                   color: Colors.black,
@@ -80,417 +88,69 @@ class DutyScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-                          CustomContainer(
-                            backgroundColor: Color(0xffD9EDFA),
-                            child: Row(
-                              children: [
-                                const TextWidget(
-                                  text: "Second Shift :",
-                                  textSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black,
-                                ),
-                                horizontalSpace(10),
-                                const TextWidget(
-                                  text: "1:30 AM - 6:00 AM",
-                                  textSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ],
-                            ),
-                          ),
+                          // CustomContainer(
+                          //   backgroundColor: Color(0xffD9EDFA),
+                          //   child: Row(
+                          //     children: [
+                          //       const TextWidget(
+                          //         text: "Second Shift :",
+                          //         textSize: 15,
+                          //         fontWeight: FontWeight.w500,
+                          //         color: Colors.black,
+                          //       ),
+                          //       horizontalSpace(10),
+                          //       const TextWidget(
+                          //         text: "1:30 AM - 6:00 AM",
+                          //         textSize: 14,
+                          //         fontWeight: FontWeight.w400,
+                          //         color: Colors.black,
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
                         ],
                       ),
                     ],
                   ),
-                ),
-                CustomContainer(
-                  padding: EdgeInsets.zero,
-                  margin: EdgeInsets.only(bottom: 10),
-                  backgroundColor: Color(0xffD9EDFA),
-                  width: double.infinity,
-                  child: Row(
-                    children: [
-                      CustomContainer(
-                        width: 55,
-                        height: 73,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(5),
-                            bottomLeft: Radius.circular(5)),
-                        backgroundColor: AppColor.primary,
-                        alignment: Alignment.center,
-                        child: const TextWidget(
-                          text: "Mo",
-                          textSize: 15,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomContainer(
-                            backgroundColor: Color(0xffD9EDFA),
-                            child: Row(
-                              children: [
-                                const TextWidget(
-                                  text: "First Shift :",
-                                  textSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black,
-                                ),
-                                horizontalSpace(10),
-                                const TextWidget(
-                                  text: "9:30 PM - 11:00 PM",
-                                  textSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ],
-                            ),
-                          ),
-                          CustomContainer(
-                            backgroundColor: Color(0xffD9EDFA),
-                            child: Row(
-                              children: [
-                                const TextWidget(
-                                  text: "Second Shift :",
-                                  textSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black,
-                                ),
-                                horizontalSpace(10),
-                                const TextWidget(
-                                  text: "1:30 AM - 6:00 AM",
-                                  textSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                CustomContainer(
-                  padding: EdgeInsets.zero,
-                  margin: EdgeInsets.only(bottom: 10),
-                  backgroundColor: Color(0xffD9EDFA),
-                  width: double.infinity,
-                  child: Row(
-                    children: [
-                      CustomContainer(
-                        width: 55,
-                        height: 73,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(5),
-                            bottomLeft: Radius.circular(5)),
-                        backgroundColor: AppColor.primary,
-                        alignment: Alignment.center,
-                        child: const TextWidget(
-                          text: "Tu",
-                          textSize: 15,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomContainer(
-                            backgroundColor: Color(0xffD9EDFA),
-                            child: Row(
-                              children: [
-                                const TextWidget(
-                                  text: "First Shift :",
-                                  textSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black,
-                                ),
-                                horizontalSpace(10),
-                                const TextWidget(
-                                  text: "9:30 PM - 11:00 PM",
-                                  textSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ],
-                            ),
-                          ),
-                          CustomContainer(
-                            backgroundColor: Color(0xffD9EDFA),
-                            child: Row(
-                              children: [
-                                const TextWidget(
-                                  text: "Second Shift :",
-                                  textSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black,
-                                ),
-                                horizontalSpace(10),
-                                const TextWidget(
-                                  text: "1:30 AM - 6:00 AM",
-                                  textSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                CustomContainer(
-                  padding: EdgeInsets.zero,
-                  margin: EdgeInsets.only(bottom: 10),
-                  backgroundColor: Color(0xffC7FFCD),
-                  width: double.infinity,
-                  child: Row(
-                    children: [
-                      CustomContainer(
-                        width: 55,
-                        height: 73,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(5),
-                            bottomLeft: Radius.circular(5)),
-                        backgroundColor: Color(0xff5CD268),
-                        alignment: Alignment.center,
-                        child: const TextWidget(
-                          text: "Wed",
-                          textSize: 15,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Expanded(
-                        child: Center(
-                          child: const TextWidget(
-                            text: "Weekend Day!",
-                            textSize: 20,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                CustomContainer(
-                  padding: EdgeInsets.zero,
-                  margin: EdgeInsets.only(bottom: 10),
-                  backgroundColor: Color(0xffD9EDFA),
-                  width: double.infinity,
-                  child: Row(
-                    children: [
-                      CustomContainer(
-                        width: 55,
-                        height: 73,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(5),
-                            bottomLeft: Radius.circular(5)),
-                        backgroundColor: AppColor.primary,
-                        alignment: Alignment.center,
-                        child: const TextWidget(
-                          text: "Thu",
-                          textSize: 15,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomContainer(
-                            backgroundColor: Color(0xffD9EDFA),
-                            child: Row(
-                              children: [
-                                const TextWidget(
-                                  text: "First Shift :",
-                                  textSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black,
-                                ),
-                                horizontalSpace(10),
-                                const TextWidget(
-                                  text: "9:30 PM - 11:00 PM",
-                                  textSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ],
-                            ),
-                          ),
-                          CustomContainer(
-                            backgroundColor: Color(0xffD9EDFA),
-                            child: Row(
-                              children: [
-                                const TextWidget(
-                                  text: "Second Shift :",
-                                  textSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black,
-                                ),
-                                horizontalSpace(10),
-                                const TextWidget(
-                                  text: "1:30 AM - 6:00 AM",
-                                  textSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                CustomContainer(
-                  padding: EdgeInsets.zero,
-                  margin: EdgeInsets.only(bottom: 10),
-                  backgroundColor: Color(0xffD9EDFA),
-                  width: double.infinity,
-                  child: Row(
-                    children: [
-                      CustomContainer(
-                        width: 55,
-                        height: 73,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(5),
-                            bottomLeft: Radius.circular(5)),
-                        backgroundColor: AppColor.primary,
-                        alignment: Alignment.center,
-                        child: const TextWidget(
-                          text: "Fr",
-                          textSize: 15,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomContainer(
-                            backgroundColor: Color(0xffD9EDFA),
-                            child: Row(
-                              children: [
-                                const TextWidget(
-                                  text: "First Shift :",
-                                  textSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black,
-                                ),
-                                horizontalSpace(10),
-                                const TextWidget(
-                                  text: "9:30 PM - 11:00 PM",
-                                  textSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ],
-                            ),
-                          ),
-                          CustomContainer(
-                            backgroundColor: Color(0xffD9EDFA),
-                            child: Row(
-                              children: [
-                                const TextWidget(
-                                  text: "Second Shift :",
-                                  textSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black,
-                                ),
-                                horizontalSpace(10),
-                                const TextWidget(
-                                  text: "1:30 AM - 6:00 AM",
-                                  textSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                CustomContainer(
-                  padding: EdgeInsets.zero,
-                  margin: EdgeInsets.only(bottom: 10),
-                  backgroundColor: Color(0xffD9EDFA),
-                  width: double.infinity,
-                  child: Row(
-                    children: [
-                      CustomContainer(
-                        width: 55,
-                        height: 73,
-                        backgroundColor: AppColor.primary,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(5),
-                            bottomLeft: Radius.circular(5)),
-                        alignment: Alignment.center,
-                        child: const TextWidget(
-                          text: "Sa",
-                          textSize: 15,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomContainer(
-                            backgroundColor: Color(0xffD9EDFA),
-                            child: Row(
-                              children: [
-                                const TextWidget(
-                                  text: "First Shift :",
-                                  textSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black,
-                                ),
-                                horizontalSpace(10),
-                                const TextWidget(
-                                  text: "9:30 PM - 11:00 PM",
-                                  textSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ],
-                            ),
-                          ),
-                          CustomContainer(
-                            backgroundColor: Color(0xffD9EDFA),
-                            child: Row(
-                              children: [
-                                const TextWidget(
-                                  text: "Second Shift :",
-                                  textSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black,
-                                ),
-                                horizontalSpace(10),
-                                const TextWidget(
-                                  text: "1:30 AM - 6:00 AM",
-                                  textSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                );
+              },
+              separatorBuilder: (context, index) => verticalSpace(10),
+
+              // CustomContainer(
+              //   padding: EdgeInsets.zero,
+              //   margin: EdgeInsets.only(bottom: 10),
+              //   backgroundColor: Color(0xffC7FFCD),
+              //   width: double.infinity,
+              //   child: Row(
+              //     children: [
+              //       CustomContainer(
+              //         width: 55,
+              //         height: 73,
+              //         borderRadius: BorderRadius.only(
+              //             topLeft: Radius.circular(5),
+              //             bottomLeft: Radius.circular(5)),
+              //         backgroundColor: Color(0xff5CD268),
+              //         alignment: Alignment.center,
+              //         child: const TextWidget(
+              //           text: "Wed",
+              //           textSize: 15,
+              //           fontWeight: FontWeight.w500,
+              //           color: Colors.white,
+              //         ),
+              //       ),
+              //       Expanded(
+              //         child: Center(
+              //           child: const TextWidget(
+              //             text: "Weekend Day!",
+              //             textSize: 20,
+              //             fontWeight: FontWeight.w500,
+              //             color: Colors.black,
+              //           ),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
             ),
           ),
         ],

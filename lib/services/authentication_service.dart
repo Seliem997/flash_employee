@@ -1,5 +1,8 @@
 import 'dart:developer';
+import 'package:flash_employee/models/profileModel.dart';
+
 import '../base/service/base_service.dart';
+import '../models/loginModel.dart';
 import '../models/requestResult.dart';
 import '../utils/apis.dart';
 import '../utils/cache_helper.dart';
@@ -13,7 +16,7 @@ class AuthenticationService extends BaseService {
   Future<ResponseResult> forgotPassword(String email) async {
     Status status = Status.error;
     // late LoginModel loginModel;
-    Map<String, dynamic> body = {"email": email};
+    Map<String, dynamic> body = {"nameOrEmail": email};
     try {
       await requestFutureData(
           api: Api.forgotPassword,
@@ -161,25 +164,35 @@ class AuthenticationService extends BaseService {
   //   return ResponseResult(status, "");
   // }
 
-  Future<ResponseResult> signIn(String email, String password) async {
+  Future<ResponseResult> signIn(String userName, String password) async {
     Status status = Status.error;
-    // late LoginModel loginModel;
-    Map<String, dynamic> body = {"email": email, "password": password};
+    late LoginModel loginModel;
+    UserData? userData;
+    Map<String, dynamic> body = {"name": userName, "password": password};
     try {
       await requestFutureData(
           api: Api.login,
           body: body,
           requestType: Request.post,
-          onSuccess: (response) {
+          onSuccess: (response) async {
             if (response["status_code"] == 200) {
               status = Status.success;
-              // loginModel = LoginModel.fromJson(response);
-              // CacheHelper.saveData(
-              //     key: CacheKey.token,
-              //     value:
-              //         "${loginModel.data!.original!.tokenType} ${loginModel.data!.original!.accessToken}");
-              // CacheHelper.saveData(key: CacheKey.loggedIn, value: true);
-              // getUserData();
+              loginModel = LoginModel.fromJson(response);
+              CacheHelper.saveData(
+                  key: CacheKey.token,
+                  value: "Bearer ${loginModel.data!.token!}");
+              CacheHelper.saveData(key: CacheKey.loggedIn, value: true);
+              userData = LoginModel.fromJson(response).data!.user!;
+              await CacheHelper.saveData(
+                  key: CacheKey.userName, value: userData!.name!);
+              await CacheHelper.saveData(
+                  key: CacheKey.userImage, value: userData!.image!);
+              await CacheHelper.saveData(
+                  key: CacheKey.email, value: userData!.email);
+              await CacheHelper.saveData(
+                  key: CacheKey.phoneNumber, value: userData!.phone);
+              await CacheHelper.saveData(
+                  key: CacheKey.countryCode, value: userData!.countryCode);
             } else if (response["status_code"] == 400) {
               status = Status.invalidEmailOrPass;
             }
@@ -188,7 +201,40 @@ class AuthenticationService extends BaseService {
       status = Status.error;
       logger.e("Error Signing in $e");
     }
-    return ResponseResult(status, "");
+    return ResponseResult(status, userData);
+  }
+
+  Future<ResponseResult> getMyProfile() async {
+    Status status = Status.error;
+    late UserData userData;
+    try {
+      await requestFutureData(
+          api: Api.getMyProfile,
+          withToken: true,
+          requestType: Request.get,
+          onSuccess: (response) async {
+            if (response["status_code"] == 200) {
+              status = Status.success;
+              userData = ProfileModel.fromJson(response).data!;
+              await CacheHelper.saveData(
+                  key: CacheKey.userName, value: userData.name!);
+              await CacheHelper.saveData(
+                  key: CacheKey.userImage, value: userData.image!);
+              await CacheHelper.saveData(
+                  key: CacheKey.email, value: userData.email);
+              await CacheHelper.saveData(
+                  key: CacheKey.phoneNumber, value: userData.phone);
+              await CacheHelper.saveData(
+                  key: CacheKey.countryCode, value: userData.countryCode);
+            } else if (response["status_code"] == 400) {
+              status = Status.invalidEmailOrPass;
+            }
+          });
+    } catch (e) {
+      status = Status.error;
+      logger.e("Error Signing in $e");
+    }
+    return ResponseResult(status, userData);
   }
 
   // Future<ResponseResult> getUserData() async {

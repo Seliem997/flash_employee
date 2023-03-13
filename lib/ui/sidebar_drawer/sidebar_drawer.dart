@@ -1,10 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flash_employee/ui/duty/duty_screen.dart';
 import 'package:flash_employee/ui/profile/profile_screen.dart';
 import 'package:flash_employee/ui/widgets/navigate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../providers/user_provider.dart';
 import '../../utils/colors.dart';
 import '../../utils/font_styles.dart';
 import '../contact_us/contact_us_screen.dart';
@@ -18,12 +21,13 @@ class SidebarDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final UserProvider userDataProvider = Provider.of<UserProvider>(context);
     return Drawer(
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            buildHeader(context),
+            buildHeader(userDataProvider),
             buildMenuItems(context),
           ],
         ),
@@ -31,7 +35,7 @@ class SidebarDrawer extends StatelessWidget {
     );
   }
 
-  Widget buildHeader(BuildContext context) {
+  Widget buildHeader(UserProvider userDataProvider) {
     return CustomContainer(
       backgroundColor: AppColor.babyBlue,
       width: 272,
@@ -40,9 +44,11 @@ class SidebarDrawer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const CircleAvatar(
+          CircleAvatar(
             radius: 35,
-            backgroundImage: AssetImage('assets/images/profile.png'),
+            backgroundImage: CachedNetworkImageProvider(userDataProvider
+                    .userImage ??
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0F6JSOHkKNsDAnJo3mBl98s0JXJ4dheYY-0jWCUjFJ0tiW6VyPfLJ_wQP&s=10"),
           ),
           verticalSpace(12),
           Row(
@@ -51,22 +57,22 @@ class SidebarDrawer extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextWidget(
-                    text: 'Mahmoud Ali',
+                    text: userDataProvider.userName ?? "No Name",
                     color: AppColor.black,
                     fontWeight: MyFontWeight.semiBold,
                     textSize: MyFontSize.size15,
                   ),
                   verticalSpace(6),
                   TextWidget(
-                    text: '01234567890',
+                    text: userDataProvider.phone ?? '01234567890',
                     color: const Color(0xff1E1E1E),
                     fontWeight: MyFontWeight.regular,
                     textSize: MyFontSize.size12,
                   ),
                 ],
               ),
-              const Spacer(),
-              SvgPicture.asset('assets/svg/translate.svg'),
+              // const Spacer(),
+              // SvgPicture.asset('assets/svg/translate.svg'),
             ],
           ),
         ],
@@ -221,18 +227,18 @@ class SidebarDrawer extends StatelessWidget {
               navigateTo(context, ContactUsScreen());
             },
           ),
-          verticalSpace(150),
+          verticalSpace(60),
           ListTile(
             leading: CustomSizedBox(
-              width: 20,
-              height: 20,
+              width: 25,
+              height: 25,
               child: SvgPicture.asset(
                 'assets/svg/logout.svg',
               ),
             ),
             minLeadingWidth: 2.w,
             title: TextWidget(
-              text: 'LogOut',
+              text: "Log out",
               color: Color(0xFFCC4A50),
               textSize: MyFontSize.size16,
               fontWeight: MyFontWeight.medium,

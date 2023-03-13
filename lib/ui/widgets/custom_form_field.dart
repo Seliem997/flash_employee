@@ -1,5 +1,8 @@
+import 'package:flash_employee/ui/widgets/custom_container.dart';
+import 'package:flash_employee/ui/widgets/spaces.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../utils/colors.dart';
@@ -19,6 +22,7 @@ class DefaultFormField extends StatelessWidget {
       this.filled = false,
       this.fillColor,
       this.textColor,
+      this.prefixIcon,
       this.padding,
       this.textInputAction,
       this.hintStyle,
@@ -40,13 +44,14 @@ class DefaultFormField extends StatelessWidget {
   final String hintText;
   final String? Function(String?)? validator;
   final Widget? suffixIcon, icon;
+  final DecorationImage? prefixIcon;
   final EdgeInsetsGeometry? padding;
   final TextStyle? hintStyle;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding ?? EdgeInsets.symmetric(horizontal: 5.w, vertical: 1),
+      padding: padding ?? EdgeInsets.symmetric(horizontal: 3.w, vertical: 1),
       decoration: BoxDecoration(
           color: enabled
               ? filled
@@ -55,7 +60,7 @@ class DefaultFormField extends StatelessWidget {
               : AppColor.grey,
           border: Border.all(
               width: 1, color: filled ? fillColor! : AppColor.borderGray),
-          borderRadius: BorderRadius.circular(10)),
+          borderRadius: BorderRadius.circular(5)),
       child: TextFormField(
         controller: controller,
         inputFormatters: inputFormatters,
@@ -68,6 +73,12 @@ class DefaultFormField extends StatelessWidget {
         textInputAction: textInputAction,
         textAlign: textAlign,
         decoration: InputDecoration(
+          prefixIcon:
+              prefixIcon != null ? CustomContainer(image: prefixIcon!) : null,
+          prefixIconConstraints: prefixIcon != null
+              ? BoxConstraints.tight(Size.fromRadius(12))
+              : null,
+          prefix: horizontalSpace(5),
           suffixIcon: suffixIcon,
           icon: icon,
           border: InputBorder.none,

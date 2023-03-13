@@ -4,7 +4,9 @@ import 'package:flash_employee/ui/widgets/navigate.dart';
 import 'package:flash_employee/ui/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
+import '../../providers/user_provider.dart';
 import '../../utils/colors.dart';
 import '../../utils/font_styles.dart';
 import '../sidebar_drawer/sidebar_drawer.dart';
@@ -18,6 +20,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> globalKey = GlobalKey();
+    final UserProvider userDataProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
       // backgroundColor: Colors.white,
@@ -26,11 +29,25 @@ class HomeScreen extends StatelessWidget {
         padding: onlyEdgeInsets(top: 68, start: 24, end: 24),
         child: Column(
           children: [
-            buildHeader(
-                context: context,
-                onTap: () {
-                  globalKey.currentState!.openDrawer();
-                }),
+            Row(
+              children: [
+                CustomSizedBox(
+                  width: 24,
+                  height: 24,
+                  onTap: () {
+                    globalKey.currentState!.openDrawer();
+                  },
+                  child: SvgPicture.asset('assets/svg/menu.svg'),
+                ),
+                horizontalSpace(12),
+                TextWidget(
+                  text: 'Hi, ${userDataProvider.userName}',
+                  fontWeight: MyFontWeight.semiBold,
+                  textSize: MyFontSize.size14,
+                  color: const Color(0xFF292D32),
+                ),
+              ],
+            ),
             verticalSpace(24),
             DefaultFormField(
               hintText:
@@ -287,26 +304,6 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       drawer: const SidebarDrawer(), //Drawer
-    );
-  }
-
-  Row buildHeader({required BuildContext context, onTap}) {
-    return Row(
-      children: [
-        CustomSizedBox(
-          width: 24,
-          height: 24,
-          onTap: onTap,
-          child: SvgPicture.asset('assets/svg/menu.svg'),
-        ),
-        horizontalSpace(12),
-        TextWidget(
-          text: 'Hi, Mahmoud Ali',
-          fontWeight: MyFontWeight.semiBold,
-          textSize: MyFontSize.size14,
-          color: const Color(0xFF292D32),
-        ),
-      ],
     );
   }
 }

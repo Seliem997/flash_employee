@@ -1,14 +1,14 @@
 class Api {
   static const String testUrl = "https://ahmos.smartsols.co/api";
 
-  static const String url = "https://ahmos-dental.com/api";
   static const String imageUrl =
       "https://ahmos-dental.com/public/images/products/thumb/";
-  static const String baseUrl = url;
+  static const String baseUrl = "https://flashwashapp.com/public/api";
 
-  static const String login = "$baseUrl/login";
+  static const String login = "$baseUrl/employee/login";
+  static const String getMyProfile = "$baseUrl/employee/my-profile";
   static const String loginSocial = "$baseUrl/login-by-social-media";
-  static const String forgotPassword = "$baseUrl/forget-password";
+  static const String forgotPassword = "$baseUrl/employee/forget-password";
   static const String checkCode = "$baseUrl/check-code";
   static const String resetPassword = "$baseUrl/reset-password";
   static const String register = "$baseUrl/register";

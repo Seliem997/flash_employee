@@ -1,8 +1,15 @@
+import 'package:flash_employee/services/authentication_service.dart';
+import 'package:flash_employee/ui/widgets/app_loader.dart';
 import 'package:flash_employee/ui/widgets/custom_container.dart';
 import 'package:flash_employee/ui/widgets/navigate.dart';
+import 'package:flash_employee/utils/enum/statuses.dart';
 import 'package:flash_employee/utils/font_styles.dart';
+import 'package:flash_employee/utils/snack_bars.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../models/loginModel.dart';
+import '../../../providers/user_provider.dart';
 import '../../home/home_screen.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_form_field.dart';
@@ -19,6 +26,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final AuthenticationService authenticationService = AuthenticationService();
   late TextEditingController userNameController;
   late TextEditingController passwordController;
   final _formKey = GlobalKey<FormState>();
@@ -49,6 +57,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final UserProvider userDataProvider = Provider.of<UserProvider>(context);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -56,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
           reverse: true,
           physics: const ClampingScrollPhysics(),
           child: Padding(
-            padding: symmetricEdgeInsets(horizontal: 24,vertical: 23),
+            padding: symmetricEdgeInsets(horizontal: 24, vertical: 23),
             child: Form(
               key: _formKey,
               child: Column(
@@ -89,6 +99,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         hintText: 'User Name',
                         controller: userNameController,
                         textInputAction: TextInputAction.next,
+                        prefixIcon: const DecorationImage(
+                            image: AssetImage("assets/images/profile_icon.png"),
+                            fit: BoxFit.cover),
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'please Enter Your User Name';
@@ -110,11 +123,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       verticalSpace(4),
                       DefaultFormField(
-                        hintText: 'password',
+                        hintText: 'Password',
                         controller: passwordController,
                         isPassword: _obscureText,
                         textInputAction: TextInputAction.done,
-                        suffixIcon: EyeWidget(onTap: () => changeViewStatus),
+                        prefixIcon: const DecorationImage(
+                            image: AssetImage("assets/images/password.png"),
+                            fit: BoxFit.cover),
+                        suffixIcon: EyeWidget(
+                            onTap: () => changeViewStatus, show: _obscureText),
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'please Enter Your Password';
@@ -152,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return const ForgetPassword();
+                                  return ForgetPassword();
                                 },
                               );
                             },
@@ -166,15 +183,38 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                       verticalSpace(80),
-
                       DefaultButton(
                         text: 'Log in',
                         fontWeight: MyFontWeight.bold,
                         fontSize: MyFontSize.size18,
                         height: 48,
                         width: double.infinity,
-                        onPressed: () {
-                          navigateTo(context, const HomeScreen(),);
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            AppLoader.showLoader(context);
+                            await authenticationService
+                                .signIn(userNameController.text,
+                                    passwordController.text)
+                                .then((value) {
+                              AppLoader.stopLoader();
+
+                              if (value.status == Status.success) {
+                                final userData = (value.data as UserData?);
+                                if ((value.data as UserData?) != null) {
+                                  userDataProvider.phone = userData!.phone;
+                                  userDataProvider.userName = userData.name;
+                                  userDataProvider.userImage = userData.image;
+                                  userDataProvider.email = userData.email;
+                                  userDataProvider.duties = userData.duties;
+                                }
+
+                                navigateTo(context, HomeScreen());
+                              } else {
+                                CustomSnackBars.somethingWentWrongSnackBar(
+                                    context);
+                              }
+                            });
+                          }
                         },
                       ),
                       verticalSpace(12),
