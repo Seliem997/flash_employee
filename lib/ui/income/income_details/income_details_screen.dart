@@ -1,31 +1,28 @@
-import 'package:flash_employee/main.dart';
-import 'package:flash_employee/ui/widgets/custom_form_field.dart';
 import 'package:flash_employee/ui/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
-import '../../utils/colors.dart';
-import '../../utils/font_styles.dart';
-import '../sidebar_drawer/sidebar_drawer.dart';
-import '../widgets/custom_button.dart';
-import '../widgets/custom_container.dart';
-import '../widgets/spaces.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/font_styles.dart';
+import '../../widgets/custom_button.dart';
+import '../../widgets/custom_container.dart';
+import '../../widgets/spaces.dart';
 
-class RequestDetailsScreen extends StatelessWidget {
-  const RequestDetailsScreen({Key? key}) : super(key: key);
+class IncomeDetailsScreen extends StatelessWidget {
+  const IncomeDetailsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const TextWidget(
-          text: "Request :00021",
+          text: "Income details",
           textSize: 18,
           fontWeight: FontWeight.bold,
         ),
         elevation: 0,
-        leading: BackButton(
-            color: MyApp.themeMode(context) ? Colors.black : Colors.white),
+        leading: BackButton(color: Colors.black),
+        backgroundColor: Colors.white,
         centerTitle: true,
       ),
       body: Stack(
@@ -41,11 +38,11 @@ class RequestDetailsScreen extends StatelessWidget {
                     width: 120,
                     height: 32,
                     radiusCircular: 3,
-                    backgroundColor: AppColor.pendingButton,
+                    backgroundColor: AppColor.completedButton,
                     padding: EdgeInsets.zero,
                     alignment: Alignment.center,
                     child: TextWidget(
-                      text: "Pending",
+                      text: "Completed",
                       textSize: 15,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
@@ -63,9 +60,7 @@ class RequestDetailsScreen extends StatelessWidget {
                 CustomContainer(
                   width: double.infinity,
                   radiusCircular: 4,
-                  backgroundColor: MyApp.themeMode(context)
-                      ? AppColor.darkScaffoldColor
-                      : Color(0xffE0E0E0),
+                  backgroundColor: Color(0xffE0E0E0),
                   padding: symmetricEdgeInsets(horizontal: 20, vertical: 20),
                   borderColor: Colors.grey,
                   alignment: Alignment.center,
@@ -139,9 +134,7 @@ class RequestDetailsScreen extends StatelessWidget {
                 CustomContainer(
                   width: double.infinity,
                   radiusCircular: 4,
-                  backgroundColor: MyApp.themeMode(context)
-                      ? AppColor.darkScaffoldColor
-                      : Color(0xffE0E0E0),
+                  backgroundColor: Color(0xffE0E0E0),
                   padding: symmetricEdgeInsets(horizontal: 20, vertical: 20),
                   borderColor: Colors.grey,
                   alignment: Alignment.center,
@@ -248,9 +241,7 @@ class RequestDetailsScreen extends StatelessWidget {
                 CustomContainer(
                   width: double.infinity,
                   radiusCircular: 4,
-                  backgroundColor: MyApp.themeMode(context)
-                      ? AppColor.darkScaffoldColor
-                      : Color(0xffF1F6FE),
+                  backgroundColor: Color(0xffF1F6FE),
                   padding: symmetricEdgeInsets(horizontal: 20, vertical: 20),
                   borderColor: AppColor.primary,
                   alignment: Alignment.center,
@@ -388,9 +379,7 @@ class RequestDetailsScreen extends StatelessWidget {
                 CustomContainer(
                   width: double.infinity,
                   radiusCircular: 4,
-                  backgroundColor: MyApp.themeMode(context)
-                      ? AppColor.darkScaffoldColor
-                      : Color(0xffF1F6FE),
+                  backgroundColor: Color(0xffF1F6FE),
                   padding: symmetricEdgeInsets(horizontal: 20, vertical: 20),
                   borderColor: AppColor.primary,
                   alignment: Alignment.center,
@@ -490,9 +479,7 @@ class RequestDetailsScreen extends StatelessWidget {
                 CustomContainer(
                   width: double.infinity,
                   radiusCircular: 4,
-                  backgroundColor: MyApp.themeMode(context)
-                      ? AppColor.darkScaffoldColor
-                      : Color(0xffF1F6FE),
+                  backgroundColor: Color(0xffF1F6FE),
                   padding: symmetricEdgeInsets(horizontal: 20, vertical: 20),
                   borderColor: AppColor.primary,
                   alignment: Alignment.center,
@@ -591,7 +578,7 @@ class RequestDetailsScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                verticalSpace(135)
+                verticalSpace(155)
               ],
             ),
           ),
@@ -599,15 +586,12 @@ class RequestDetailsScreen extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: CustomContainer(
               width: double.infinity,
-              height: 120,
+              height: 150,
               borderRadius: BorderRadius.only(
                   topRight: Radius.circular(32), topLeft: Radius.circular(32)),
-              backgroundColor: MyApp.themeMode(context)
-                  ? AppColor.darkScaffoldColor
-                  : Color(0xff9DD0F3),
+              backgroundColor: Color(0xff9DD0F3),
               padding: symmetricEdgeInsets(horizontal: 20),
-              borderColor:
-                  MyApp.themeMode(context) ? AppColor.grey : AppColor.primary,
+              borderColor: AppColor.primary,
               alignment: Alignment.center,
               child: Column(
                 children: [
@@ -625,30 +609,23 @@ class RequestDetailsScreen extends StatelessWidget {
                             image: AssetImage("assets/images/share.png"),
                             fit: BoxFit.fitHeight),
                       ),
-                      Row(
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          DefaultButton(
-                            text: "Start",
-                            height: 40,
-                            width: 178,
-                            padding: EdgeInsets.zero,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                            onPressed: () {},
+                          Image.asset(
+                            'assets/images/Export Pdf.png',
+                            height: 42,
+                            width: 42,
                           ),
-                          horizontalSpace(25),
-                          DefaultButton(
-                            text: "Late",
-                            height: 33,
-                            width: 55,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
-                            padding: EdgeInsets.zero,
-                            backgroundColor: Color(0xffC73E49),
-                            onPressed: () {},
-                          )
+                          verticalSpace(10),
+                          TextWidget(
+                            text: 'Invoice',
+                            fontWeight: MyFontWeight.bold,
+                            textSize: 15,
+                          ),
                         ],
                       ),
+                      horizontalSpace(30)
                     ],
                   ),
                   verticalSpace(15),

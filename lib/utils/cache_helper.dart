@@ -17,6 +17,9 @@ class CacheHelper {
     if (sharedPreferences.getString(CacheKey.language.key) == null) {
       sharedPreferences.setString(CacheKey.language.key, LanguageKey.en.key);
     }
+    if (sharedPreferences.getBool(CacheKey.darkMode.key) == null) {
+      sharedPreferences.setBool(CacheKey.darkMode.key, false);
+    }
     // if (sharedPreferences.getBool(CacheKey.notification.key) == null) {
     //   sharedPreferences.setBool(CacheKey.notification.key, true);
     // }

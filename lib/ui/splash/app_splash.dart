@@ -7,6 +7,8 @@ import '../../services/authentication_service.dart';
 import '../../utils/cache_helper.dart';
 import '../../utils/enum/shared_preference_keys.dart';
 import '../../utils/enum/statuses.dart';
+import '../income/income_screen.dart';
+import '../inventory/inventory_screen.dart';
 import '../user/login/login.dart';
 import '../widgets/custom_container.dart';
 import '../widgets/navigate.dart';
@@ -42,6 +44,7 @@ class _AppSplashState extends State<AppSplash> {
           }
         } else {
           authenticationService.signOut();
+          navigateAndFinish(context, LoginScreen());
         }
       });
     }
@@ -59,8 +62,11 @@ class _AppSplashState extends State<AppSplash> {
       body: Center(
         child: CustomSizedBox(
             // width: 279,
-            // height: 258,
-            child: Image.asset('assets/images/logo_animation.gif')),
+            height: double.infinity,
+            child: Image.asset(
+              'assets/images/logo_animation.gif',
+              fit: BoxFit.fill,
+            )),
       ),
     );
   }

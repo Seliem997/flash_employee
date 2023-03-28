@@ -48,9 +48,9 @@ class CustomContainer extends StatelessWidget {
         margin: margin ?? const EdgeInsets.all(0),
         decoration: BoxDecoration(
           image: image,
-          color: backgroundColor ?? Colors.white,
+          color: backgroundColor,
           borderRadius: borderRadius ?? BorderRadius.circular(radiusCircular),
-          border: Border.all(color: borderColor!),
+          border: borderColor != null ? Border.all(color: borderColor!) : null,
           shape: isCircle ? BoxShape.circle : BoxShape.rectangle,
           /*boxShadow: const [
             BoxShadow(

@@ -3,7 +3,7 @@ class Api {
 
   static const String imageUrl =
       "https://ahmos-dental.com/public/images/products/thumb/";
-  static const String baseUrl = "https://flashwashapp.com/public/api";
+  static const String baseUrl = "https://dashboard.flashwashapp.com/api";
 
   static const String login = "$baseUrl/employee/login";
   static const String getMyProfile = "$baseUrl/employee/my-profile";

@@ -55,18 +55,18 @@ class UserData {
 
   UserData(
       {this.id,
-        this.fwId,
-        this.name,
-        this.email,
-        this.phone,
-        this.countryCode,
-        this.image,
-        this.duties});
+      this.fwId,
+      this.name,
+      this.email,
+      this.phone,
+      this.countryCode,
+      this.image,
+      this.duties});
 
   UserData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     fwId = json['fw_id'];
-    name = json['name'];
+    name = json['username'];
     email = json['email'];
     phone = json['phone'];
     countryCode = json['country_code'];
@@ -107,13 +107,13 @@ class Duties {
 
   Duties(
       {this.id,
-        this.day,
-        this.shift,
-        this.startAt,
-        this.endAt,
-        this.employeeId,
-        this.createdAt,
-        this.updatedAt});
+      this.day,
+      this.shift,
+      this.startAt,
+      this.endAt,
+      this.employeeId,
+      this.createdAt,
+      this.updatedAt});
 
   Duties.fromJson(Map<String, dynamic> json) {
     id = json['id'];

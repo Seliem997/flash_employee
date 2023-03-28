@@ -10,8 +10,10 @@ enum CacheKey {
   token('token'),
   phoneNumber('phoneNumber'),
   countryCode('countryCode'),
+  empId('empId'),
   address('address'),
   hasAddress('hasAddress'),
+  darkMode('darkMode'),
   rentalBalance('rentalBalance');
 
   const CacheKey(this.key);

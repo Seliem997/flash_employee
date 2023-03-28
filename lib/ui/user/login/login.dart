@@ -208,7 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   userDataProvider.duties = userData.duties;
                                 }
 
-                                navigateTo(context, HomeScreen());
+                                navigateAndFinish(context, HomeScreen());
                               } else {
                                 CustomSnackBars.somethingWentWrongSnackBar(
                                     context);

@@ -24,6 +24,8 @@ class DefaultFormField extends StatelessWidget {
       this.textColor,
       this.prefixIcon,
       this.padding,
+      this.letterSpacing,
+      this.textHeight,
       this.textInputAction,
       this.hintStyle,
       this.textAlign = TextAlign.start,
@@ -47,6 +49,8 @@ class DefaultFormField extends StatelessWidget {
   final DecorationImage? prefixIcon;
   final EdgeInsetsGeometry? padding;
   final TextStyle? hintStyle;
+  final double? letterSpacing;
+  final double? textHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +61,7 @@ class DefaultFormField extends StatelessWidget {
               ? filled
                   ? fillColor
                   : null
-              : AppColor.grey,
+              : Color(0xffE0E0E0),
           border: Border.all(
               width: 1, color: filled ? fillColor! : AppColor.borderGray),
           borderRadius: BorderRadius.circular(5)),
@@ -69,7 +73,8 @@ class DefaultFormField extends StatelessWidget {
         validator: validator,
         obscureText: isPassword,
         keyboardType: keyboardType,
-        style: TextStyle(color: textColor),
+        style: TextStyle(
+            color: textColor, letterSpacing: letterSpacing, height: textHeight),
         textInputAction: textInputAction,
         textAlign: textAlign,
         decoration: InputDecoration(

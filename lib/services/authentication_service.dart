@@ -168,7 +168,7 @@ class AuthenticationService extends BaseService {
     Status status = Status.error;
     late LoginModel loginModel;
     UserData? userData;
-    Map<String, dynamic> body = {"name": userName, "password": password};
+    Map<String, dynamic> body = {"username": userName, "password": password};
     try {
       await requestFutureData(
           api: Api.login,
@@ -192,6 +192,8 @@ class AuthenticationService extends BaseService {
               await CacheHelper.saveData(
                   key: CacheKey.phoneNumber, value: userData!.phone);
               await CacheHelper.saveData(
+                  key: CacheKey.empId, value: userData!.fwId);
+              await CacheHelper.saveData(
                   key: CacheKey.countryCode, value: userData!.countryCode);
             } else if (response["status_code"] == 400) {
               status = Status.invalidEmailOrPass;
@@ -206,7 +208,7 @@ class AuthenticationService extends BaseService {
 
   Future<ResponseResult> getMyProfile() async {
     Status status = Status.error;
-    late UserData userData;
+    UserData? userData;
     try {
       await requestFutureData(
           api: Api.getMyProfile,
@@ -217,15 +219,17 @@ class AuthenticationService extends BaseService {
               status = Status.success;
               userData = ProfileModel.fromJson(response).data!;
               await CacheHelper.saveData(
-                  key: CacheKey.userName, value: userData.name!);
+                  key: CacheKey.userName, value: userData!.name!);
               await CacheHelper.saveData(
-                  key: CacheKey.userImage, value: userData.image!);
+                  key: CacheKey.userImage, value: userData!.image!);
               await CacheHelper.saveData(
-                  key: CacheKey.email, value: userData.email);
+                  key: CacheKey.email, value: userData!.email);
               await CacheHelper.saveData(
-                  key: CacheKey.phoneNumber, value: userData.phone);
+                  key: CacheKey.phoneNumber, value: userData!.phone);
               await CacheHelper.saveData(
-                  key: CacheKey.countryCode, value: userData.countryCode);
+                  key: CacheKey.countryCode, value: userData!.countryCode);
+              await CacheHelper.saveData(
+                  key: CacheKey.empId, value: userData!.fwId);
             } else if (response["status_code"] == 400) {
               status = Status.invalidEmailOrPass;
             }

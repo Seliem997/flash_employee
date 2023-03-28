@@ -3,6 +3,7 @@ import 'package:flash_employee/ui/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../main.dart';
 import '../../utils/colors.dart';
 
 class CustomGradientButton extends StatelessWidget {
@@ -57,7 +58,10 @@ class DefaultButtonWithIcon extends StatelessWidget {
     this.borderRadius,
     required this.icon,
     required this.onPressed,
-    required this.labelText, this.padding, this.border = false, this.borderColor,
+    required this.labelText,
+    this.padding,
+    this.border = false,
+    this.borderColor,
   }) : super(key: key);
 
   final double? width, height, elevation, labelSize;
@@ -69,7 +73,6 @@ class DefaultButtonWithIcon extends StatelessWidget {
   final Widget icon;
   final EdgeInsetsGeometry? padding;
 
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -78,45 +81,52 @@ class DefaultButtonWithIcon extends StatelessWidget {
           ? (height! / screenHeight) * 100.h // deduct safe area space
           : null,
       child: ElevatedButton.icon(
-
         onPressed: onPressed,
-        label: Text(labelText),
+        label: Text(
+          labelText,
+          style:
+              TextStyle(color: MyApp.themeMode(context) ? Colors.white : null),
+        ),
         icon: icon,
         style: ElevatedButton.styleFrom(
-        alignment: Alignment.centerLeft,
+            alignment: Alignment.centerLeft,
             foregroundColor: textColor ?? AppColor.white,
-            backgroundColor: backgroundButton ?? AppColor.primary,
+            backgroundColor: MyApp.themeMode(context)
+                ? AppColor.secondaryDarkColor
+                : backgroundButton ?? AppColor.primary,
             shape: RoundedRectangleBorder(
-              borderRadius: borderRadius ?? BorderRadius.circular(5),
-                side: border ? BorderSide(
-                    width: 1, // the thickness
-                    color: borderColor ?? Colors.black // the color of the border
-                ) : BorderSide.none
-            ),
+                borderRadius: borderRadius ?? BorderRadius.circular(5),
+                side: border
+                    ? BorderSide(
+                        width: 1, // the thickness
+                        color: borderColor ??
+                            Colors.black // the color of the border
+                        )
+                    : BorderSide.none),
             padding: padding ?? EdgeInsets.symmetric(horizontal: 1.w),
-            textStyle: TextStyle(
-              fontSize: labelSize,
-            )),
+            textStyle: TextStyle(fontSize: labelSize)),
       ),
     );
   }
 }
 
 class DefaultButton extends StatelessWidget {
-  const DefaultButton(
-      {Key? key,
-      this.width,
-      this.height,
-      this.backgroundColor,
-      required this.text,
-      required this.onPressed,
-      this.textColor = Colors.white,
-      this.borderColor,
-      this.elevation = 2,
-      this.fontSize = 12,
-      this.enabled = true,
-      this.border = false, this.padding, this.fontWeight = FontWeight.w400,})
-      : super(key: key);
+  const DefaultButton({
+    Key? key,
+    this.width,
+    this.height,
+    this.backgroundColor,
+    required this.text,
+    required this.onPressed,
+    this.textColor = Colors.white,
+    this.borderColor,
+    this.elevation = 2,
+    this.fontSize = 12,
+    this.enabled = true,
+    this.border = false,
+    this.padding,
+    this.fontWeight = FontWeight.w400,
+  }) : super(key: key);
   final double? width, height, elevation, fontSize;
   final Color? backgroundColor, textColor, borderColor;
   final String text;
@@ -126,7 +136,6 @@ class DefaultButton extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final FontWeight fontWeight;
 
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -135,19 +144,23 @@ class DefaultButton extends StatelessWidget {
           ? (height! / screenHeight) * 100.h // deduct safe area space
           : null,
       child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
+        style: ElevatedButton.styleFrom(
             padding: padding,
-              backgroundColor: backgroundColor ?? AppColor.primary,
-              disabledBackgroundColor: backgroundColor ?? AppColor.primary,
-              elevation: elevation,
-              shape: RoundedRectangleBorder(
-                  side: border
-                      ? BorderSide(color: borderColor ?? Colors.grey, width: .5)
-                      : BorderSide.none,
-                  borderRadius: BorderRadius.circular(5))),
-          onPressed: enabled ? onPressed : null,
-
-        child: TextWidget(text: text,fontWeight: fontWeight,color: textColor!,textSize: fontSize!, ),
+            backgroundColor: backgroundColor ?? AppColor.primary,
+            disabledBackgroundColor: backgroundColor ?? AppColor.primary,
+            elevation: elevation,
+            shape: RoundedRectangleBorder(
+                side: border
+                    ? BorderSide(color: borderColor ?? Colors.grey, width: .5)
+                    : BorderSide.none,
+                borderRadius: BorderRadius.circular(5))),
+        onPressed: enabled ? onPressed : null,
+        child: TextWidget(
+          text: text,
+          fontWeight: fontWeight,
+          color: textColor!,
+          textSize: fontSize!,
+        ),
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:flash_employee/main.dart';
 import 'package:flutter/material.dart';
 
 class TextWidget extends StatelessWidget {
@@ -39,7 +40,7 @@ class TextWidget extends StatelessWidget {
         style: TextStyle(
           decoration: underLine ? TextDecoration.underline : null,
           fontSize: textSize,
-          color: color,
+          color: MyApp.themeMode(context) ? null : color,
           height: height,
           overflow: TextOverflow.ellipsis,
           fontFamily: "Montserrat",

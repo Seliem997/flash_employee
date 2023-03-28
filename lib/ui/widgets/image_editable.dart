@@ -16,12 +16,12 @@ class ImageEditable extends StatelessWidget {
     this.width,
     this.showEditIcon = false,
     this.isVehicle = false,
-    this.topPositioned,
+    this.bottomPositioned,
   }) : super(key: key);
   final String imageUrl;
   final bool showEditIcon;
   final bool isVehicle;
-  final double? height, width, topPositioned;
+  final double? height, width, bottomPositioned;
   final VoidCallback? onTap;
 
   @override
@@ -31,32 +31,46 @@ class ImageEditable extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          Container(
-            height: height ?? 55,
-            width: width ?? 55,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                image: imageUrl.isEmpty
-                    ? AssetImage(
-                        isVehicle
-                            ? "assets/images/tesla_model.png"
-                            : 'assets/images/profile.png',
-                      )
-                    : CachedNetworkImageProvider(imageUrl) as ImageProvider,
-                fit: BoxFit.cover,
-              ),
+          // Container(
+          //   width: width != null ? (width! / screenWidth) * 100.w : null,
+          //   height: height != null
+          //       ? (height! / screenHeight) * 100.h // deduct safe area space
+          //       : null,
+          //   decoration: BoxDecoration(
+          //     shape: BoxShape.circle,
+          //     image: DecorationImage(
+          //       image: imageUrl.isEmpty
+          //           ? const AssetImage(
+          //               'assets/images/profile.png',
+          //             )
+          //           : CachedNetworkImageProvider(imageUrl) as ImageProvider,
+          //       fit: BoxFit.cover,
+          //     ),
+          //   ),
+          // ),
+          CircleAvatar(
+            backgroundColor: Color.fromRGBO(0, 107, 182, 0.53),
+            radius: 55,
+            child: CircleAvatar(
+              radius: 49,
+              backgroundImage: imageUrl.isEmpty
+                  ? AssetImage(
+                      'assets/images/profile.png',
+                    ) as ImageProvider
+                  : NetworkImage(
+                      imageUrl,
+                    ),
             ),
           ),
           Visibility(
             visible: showEditIcon,
             child: Positioned(
-              top: topPositioned ?? 8.h,
+              bottom: bottomPositioned ?? 0.5.h,
               right: 0,
               child: CircleAvatar(
-                backgroundColor: AppColor.grey,
+                backgroundColor: Colors.transparent,
                 radius: 16,
-                child: SvgPicture.asset('assets/svg/camera.svg', height: 3.h),
+                child: SvgPicture.asset('assets/svg/edit.svg', height: 3.h),
               ),
             ),
           ),

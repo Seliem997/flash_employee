@@ -1,3 +1,4 @@
+import 'package:flash_employee/main.dart';
 import 'package:flash_employee/ui/request_details/request_details_screen.dart';
 import 'package:flash_employee/ui/widgets/custom_form_field.dart';
 import 'package:flash_employee/ui/widgets/navigate.dart';
@@ -37,7 +38,11 @@ class HomeScreen extends StatelessWidget {
                   onTap: () {
                     globalKey.currentState!.openDrawer();
                   },
-                  child: SvgPicture.asset('assets/svg/menu.svg'),
+                  child: SvgPicture.asset(
+                    'assets/svg/menu.svg',
+                    color:
+                        MyApp.themeMode(context) ? Colors.white : Colors.black,
+                  ),
                 ),
                 horizontalSpace(12),
                 TextWidget(
@@ -95,7 +100,9 @@ class HomeScreen extends StatelessWidget {
               width: 345,
               height: 118,
               radiusCircular: 6,
-              backgroundColor: AppColor.borderGray,
+              borderColor: MyApp.themeMode(context) ? Colors.grey : null,
+              backgroundColor:
+                  MyApp.themeMode(context) ? null : AppColor.borderGray,
               padding: symmetricEdgeInsets(vertical: 13, horizontal: 13),
               child: Row(
                 children: [
@@ -201,7 +208,9 @@ class HomeScreen extends StatelessWidget {
               width: 345,
               height: 118,
               radiusCircular: 6,
-              backgroundColor: AppColor.borderGray,
+              borderColor: MyApp.themeMode(context) ? Colors.grey : null,
+              backgroundColor:
+                  MyApp.themeMode(context) ? null : AppColor.borderGray,
               padding: symmetricEdgeInsets(vertical: 13, horizontal: 13),
               child: Row(
                 children: [
