@@ -1,12 +1,16 @@
 import 'package:flash_employee/main.dart';
+import 'package:flash_employee/ui/home/widgets/request_item.dart';
 import 'package:flash_employee/ui/request_details/request_details_screen.dart';
 import 'package:flash_employee/ui/widgets/custom_form_field.dart';
+import 'package:flash_employee/ui/widgets/data_loader.dart';
 import 'package:flash_employee/ui/widgets/navigate.dart';
+import 'package:flash_employee/ui/widgets/no_data_place_holder.dart';
 import 'package:flash_employee/ui/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/requests_provider.dart';
 import '../../providers/user_provider.dart';
 import '../../utils/colors.dart';
 import '../../utils/font_styles.dart';
@@ -15,13 +19,35 @@ import '../widgets/custom_button.dart';
 import '../widgets/custom_container.dart';
 import '../widgets/spaces.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    Future.delayed(const Duration(seconds: 0)).then((value) => loadData());
+    // mainEventBus.on<InvoiceAddedEvent>().listen((event) {
+    //   loadData();
+    // });
+    super.initState();
+  }
+
+  void loadData() async {
+    final RequestsProvider requestsProvider =
+        Provider.of<RequestsProvider>(context, listen: false);
+    await requestsProvider.getRequests();
+  }
 
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> globalKey = GlobalKey();
     final UserProvider userDataProvider = Provider.of<UserProvider>(context);
+    final RequestsProvider requestsProvider =
+        Provider.of<RequestsProvider>(context);
 
     return Scaffold(
       // backgroundColor: Colors.white,
@@ -93,222 +119,29 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
             verticalSpace(15),
-            CustomContainer(
-              onTap: () {
-                navigateTo(context, RequestDetailsScreen());
-              },
-              width: 345,
-              height: 118,
-              radiusCircular: 6,
-              borderColor: MyApp.themeMode(context) ? Colors.grey : null,
-              backgroundColor:
-                  MyApp.themeMode(context) ? null : AppColor.borderGray,
-              padding: symmetricEdgeInsets(vertical: 13, horizontal: 13),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            TextWidget(
-                              text: 'Request ID : ',
-                              textSize: MyFontSize.size12,
-                              fontWeight: MyFontWeight.semiBold,
-                            ),
-                            TextWidget(
-                              text: 'FLASH4584',
-                              textSize: MyFontSize.size12,
-                              fontWeight: MyFontWeight.medium,
-                              color: AppColor.grey,
-                            ),
-                          ],
-                        ),
-                        verticalSpace(12),
-                        Row(
-                          children: [
-                            TextWidget(
-                              text: 'Type of Service : ',
-                              textSize: MyFontSize.size12,
-                              fontWeight: MyFontWeight.semiBold,
-                            ),
-                            TextWidget(
-                              text: 'Wash',
-                              textSize: MyFontSize.size12,
-                              fontWeight: MyFontWeight.medium,
-                              color: AppColor.grey,
-                            ),
-                          ],
-                        ),
-                        verticalSpace(12),
-                        Row(
-                          children: [
-                            SvgPicture.asset('assets/svg/alarm.svg'),
-                            horizontalSpace(15),
-                            TextWidget(
-                              text: '03:15 PM',
-                              textSize: MyFontSize.size12,
-                              fontWeight: MyFontWeight.medium,
-                              color: AppColor.grey,
-                            ),
-                          ],
-                        ),
-                        verticalSpace(10),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.calendar_today_outlined,
-                              size: 12,
-                              color: Color(0xff616161),
-                            ),
-                            horizontalSpace(15),
-                            TextWidget(
-                              text: 'Monday, 23 January 2023',
-                              textSize: MyFontSize.size12,
-                              fontWeight: MyFontWeight.medium,
-                              color: AppColor.grey,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Column(
-                    children: [
-                      DefaultButton(
-                        height: 21,
-                        padding: EdgeInsets.zero,
-                        width: 64,
-                        text: 'On the way',
-                        fontSize: MyFontSize.size9,
-                        fontWeight: MyFontWeight.semiBold,
-                        backgroundColor: AppColor.onTheWayButton,
-                        onPressed: () {},
-                      ),
-                      Spacer(),
-                      Icon(
-                        Icons.location_on_outlined,
-                        size: 35,
-                      ),
-                      TextWidget(
-                        text: '2 Km',
-                        fontWeight: MyFontWeight.bold,
-                        textSize: MyFontSize.size9,
-                      ),
-                    ],
-                  )
-                ],
+            Expanded(
+              child: RefreshIndicator(
+                edgeOffset: 0,
+                displacement: 0,
+                onRefresh: () async {
+                  loadData();
+                },
+                child: requestsProvider.loadingRequests
+                    ? DataLoader()
+                    : requestsProvider.requests!.isEmpty
+                        ? const NoDataPlaceHolder(useExpand: false)
+                        : ListView.separated(
+                            padding: symmetricEdgeInsets(vertical: 10),
+                            shrinkWrap: true,
+                            itemCount: requestsProvider.requests!.length,
+                            itemBuilder: (context, index) {
+                              return RequestItem(
+                                  request: requestsProvider.requests![index]);
+                            },
+                            separatorBuilder: (context, index) =>
+                                verticalSpace(15)),
               ),
-            ),
-            verticalSpace(15),
-            CustomContainer(
-              onTap: () {
-                navigateTo(context, RequestDetailsScreen());
-              },
-              width: 345,
-              height: 118,
-              radiusCircular: 6,
-              borderColor: MyApp.themeMode(context) ? Colors.grey : null,
-              backgroundColor:
-                  MyApp.themeMode(context) ? null : AppColor.borderGray,
-              padding: symmetricEdgeInsets(vertical: 13, horizontal: 13),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            TextWidget(
-                              text: 'Request ID : ',
-                              textSize: MyFontSize.size12,
-                              fontWeight: MyFontWeight.semiBold,
-                            ),
-                            TextWidget(
-                              text: 'FLASH4584',
-                              textSize: MyFontSize.size12,
-                              fontWeight: MyFontWeight.medium,
-                              color: AppColor.grey,
-                            ),
-                          ],
-                        ),
-                        verticalSpace(12),
-                        Row(
-                          children: [
-                            TextWidget(
-                              text: 'Type of Service : ',
-                              textSize: MyFontSize.size12,
-                              fontWeight: MyFontWeight.semiBold,
-                            ),
-                            TextWidget(
-                              text: 'Wash',
-                              textSize: MyFontSize.size12,
-                              fontWeight: MyFontWeight.medium,
-                              color: AppColor.grey,
-                            ),
-                          ],
-                        ),
-                        verticalSpace(12),
-                        Row(
-                          children: [
-                            SvgPicture.asset('assets/svg/alarm.svg'),
-                            horizontalSpace(15),
-                            TextWidget(
-                              text: '03:15 PM',
-                              textSize: MyFontSize.size12,
-                              fontWeight: MyFontWeight.medium,
-                              color: AppColor.grey,
-                            ),
-                          ],
-                        ),
-                        verticalSpace(10),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.calendar_today_outlined,
-                              size: 12,
-                              color: Color(0xff616161),
-                            ),
-                            horizontalSpace(15),
-                            TextWidget(
-                              text: 'Monday, 23 January 2023',
-                              textSize: MyFontSize.size12,
-                              fontWeight: MyFontWeight.medium,
-                              color: AppColor.grey,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Column(
-                    children: [
-                      DefaultButton(
-                        height: 21,
-                        padding: EdgeInsets.zero,
-                        width: 64,
-                        text: 'Pending',
-                        fontSize: MyFontSize.size9,
-                        fontWeight: MyFontWeight.semiBold,
-                        backgroundColor: AppColor.pendingButton,
-                        onPressed: () {},
-                      ),
-                      Spacer(),
-                      Icon(
-                        Icons.location_on_outlined,
-                        size: 35,
-                      ),
-                      TextWidget(
-                        text: '1.5 Km',
-                        fontWeight: MyFontWeight.bold,
-                        textSize: MyFontSize.size9,
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-            verticalSpace(15),
+            )
           ],
         ),
       ),

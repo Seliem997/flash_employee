@@ -153,7 +153,7 @@ class DefaultButton extends StatelessWidget {
                 side: border
                     ? BorderSide(color: borderColor ?? Colors.grey, width: .5)
                     : BorderSide.none,
-                borderRadius: BorderRadius.circular(5))),
+                borderRadius: BorderRadius.circular(3))),
         onPressed: enabled ? onPressed : null,
         child: TextWidget(
           text: text,

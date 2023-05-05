@@ -1,0 +1,3 @@
+class TransactionAddedEvent {
+  TransactionAddedEvent();
+}

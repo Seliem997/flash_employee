@@ -33,8 +33,7 @@ class IncomeScreen extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
         elevation: 0,
-        leading: BackButton(color: Colors.black),
-        backgroundColor: Colors.white,
+        leading: BackButton(),
         centerTitle: true,
       ),
       body: Stack(

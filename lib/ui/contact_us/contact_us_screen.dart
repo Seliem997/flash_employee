@@ -18,7 +18,6 @@ class ContactUsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const TextWidget(
           text: "Contact Us",
@@ -26,8 +25,7 @@ class ContactUsScreen extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
         elevation: 0,
-        leading: BackButton(color: Colors.black),
-        backgroundColor: Colors.white,
+        leading: BackButton(),
         centerTitle: true,
       ),
       body: Stack(

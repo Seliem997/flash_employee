@@ -31,7 +31,6 @@ class ProfileScreen extends StatelessWidget {
     final UserProvider userDataProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Column(
         children: [
           CustomContainer(
@@ -49,7 +48,7 @@ class ProfileScreen extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                   elevation: 0,
-                  leading: BackButton(color: Colors.black),
+                  leading: BackButton(),
                   actions: [
                     IconButton(
                         onPressed: () {

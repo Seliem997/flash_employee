@@ -44,6 +44,7 @@ dependencies:
   cached_network_image: ^3.2.3
   smooth_page_indicator: ^1.0.0+2
   dots_indicator: ^2.1.0
+  intl: ^0.17.0
 
 
   #  firebase
@@ -56,6 +57,8 @@ dependencies:
   fl_country_code_picker: ^0.1.2
   flutter_switch: ^0.3.2
   restart_app: ^1.1.0+1
+  image_picker: ^0.8.6
+  change_case: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -116,3 +119,5 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+flutter_intl:
+  enabled: true

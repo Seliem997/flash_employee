@@ -20,6 +20,8 @@ class DefaultFormField extends StatelessWidget {
       this.suffixIcon,
       this.enabled = true,
       this.filled = false,
+      this.isNumber = false,
+      this.isDecimalNumber = false,
       this.fillColor,
       this.textColor,
       this.prefixIcon,
@@ -51,6 +53,8 @@ class DefaultFormField extends StatelessWidget {
   final TextStyle? hintStyle;
   final double? letterSpacing;
   final double? textHeight;
+  final bool isNumber;
+  final bool isDecimalNumber;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +71,17 @@ class DefaultFormField extends StatelessWidget {
           borderRadius: BorderRadius.circular(5)),
       child: TextFormField(
         controller: controller,
-        inputFormatters: inputFormatters,
+        inputFormatters: isDecimalNumber
+            ? [
+                FilteringTextInputFormatter.allow(
+                    RegExp(r'[0-9]+[.]{0,1}[0-9]*')),
+              ]
+            : isNumber
+                ? [
+                    FilteringTextInputFormatter.digitsOnly,
+                    ...inputFormatters ?? []
+                  ]
+                : inputFormatters,
         enabled: enabled,
         onChanged: onChanged,
         validator: validator,

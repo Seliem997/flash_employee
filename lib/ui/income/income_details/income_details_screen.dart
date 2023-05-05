@@ -13,7 +13,6 @@ class IncomeDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const TextWidget(
           text: "Income details",
@@ -21,8 +20,7 @@ class IncomeDetailsScreen extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
         elevation: 0,
-        leading: BackButton(color: Colors.black),
-        backgroundColor: Colors.white,
+        leading: BackButton(),
         centerTitle: true,
       ),
       body: Stack(

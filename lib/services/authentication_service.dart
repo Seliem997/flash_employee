@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:flash_employee/models/profileModel.dart';
 
 import '../base/service/base_service.dart';
+import '../models/invoicesModel.dart';
 import '../models/loginModel.dart';
 import '../models/requestResult.dart';
 import '../utils/apis.dart';
@@ -11,11 +12,9 @@ import '../utils/enum/shared_preference_keys.dart';
 import '../utils/enum/statuses.dart';
 
 class AuthenticationService extends BaseService {
-  // final fb = FacebookLogin(debug: true);
-
   Future<ResponseResult> forgotPassword(String email) async {
     Status status = Status.error;
-    // late LoginModel loginModel;
+    List<InvoiceData>? invoices;
     Map<String, dynamic> body = {"nameOrEmail": email};
     try {
       await requestFutureData(

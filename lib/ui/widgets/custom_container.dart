@@ -2,6 +2,8 @@ import 'package:flash_employee/ui/widgets/spaces.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../main.dart';
+
 class CustomContainer extends StatelessWidget {
   const CustomContainer({
     Key? key,
@@ -48,9 +50,12 @@ class CustomContainer extends StatelessWidget {
         margin: margin ?? const EdgeInsets.all(0),
         decoration: BoxDecoration(
           image: image,
-          color: backgroundColor,
+          color: MyApp.themeMode(context) ? null : backgroundColor,
           borderRadius: borderRadius ?? BorderRadius.circular(radiusCircular),
-          border: borderColor != null ? Border.all(color: borderColor!) : null,
+          border: borderColor != null
+              ? Border.all(
+                  color: MyApp.themeMode(context) ? Colors.grey : borderColor!)
+              : null,
           shape: isCircle ? BoxShape.circle : BoxShape.rectangle,
           /*boxShadow: const [
             BoxShadow(

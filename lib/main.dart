@@ -1,3 +1,7 @@
+import 'package:flash_employee/providers/inventory_provider.dart';
+import 'package:flash_employee/providers/invoices_provider.dart';
+import 'package:flash_employee/providers/requests_provider.dart';
+import 'package:flash_employee/providers/transactions_provider.dart';
 import 'package:flash_employee/providers/user_provider.dart';
 import 'package:flash_employee/ui/splash/app_splash.dart';
 import 'package:flash_employee/utils/cache_helper.dart';
@@ -5,6 +9,7 @@ import 'package:flash_employee/utils/colors.dart';
 import 'package:flash_employee/utils/enum/shared_preference_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
@@ -58,6 +63,7 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    initializeDateFormatting('en', null);
     FlutterStatusbarcolor.setStatusBarColor(AppColor.transparent);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(
         isDarkMode ? true : false);
@@ -65,6 +71,18 @@ class _MyAppState extends State<MyApp> {
         providers: [
           ChangeNotifierProvider(
             create: (context) => UserProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => InvoicesProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => InventoryProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => TransactionsProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => RequestsProvider(),
           )
         ],
         child: Sizer(builder: (context, orientation, deviceType) {
@@ -74,11 +92,15 @@ class _MyAppState extends State<MyApp> {
             theme: isDarkMode
                 ? ThemeData.dark().copyWith(
                     // primarySwatch: Colors.blue,
-                    appBarTheme: AppBarTheme(color: AppColor.darkScaffoldColor),
+                    appBarTheme: AppBarTheme(
+                        color: AppColor.darkScaffoldColor,
+                        iconTheme: IconThemeData(color: Colors.white)),
                     scaffoldBackgroundColor: AppColor.darkScaffoldColor)
                 : ThemeData(
                     primarySwatch: Colors.blue,
-                    appBarTheme: AppBarTheme(color: AppColor.white),
+                    appBarTheme: AppBarTheme(
+                        color: AppColor.white,
+                        iconTheme: IconThemeData(color: Colors.black)),
                     scaffoldBackgroundColor: AppColor.lightScaffoldColor),
             home: const AppSplash(),
           );

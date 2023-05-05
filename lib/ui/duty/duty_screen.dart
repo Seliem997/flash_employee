@@ -21,7 +21,6 @@ class DutyScreen extends StatelessWidget {
     final UserProvider userDataProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const TextWidget(
           text: "Duty",
@@ -29,8 +28,7 @@ class DutyScreen extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
         elevation: 0,
-        leading: BackButton(color: Colors.black),
-        backgroundColor: Colors.white,
+        leading: BackButton(),
         centerTitle: true,
       ),
       body: userDataProvider.duties!.isEmpty
