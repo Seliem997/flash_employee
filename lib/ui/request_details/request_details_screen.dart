@@ -1,4 +1,5 @@
 import 'package:flash_employee/main.dart';
+import 'package:flash_employee/services/common_service.dart';
 import 'package:flash_employee/ui/request_details/widgets/late_minutes_dialog.dart';
 import 'package:flash_employee/ui/widgets/custom_form_field.dart';
 import 'package:flash_employee/ui/widgets/data_loader.dart';
@@ -8,9 +9,11 @@ import 'package:flash_employee/utils/enum/status_types.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../providers/requests_provider.dart';
 import '../../utils/colors.dart';
+import '../../utils/snack_bars.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_container.dart';
 import '../widgets/spaces.dart';
@@ -225,12 +228,15 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                             fit: BoxFit.cover),
                                       ),
                                       horizontalSpace(65),
-                                      const CustomContainer(
+                                      CustomContainer(
+                                        onTap: () {
+                                          // CommonService.openMap(latitude, longitude );
+                                        },
                                         height: 65,
                                         width: 65,
                                         padding: EdgeInsets.zero,
                                         backgroundColor: Colors.transparent,
-                                        image: DecorationImage(
+                                        image: const DecorationImage(
                                             image: AssetImage(
                                                 "assets/images/Location.png"),
                                             fit: BoxFit.cover),
@@ -247,8 +253,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                         color: Colors.black,
                                       ),
                                       horizontalSpace(10),
-                                      const TextWidget(
-                                        text: "+9662456787456",
+                                      TextWidget(
+                                        text:
+                                            "${requestsProvider.selectedRequest!.customer!.phone}",
                                         textSize: 14,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black,
@@ -259,23 +266,41 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      const CustomContainer(
+                                      CustomContainer(
+                                        onTap: () {
+                                          launchUrl(Uri.parse(requestsProvider
+                                              .selectedRequest!
+                                              .customer!
+                                              .phone!));
+                                        },
                                         height: 35,
                                         width: 35,
                                         padding: EdgeInsets.zero,
                                         backgroundColor: Colors.transparent,
-                                        image: DecorationImage(
+                                        image: const DecorationImage(
                                             image: AssetImage(
                                                 "assets/images/telephone.png"),
                                             fit: BoxFit.fitHeight),
                                       ),
                                       horizontalSpace(30),
-                                      const CustomContainer(
+                                      CustomContainer(
+                                        onTap: () {
+                                          var whatsappUrl =
+                                              "whatsapp://send?phone=+2${requestsProvider.selectedRequest!.customer!.phone!}";
+                                          try {
+                                            launch(whatsappUrl);
+                                          } catch (e) {
+                                            //To handle error and display error message
+                                            CustomSnackBars
+                                                .somethingWentWrongSnackBar(
+                                                    context);
+                                          }
+                                        },
                                         height: 35,
                                         width: 35,
                                         padding: EdgeInsets.zero,
                                         backgroundColor: Colors.transparent,
-                                        image: DecorationImage(
+                                        image: const DecorationImage(
                                             image: AssetImage(
                                                 "assets/images/whatsapp.png"),
                                             fit: BoxFit.fitHeight),
@@ -317,7 +342,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       horizontalSpace(10),
                                       TextWidget(
                                         text:
-                                            "${requestsProvider.selectedRequest!.customer!.vehicle![0].vehicleTypeName}",
+                                            "${requestsProvider.selectedRequest!.vehicleRequest!.vehicleTypeName}",
                                         textSize: 14,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black,
@@ -325,11 +350,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                     ],
                                   ),
                                   verticalSpace(16),
-                                  if (requestsProvider
-                                          .selectedRequest!
-                                          .customer!
-                                          .vehicle![0]
-                                          .vehicleTypeId !=
+                                  if (requestsProvider.selectedRequest!
+                                          .vehicleRequest!.vehicleTypeId !=
                                       2)
                                     Column(
                                       children: [
@@ -344,7 +366,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                             horizontalSpace(10),
                                             TextWidget(
                                               text:
-                                                  "${requestsProvider.selectedRequest!.customer!.vehicle![0].subVehicleTypeName}",
+                                                  "${requestsProvider.selectedRequest!.vehicleRequest!.subVehicleTypeName}",
                                               textSize: 14,
                                               fontWeight: FontWeight.w400,
                                               color: Colors.black,
@@ -365,7 +387,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       horizontalSpace(10),
                                       TextWidget(
                                         text:
-                                            "${requestsProvider.selectedRequest!.customer!.vehicle![0].manufacturerName}",
+                                            "${requestsProvider.selectedRequest!.vehicleRequest!.manufacturerName}",
                                         textSize: 14,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black,
@@ -384,7 +406,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       horizontalSpace(10),
                                       TextWidget(
                                         text:
-                                            "${requestsProvider.selectedRequest!.customer!.vehicle![0].vehicleModelName}",
+                                            "${requestsProvider.selectedRequest!.vehicleRequest!.vehicleModelName}",
                                         textSize: 14,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black,
@@ -694,13 +716,16 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const CustomContainer(
+                                CustomContainer(
+                                  onTap: () {
+                                    requestsProvider.savePdf();
+                                  },
                                   height: 27,
                                   width: 27,
                                   padding: EdgeInsets.zero,
                                   radiusCircular: 0,
                                   backgroundColor: Colors.transparent,
-                                  image: DecorationImage(
+                                  image: const DecorationImage(
                                       image:
                                           AssetImage("assets/images/share.png"),
                                       fit: BoxFit.fitHeight),

@@ -62,16 +62,15 @@ class _InventoryScreenState extends State<InventoryScreen> {
         leading: BackButton(),
         centerTitle: true,
       ),
-      body: inventoryProvider.loadingInventoryItems
-          ? DataLoader()
-          : inventoryProvider.inventoryItems!.isEmpty
-              ? NoDataPlaceHolder()
-              : Stack(
-                  children: [
-                    Padding(
-                        padding:
-                            symmetricEdgeInsets(vertical: 15, horizontal: 24),
-                        child: Column(children: [
+      body: Stack(
+        children: [
+          Padding(
+              padding: symmetricEdgeInsets(vertical: 15, horizontal: 24),
+              child: inventoryProvider.loadingInventoryItems
+                  ? DataLoader()
+                  : inventoryProvider.inventoryItems!.isEmpty
+                      ? NoDataPlaceHolder(useExpand: false)
+                      : Column(children: [
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 14),
                             child: Row(
@@ -126,47 +125,45 @@ class _InventoryScreenState extends State<InventoryScreen> {
                             },
                           ))
                         ])),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: CustomContainer(
-                        width: double.infinity,
-                        height: 125,
-                        backgroundColor: Colors.transparent,
-                        padding:
-                            symmetricEdgeInsets(horizontal: 20, vertical: 10),
-                        alignment: Alignment.center,
-                        child: Column(
-                          children: [
-                            DefaultButton(
-                              text: "Add new transaction",
-                              fontSize: 18,
-                              height: 48,
-                              fontWeight: FontWeight.bold,
-                              width: 320,
-                              padding: EdgeInsets.zero,
-                              onPressed: () {
-                                navigateTo(context, NewTransactionScreen());
-                              },
-                            ),
-                            verticalSpace(15),
-                            GestureDetector(
-                              onTap: () {
-                                navigateTo(
-                                    context, TransactionsHistoryScreen());
-                              },
-                              child: const TextWidget(
-                                text: "Transaction history",
-                                textSize: 14,
-                                color: Color(0xff0067AF),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: CustomContainer(
+              width: double.infinity,
+              height: 125,
+              backgroundColor: Colors.transparent,
+              padding: symmetricEdgeInsets(horizontal: 20, vertical: 10),
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  DefaultButton(
+                    text: "Add new transaction",
+                    fontSize: 18,
+                    height: 48,
+                    fontWeight: FontWeight.bold,
+                    width: 320,
+                    padding: EdgeInsets.zero,
+                    onPressed: () {
+                      navigateTo(context, NewTransactionScreen());
+                    },
+                  ),
+                  verticalSpace(15),
+                  GestureDetector(
+                    onTap: () {
+                      navigateTo(context, TransactionsHistoryScreen());
+                    },
+                    child: const TextWidget(
+                      text: "Transaction history",
+                      textSize: 14,
+                      color: Color(0xff0067AF),
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
       drawer: const SidebarDrawer(), //Drawer
     );
   }

@@ -17,6 +17,9 @@ import '../models/loginModel.dart';
 import '../services/inventory_service.dart';
 import '../utils/enum/date_formats.dart';
 import '../utils/enum/languages.dart';
+import 'dart:io';
+
+import 'package:pdf/widgets.dart' as pw;
 
 class RequestsProvider extends ChangeNotifier {
   final RequestsService requestsService = RequestsService();
@@ -33,9 +36,25 @@ class RequestsProvider extends ChangeNotifier {
       loadingRequests = false;
       if (value.status == Status.success) {
         requests = value.data as List<RequestData>?;
+        // requests!.addAll(value.data as List<RequestData>);
       }
     });
     notifyListeners();
+  }
+
+  Future savePdf() async {
+    final pdf = pw.Document();
+
+    pdf.addPage(
+      pw.Page(
+        build: (pw.Context context) => pw.Center(
+          child: pw.Text('Hello World!'),
+        ),
+      ),
+    );
+
+    final file = File('example.pdf');
+    await file.writeAsBytes(await pdf.save());
   }
 
   Future getRequestDetails() async {
@@ -94,7 +113,7 @@ class RequestsProvider extends ChangeNotifier {
     } else if (selectedRequest!.status == StatusType.pending.key) {
       nextStatus = StatusType.onTheWay.key;
     } else if (selectedRequest!.status == StatusType.onTheWay2.key) {
-      nextStatus = StatusType.arrived.key;
+      nextStatus = StatusType.arrived2.key;
     } else if (selectedRequest!.status == StatusType.arrived.key) {
       nextStatus = StatusType.completed2.key;
     }

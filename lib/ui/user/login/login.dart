@@ -1,3 +1,4 @@
+import 'package:flash_employee/providers/requests_provider.dart';
 import 'package:flash_employee/services/authentication_service.dart';
 import 'package:flash_employee/ui/widgets/app_loader.dart';
 import 'package:flash_employee/ui/widgets/custom_container.dart';
@@ -58,6 +59,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final UserProvider userDataProvider = Provider.of<UserProvider>(context);
+    final RequestsProvider requestsProvider =
+        Provider.of<RequestsProvider>(context);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,

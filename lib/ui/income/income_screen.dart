@@ -1,31 +1,47 @@
-import 'package:flash_employee/ui/income/income_details/income_details_screen.dart';
-import 'package:flash_employee/ui/request_details/request_details_screen.dart';
+import 'package:flash_employee/ui/income/widgets/income_item.dart';
 import 'package:flash_employee/ui/widgets/custom_form_field.dart';
-import 'package:flash_employee/ui/widgets/navigate.dart';
 import 'package:flash_employee/ui/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/user_provider.dart';
+import '../../providers/income_provider.dart';
 import '../../utils/colors.dart';
 import '../../utils/font_styles.dart';
 import '../sidebar_drawer/sidebar_drawer.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_container.dart';
+import '../widgets/data_loader.dart';
+import '../widgets/no_data_place_holder.dart';
 import '../widgets/spaces.dart';
 
-class IncomeScreen extends StatelessWidget {
+class IncomeScreen extends StatefulWidget {
   const IncomeScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> globalKey = GlobalKey();
-    final UserProvider userDataProvider = Provider.of<UserProvider>(context);
+  State<IncomeScreen> createState() => _IncomeScreenState();
+}
 
+class _IncomeScreenState extends State<IncomeScreen> {
+  @override
+  void initState() {
+    Future.delayed(const Duration(seconds: 0)).then((value) => loadData());
+    // mainEventBus.on<InvoiceAddedEvent>().listen((event) {
+    //   loadData();
+    // });
+    super.initState();
+  }
+
+  void loadData() async {
+    final IncomeProvider incomeProvider =
+        Provider.of<IncomeProvider>(context, listen: false);
+    await incomeProvider.getIncomes();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final IncomeProvider incomeProvider = Provider.of<IncomeProvider>(context);
     return Scaffold(
-      // backgroundColor: Colors.white,
-      key: globalKey,
       appBar: AppBar(
         title: const TextWidget(
           text: "Income",
@@ -81,472 +97,34 @@ class IncomeScreen extends StatelessWidget {
                 ),
                 verticalSpace(15),
                 Expanded(
-                  child: ListView(
-                    shrinkWrap: true,
-                    padding: EdgeInsets.zero,
-                    children: [
-                      CustomContainer(
-                        onTap: () {
-                          navigateTo(context, IncomeDetailsScreen());
-                        },
-                        width: 345,
-                        radiusCircular: 6,
-                        backgroundColor: AppColor.incomeColor,
-                        padding:
-                            symmetricEdgeInsets(vertical: 13, horizontal: 13),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      TextWidget(
-                                        text: 'Request ID : ',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.semiBold,
-                                      ),
-                                      TextWidget(
-                                        text: 'FLASH154841965',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.medium,
-                                        color: AppColor.grey,
-                                      ),
-                                    ],
-                                  ),
-                                  verticalSpace(12),
-                                  Row(
-                                    children: [
-                                      TextWidget(
-                                        text: 'Type of Service : ',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.semiBold,
-                                      ),
-                                      TextWidget(
-                                        text: 'Other services',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.medium,
-                                        color: AppColor.grey,
-                                      ),
-                                    ],
-                                  ),
-                                  verticalSpace(12),
-                                  Row(
-                                    children: [
-                                      TextWidget(
-                                        text: 'Payment method : ',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.semiBold,
-                                      ),
-                                      TextWidget(
-                                        text: 'Cash',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.medium,
-                                        color: AppColor.grey,
-                                      ),
-                                    ],
-                                  ),
-                                  verticalSpace(12),
-                                  Row(
-                                    children: [
-                                      SvgPicture.asset('assets/svg/alarm.svg'),
-                                      horizontalSpace(15),
-                                      TextWidget(
-                                        text: '03:15 PM',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.medium,
-                                        color: AppColor.grey,
-                                      ),
-                                    ],
-                                  ),
-                                  verticalSpace(10),
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.calendar_today_outlined,
-                                        size: 12,
-                                        color: Color(0xff616161),
-                                      ),
-                                      horizontalSpace(15),
-                                      TextWidget(
-                                        text: 'Monday, 23 January 2023',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.medium,
-                                        color: AppColor.grey,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'assets/images/Export Pdf.png',
-                                  height: 42,
-                                  width: 42,
-                                ),
-                                verticalSpace(10),
-                                TextWidget(
-                                  text: '75 SR',
-                                  fontWeight: MyFontWeight.bold,
-                                  textSize: 18,
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      verticalSpace(15),
-                      CustomContainer(
-                        onTap: () {
-                          navigateTo(context, IncomeDetailsScreen());
-                        },
-                        width: 345,
-                        radiusCircular: 6,
-                        backgroundColor: AppColor.incomeColor,
-                        padding:
-                            symmetricEdgeInsets(vertical: 13, horizontal: 13),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      TextWidget(
-                                        text: 'Request ID : ',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.semiBold,
-                                      ),
-                                      TextWidget(
-                                        text: 'FLASH154841965',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.medium,
-                                        color: AppColor.grey,
-                                      ),
-                                    ],
-                                  ),
-                                  verticalSpace(12),
-                                  Row(
-                                    children: [
-                                      TextWidget(
-                                        text: 'Type of Service : ',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.semiBold,
-                                      ),
-                                      TextWidget(
-                                        text: 'Other services',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.medium,
-                                        color: AppColor.grey,
-                                      ),
-                                    ],
-                                  ),
-                                  verticalSpace(12),
-                                  Row(
-                                    children: [
-                                      TextWidget(
-                                        text: 'Payment method : ',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.semiBold,
-                                      ),
-                                      TextWidget(
-                                        text: 'Cash',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.medium,
-                                        color: AppColor.grey,
-                                      ),
-                                    ],
-                                  ),
-                                  verticalSpace(12),
-                                  Row(
-                                    children: [
-                                      SvgPicture.asset('assets/svg/alarm.svg'),
-                                      horizontalSpace(15),
-                                      TextWidget(
-                                        text: '03:15 PM',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.medium,
-                                        color: AppColor.grey,
-                                      ),
-                                    ],
-                                  ),
-                                  verticalSpace(10),
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.calendar_today_outlined,
-                                        size: 12,
-                                        color: Color(0xff616161),
-                                      ),
-                                      horizontalSpace(15),
-                                      TextWidget(
-                                        text: 'Monday, 23 January 2023',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.medium,
-                                        color: AppColor.grey,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'assets/images/Export Pdf.png',
-                                  height: 42,
-                                  width: 42,
-                                ),
-                                verticalSpace(10),
-                                TextWidget(
-                                  text: '55 SR',
-                                  fontWeight: MyFontWeight.bold,
-                                  textSize: 18,
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      verticalSpace(15),
-                      CustomContainer(
-                        onTap: () {
-                          navigateTo(context, IncomeDetailsScreen());
-                        },
-                        width: 345,
-                        radiusCircular: 6,
-                        backgroundColor: AppColor.incomeColor,
-                        padding:
-                            symmetricEdgeInsets(vertical: 13, horizontal: 13),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      TextWidget(
-                                        text: 'Request ID : ',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.semiBold,
-                                      ),
-                                      TextWidget(
-                                        text: 'FLASH154841965',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.medium,
-                                        color: AppColor.grey,
-                                      ),
-                                    ],
-                                  ),
-                                  verticalSpace(12),
-                                  Row(
-                                    children: [
-                                      TextWidget(
-                                        text: 'Type of Service : ',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.semiBold,
-                                      ),
-                                      TextWidget(
-                                        text: 'Other services',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.medium,
-                                        color: AppColor.grey,
-                                      ),
-                                    ],
-                                  ),
-                                  verticalSpace(12),
-                                  Row(
-                                    children: [
-                                      TextWidget(
-                                        text: 'Payment method : ',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.semiBold,
-                                      ),
-                                      TextWidget(
-                                        text: 'Cash',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.medium,
-                                        color: AppColor.grey,
-                                      ),
-                                    ],
-                                  ),
-                                  verticalSpace(12),
-                                  Row(
-                                    children: [
-                                      SvgPicture.asset('assets/svg/alarm.svg'),
-                                      horizontalSpace(15),
-                                      TextWidget(
-                                        text: '03:15 PM',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.medium,
-                                        color: AppColor.grey,
-                                      ),
-                                    ],
-                                  ),
-                                  verticalSpace(10),
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.calendar_today_outlined,
-                                        size: 12,
-                                        color: Color(0xff616161),
-                                      ),
-                                      horizontalSpace(15),
-                                      TextWidget(
-                                        text: 'Monday, 23 January 2023',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.medium,
-                                        color: AppColor.grey,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'assets/images/Export Pdf.png',
-                                  height: 42,
-                                  width: 42,
-                                ),
-                                verticalSpace(10),
-                                TextWidget(
-                                  text: '85 SR',
-                                  fontWeight: MyFontWeight.bold,
-                                  textSize: 18,
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      verticalSpace(15),
-                      CustomContainer(
-                        onTap: () {
-                          navigateTo(context, IncomeDetailsScreen());
-                        },
-                        width: 345,
-                        radiusCircular: 6,
-                        backgroundColor: AppColor.incomeColor,
-                        padding:
-                            symmetricEdgeInsets(vertical: 13, horizontal: 13),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      TextWidget(
-                                        text: 'Request ID : ',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.semiBold,
-                                      ),
-                                      TextWidget(
-                                        text: 'FLASH154841965',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.medium,
-                                        color: AppColor.grey,
-                                      ),
-                                    ],
-                                  ),
-                                  verticalSpace(12),
-                                  Row(
-                                    children: [
-                                      TextWidget(
-                                        text: 'Type of Service : ',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.semiBold,
-                                      ),
-                                      TextWidget(
-                                        text: 'Other services',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.medium,
-                                        color: AppColor.grey,
-                                      ),
-                                    ],
-                                  ),
-                                  verticalSpace(12),
-                                  Row(
-                                    children: [
-                                      TextWidget(
-                                        text: 'Payment method : ',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.semiBold,
-                                      ),
-                                      TextWidget(
-                                        text: 'Cash',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.medium,
-                                        color: AppColor.grey,
-                                      ),
-                                    ],
-                                  ),
-                                  verticalSpace(12),
-                                  Row(
-                                    children: [
-                                      SvgPicture.asset('assets/svg/alarm.svg'),
-                                      horizontalSpace(15),
-                                      TextWidget(
-                                        text: '03:15 PM',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.medium,
-                                        color: AppColor.grey,
-                                      ),
-                                    ],
-                                  ),
-                                  verticalSpace(10),
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.calendar_today_outlined,
-                                        size: 12,
-                                        color: Color(0xff616161),
-                                      ),
-                                      horizontalSpace(15),
-                                      TextWidget(
-                                        text: 'Monday, 23 January 2023',
-                                        textSize: 14,
-                                        fontWeight: MyFontWeight.medium,
-                                        color: AppColor.grey,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'assets/images/Export Pdf.png',
-                                  height: 42,
-                                  width: 42,
-                                ),
-                                verticalSpace(10),
-                                TextWidget(
-                                  text: '50 SR',
-                                  fontWeight: MyFontWeight.bold,
-                                  textSize: 18,
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      verticalSpace(15),
-                    ],
-                  ),
+                  child: RefreshIndicator(
+                      edgeOffset: 0,
+                      displacement: 0,
+                      onRefresh: () async {
+                        loadData();
+                      },
+                      child: ListView(
+                        padding: EdgeInsets.zero,
+                        children: [
+                          incomeProvider.loadingIncomes
+                              ? const DataLoader()
+                              : incomeProvider.incomes!.isEmpty
+                                  ? const NoDataPlaceHolder(useExpand: false)
+                                  : ListView.separated(
+                                      physics: NeverScrollableScrollPhysics(),
+                                      padding:
+                                          symmetricEdgeInsets(vertical: 10),
+                                      shrinkWrap: true,
+                                      itemCount: incomeProvider.incomes!.length,
+                                      itemBuilder: (context, index) {
+                                        return IncomeItem(
+                                            income:
+                                                incomeProvider.incomes![index]);
+                                      },
+                                      separatorBuilder: (context, index) =>
+                                          verticalSpace(15)),
+                        ],
+                      )),
                 ),
                 verticalSpace(200)
               ],

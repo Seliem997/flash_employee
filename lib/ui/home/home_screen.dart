@@ -121,26 +121,32 @@ class _HomeScreenState extends State<HomeScreen> {
             verticalSpace(15),
             Expanded(
               child: RefreshIndicator(
-                edgeOffset: 0,
-                displacement: 0,
-                onRefresh: () async {
-                  loadData();
-                },
-                child: requestsProvider.loadingRequests
-                    ? DataLoader()
-                    : requestsProvider.requests!.isEmpty
-                        ? const NoDataPlaceHolder(useExpand: false)
-                        : ListView.separated(
-                            padding: symmetricEdgeInsets(vertical: 10),
-                            shrinkWrap: true,
-                            itemCount: requestsProvider.requests!.length,
-                            itemBuilder: (context, index) {
-                              return RequestItem(
-                                  request: requestsProvider.requests![index]);
-                            },
-                            separatorBuilder: (context, index) =>
-                                verticalSpace(15)),
-              ),
+                  edgeOffset: 0,
+                  displacement: 0,
+                  onRefresh: () async {
+                    loadData();
+                  },
+                  child: ListView(
+                    padding: EdgeInsets.zero,
+                    children: [
+                      requestsProvider.loadingRequests
+                          ? const DataLoader()
+                          : requestsProvider.requests!.isEmpty
+                              ? const NoDataPlaceHolder(useExpand: false)
+                              : ListView.separated(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  padding: symmetricEdgeInsets(vertical: 10),
+                                  shrinkWrap: true,
+                                  itemCount: requestsProvider.requests!.length,
+                                  itemBuilder: (context, index) {
+                                    return RequestItem(
+                                        request:
+                                            requestsProvider.requests![index]);
+                                  },
+                                  separatorBuilder: (context, index) =>
+                                      verticalSpace(15)),
+                    ],
+                  )),
             )
           ],
         ),

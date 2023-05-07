@@ -1,3 +1,4 @@
+import 'package:flash_employee/providers/income_provider.dart';
 import 'package:flash_employee/providers/inventory_provider.dart';
 import 'package:flash_employee/providers/invoices_provider.dart';
 import 'package:flash_employee/providers/requests_provider.dart';
@@ -83,6 +84,9 @@ class _MyAppState extends State<MyApp> {
           ),
           ChangeNotifierProvider(
             create: (context) => RequestsProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => IncomeProvider(),
           )
         ],
         child: Sizer(builder: (context, orientation, deviceType) {

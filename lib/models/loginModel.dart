@@ -30,7 +30,7 @@ class Data {
 
   Data.fromJson(Map<String, dynamic> json) {
     token = json['token'];
-    user = json['user'] != null ? new UserData.fromJson(json['user']) : null;
+    user = json['users'] != null ? new UserData.fromJson(json['users']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -102,8 +102,8 @@ class Duties {
   String? startAt;
   String? endAt;
   int? employeeId;
-  Null? createdAt;
-  Null? updatedAt;
+  String? createdAt;
+  String? updatedAt;
 
   Duties(
       {this.id,

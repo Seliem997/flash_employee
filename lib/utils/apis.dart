@@ -16,6 +16,7 @@ class Api {
   static const String getTransactionReasons =
       "$baseUrl/employee/all-transaction-reasons";
   static const String getInventoryItems = "$baseUrl/employee/my-materials";
+  static const String getIncomes = "$baseUrl/employee/incomes";
   static String getInventoryItemsOfWarehouse(int warehouseId) =>
       "$baseUrl/employee/materials/any-warehouse/$warehouseId";
   static const String getInvoicesSum = "$baseUrl/employee/my-invoices/sum";
