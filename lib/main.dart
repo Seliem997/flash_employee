@@ -1,3 +1,4 @@
+import 'package:flash_employee/providers/contact_us_provider.dart';
 import 'package:flash_employee/providers/income_provider.dart';
 import 'package:flash_employee/providers/inventory_provider.dart';
 import 'package:flash_employee/providers/invoices_provider.dart';
@@ -10,6 +11,7 @@ import 'package:flash_employee/utils/colors.dart';
 import 'package:flash_employee/utils/enum/shared_preference_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -39,6 +41,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  FToast fToast = FToast();
   bool isDarkMode = false;
 
   void changeThemeMode() {
@@ -53,6 +56,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
+    fToast.init(context);
     if (CacheHelper.returnData(key: CacheKey.darkMode) != null) {
       isDarkMode = CacheHelper.returnData(key: CacheKey.darkMode);
     }
@@ -87,22 +91,26 @@ class _MyAppState extends State<MyApp> {
           ),
           ChangeNotifierProvider(
             create: (context) => IncomeProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => ContactUsProvider(),
           )
         ],
         child: Sizer(builder: (context, orientation, deviceType) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
+            builder: FToastBuilder(),
             title: 'Flash Employee',
             theme: isDarkMode
                 ? ThemeData.dark().copyWith(
                     // primarySwatch: Colors.blue,
-                    appBarTheme: AppBarTheme(
+                    appBarTheme: const AppBarTheme(
                         color: AppColor.darkScaffoldColor,
                         iconTheme: IconThemeData(color: Colors.white)),
                     scaffoldBackgroundColor: AppColor.darkScaffoldColor)
                 : ThemeData(
                     primarySwatch: Colors.blue,
-                    appBarTheme: AppBarTheme(
+                    appBarTheme: const AppBarTheme(
                         color: AppColor.white,
                         iconTheme: IconThemeData(color: Colors.black)),
                     scaffoldBackgroundColor: AppColor.lightScaffoldColor),

@@ -2,6 +2,7 @@ import 'package:flash_employee/ui/widgets/custom_button.dart';
 import 'package:flash_employee/ui/widgets/custom_form_field.dart';
 import 'package:flash_employee/ui/widgets/text_widget.dart';
 import 'package:flash_employee/utils/colors.dart';
+import 'package:flash_employee/utils/snack_bars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -115,7 +116,13 @@ class _LateMinutesDialogState extends State<LateMinutesDialog> {
                   height: 33,
                   backgroundColor: AppColor.completedButton,
                   onPressed: () {
-                    requestsProvider.lateRequest(context, counter);
+                    if(counter>0)
+                      {
+                        requestsProvider.lateRequest(context, counter);
+
+                      }else{
+                      CustomSnackBars.failureSnackBar(context, "Late minutes cannot be 0!");
+                    }
                   },
                 ),
               ],

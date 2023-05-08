@@ -4,6 +4,7 @@ import 'package:flash_employee/models/requestsModel.dart';
 import 'package:flash_employee/ui/request_details/request_details_screen.dart';
 import 'package:flash_employee/ui/widgets/navigate.dart';
 import 'package:flash_employee/ui/widgets/text_widget.dart';
+import 'package:flash_employee/utils/enum/status_types.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,7 @@ import '../../widgets/spaces.dart';
 
 class RequestItem extends StatelessWidget {
   final RequestData request;
+
   const RequestItem({
     Key? key,
     required this.request,
@@ -114,7 +116,11 @@ class RequestItem extends StatelessWidget {
                 text: "${request.status}",
                 fontSize: MyFontSize.size9,
                 fontWeight: MyFontWeight.semiBold,
-                backgroundColor: AppColor.onTheWayButton,
+                backgroundColor: request.status == StatusType.completed.key
+                    ? AppColor.completedButton
+                    : request.status == StatusType.pending.key
+                        ? AppColor.pendingButton
+                        : AppColor.onTheWayButton,
                 onPressed: () {},
               ),
               const Spacer(),

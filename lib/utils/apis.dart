@@ -16,7 +16,9 @@ class Api {
   static const String getTransactionReasons =
       "$baseUrl/employee/all-transaction-reasons";
   static const String getInventoryItems = "$baseUrl/employee/my-materials";
+  static const String getContacts = "$baseUrl/employee/contactus";
   static const String getIncomes = "$baseUrl/employee/incomes";
+
   static String getInventoryItemsOfWarehouse(int warehouseId) =>
       "$baseUrl/employee/materials/any-warehouse/$warehouseId";
   static const String getInvoicesSum = "$baseUrl/employee/my-invoices/sum";
@@ -29,8 +31,10 @@ class Api {
   static const String contactUs = "$baseUrl/contact-us";
   static const String updateProfile = "$baseUrl/update-profile";
   static const String getRequests = "$baseUrl/employee/requests";
+
   static String getRequestDetails(String requestId) =>
       "$baseUrl/employee/requests/$requestId";
+
   static String updateRequestStatus(String requestId) =>
       "$baseUrl/employee/update-request-status/$requestId";
 

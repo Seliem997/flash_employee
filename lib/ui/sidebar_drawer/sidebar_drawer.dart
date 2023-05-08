@@ -279,7 +279,7 @@ class _SidebarDrawerState extends State<SidebarDrawer> {
             onTap: () {
               userDataProvider.selectedTap = 5;
 
-              navigateTo(context, DutyScreen());
+              navigateTo(context, DutyScreen(duties: userDataProvider.duties));
               // Navigator.pop(context);
             },
           ),

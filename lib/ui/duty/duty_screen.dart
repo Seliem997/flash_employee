@@ -1,20 +1,17 @@
-import 'package:flash_employee/ui/widgets/custom_form_field.dart';
 import 'package:flash_employee/ui/widgets/no_data_place_holder.dart';
 import 'package:flash_employee/ui/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/loginModel.dart';
 import '../../providers/user_provider.dart';
 import '../../utils/colors.dart';
-import '../../utils/font_styles.dart';
-import '../sidebar_drawer/sidebar_drawer.dart';
-import '../widgets/custom_button.dart';
 import '../widgets/custom_container.dart';
 import '../widgets/spaces.dart';
 
 class DutyScreen extends StatelessWidget {
-  const DutyScreen({Key? key}) : super(key: key);
+  const DutyScreen({Key? key, this.duties}) : super(key: key);
+  final List<Duties>? duties;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +28,7 @@ class DutyScreen extends StatelessWidget {
         leading: BackButton(),
         centerTitle: true,
       ),
-      body: userDataProvider.duties!.isEmpty
+      body: duties!.isEmpty
           ? NoDataPlaceHolder(useExpand: false)
           : Stack(
               children: [
@@ -39,7 +36,7 @@ class DutyScreen extends StatelessWidget {
                   padding: symmetricEdgeInsets(horizontal: 25, vertical: 10),
                   child: ListView.separated(
                     shrinkWrap: true,
-                    itemCount: userDataProvider.duties?.length ?? 0,
+                    itemCount: duties?.length ?? 0,
                     itemBuilder: (context, index) {
                       return CustomContainer(
                         padding: EdgeInsets.zero,
@@ -57,7 +54,7 @@ class DutyScreen extends StatelessWidget {
                               backgroundColor: AppColor.primary,
                               alignment: Alignment.center,
                               child: TextWidget(
-                                text: userDataProvider.duties![index].day!,
+                                text: duties![index].day!,
                                 textSize: 15,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.white,
@@ -73,7 +70,7 @@ class DutyScreen extends StatelessWidget {
                                     children: [
                                       TextWidget(
                                         text:
-                                            "${userDataProvider.duties![index].shift!} Shift :",
+                                            "${duties![index].shift!} Shift :",
                                         textSize: 15,
                                         fontWeight: FontWeight.w500,
                                         color: Colors.black,
@@ -81,7 +78,7 @@ class DutyScreen extends StatelessWidget {
                                       horizontalSpace(10),
                                       TextWidget(
                                         text:
-                                            "${userDataProvider.duties![index].startAt!} - ${userDataProvider.duties![index].endAt!}",
+                                            "${duties![index].startAt!} - ${duties![index].endAt!}",
                                         textSize: 14,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black,

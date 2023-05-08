@@ -1,8 +1,10 @@
 import 'package:flash_employee/main.dart';
 import 'package:flash_employee/services/common_service.dart';
+import 'package:flash_employee/ui/contact_us/contact_us_screen.dart';
 import 'package:flash_employee/ui/request_details/widgets/late_minutes_dialog.dart';
 import 'package:flash_employee/ui/widgets/custom_form_field.dart';
 import 'package:flash_employee/ui/widgets/data_loader.dart';
+import 'package:flash_employee/ui/widgets/navigate.dart';
 import 'package:flash_employee/ui/widgets/no_data_place_holder.dart';
 import 'package:flash_employee/ui/widgets/text_widget.dart';
 import 'package:flash_employee/utils/enum/status_types.dart';
@@ -81,7 +83,15 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                 width: 120,
                                 height: 32,
                                 radiusCircular: 3,
-                                backgroundColor: AppColor.pendingButton,
+                                backgroundColor:
+                                    requestsProvider.selectedRequest!.status ==
+                                            StatusType.completed.key
+                                        ? AppColor.completedButton
+                                        : requestsProvider
+                                                    .selectedRequest!.status ==
+                                                StatusType.pending.key
+                                            ? AppColor.pendingButton
+                                            : AppColor.onTheWayButton,
                                 padding: EdgeInsets.zero,
                                 alignment: Alignment.center,
                                 child: TextWidget(
@@ -268,10 +278,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                     children: [
                                       CustomContainer(
                                         onTap: () {
-                                          launchUrl(Uri.parse(requestsProvider
-                                              .selectedRequest!
-                                              .customer!
-                                              .phone!));
+                                          CommonService.callNumber(
+                                              requestsProvider.selectedRequest!
+                                                  .customer!.phone!,
+                                              context);
                                         },
                                         height: 35,
                                         width: 35,
@@ -285,16 +295,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       horizontalSpace(30),
                                       CustomContainer(
                                         onTap: () {
-                                          var whatsappUrl =
-                                              "whatsapp://send?phone=+2${requestsProvider.selectedRequest!.customer!.phone!}";
-                                          try {
-                                            launch(whatsappUrl);
-                                          } catch (e) {
-                                            //To handle error and display error message
-                                            CustomSnackBars
-                                                .somethingWentWrongSnackBar(
-                                                    context);
-                                          }
+                                          CommonService.openWhatsapp(
+                                              requestsProvider.selectedRequest!
+                                                  .customer!.phone!,
+                                              context);
                                         },
                                         height: 35,
                                         width: 35,
@@ -772,12 +776,17 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               ],
                             ),
                             verticalSpace(15),
-                            const TextWidget(
-                              text: "Contact Customer Service",
-                              underLine: true,
-                              textSize: 14,
-                              color: Color(0xff0067AF),
-                              fontWeight: FontWeight.bold,
+                            GestureDetector(
+                              onTap: () {
+                                navigateTo(context, ContactUsScreen());
+                              },
+                              child: const TextWidget(
+                                text: "Contact Customer Service",
+                                underLine: true,
+                                textSize: 14,
+                                color: Color(0xff0067AF),
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),

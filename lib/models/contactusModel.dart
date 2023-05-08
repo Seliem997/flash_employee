@@ -1,17 +1,19 @@
-class EmployeesModel {
+import 'loginModel.dart';
+
+class ContactUsModel {
   int? statusCode;
   Null? message;
-  List<EmployeeData>? data;
+  List<ContactData>? data;
 
-  EmployeesModel({this.statusCode, this.message, this.data});
+  ContactUsModel({this.statusCode, this.message, this.data});
 
-  EmployeesModel.fromJson(Map<String, dynamic> json) {
+  ContactUsModel.fromJson(Map<String, dynamic> json) {
     statusCode = json['status_code'];
     message = json['message'];
     if (json['data'] != null) {
-      data = <EmployeeData>[];
+      data = <ContactData>[];
       json['data'].forEach((v) {
-        data!.add(new EmployeeData.fromJson(v));
+        data!.add(new ContactData.fromJson(v));
       });
     }
   }
@@ -27,7 +29,7 @@ class EmployeesModel {
   }
 }
 
-class EmployeeData {
+class ContactData {
   int? id;
   String? fwId;
   String? username;
@@ -35,17 +37,19 @@ class EmployeeData {
   String? phone;
   String? countryCode;
   String? image;
+  List<Duties>? duties;
 
-  EmployeeData(
+  ContactData(
       {this.id,
-      this.fwId,
-      this.username,
-      this.email,
-      this.phone,
-      this.countryCode,
-      this.image});
+        this.fwId,
+        this.username,
+        this.email,
+        this.phone,
+        this.countryCode,
+        this.image,
+        this.duties});
 
-  EmployeeData.fromJson(Map<String, dynamic> json) {
+  ContactData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     fwId = json['fw_id'];
     username = json['username'];
@@ -53,6 +57,12 @@ class EmployeeData {
     phone = json['phone'];
     countryCode = json['country_code'];
     image = json['image'];
+    if (json['duties'] != null) {
+      duties = <Duties>[];
+      json['duties'].forEach((v) {
+        duties!.add(new Duties.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -64,6 +74,9 @@ class EmployeeData {
     data['phone'] = this.phone;
     data['country_code'] = this.countryCode;
     data['image'] = this.image;
+    if (this.duties != null) {
+      data['duties'] = this.duties!.map((v) => v.toJson()).toList();
+    }
     return data;
   }
 }

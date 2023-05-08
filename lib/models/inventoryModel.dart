@@ -159,7 +159,6 @@ class Employee {
   Null? deletedAt;
   String? createdAt;
   String? updatedAt;
-  List<Duties>? duties;
 
   Employee(
       {this.id,
@@ -187,8 +186,7 @@ class Employee {
       this.rememberToken,
       this.deletedAt,
       this.createdAt,
-      this.updatedAt,
-      this.duties});
+      this.updatedAt});
 
   Employee.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -217,12 +215,6 @@ class Employee {
     deletedAt = json['deleted_at'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    if (json['duties'] != null) {
-      duties = <Duties>[];
-      json['duties'].forEach((v) {
-        duties!.add(new Duties.fromJson(v));
-      });
-    }
   }
 
   Map<String, dynamic> toJson() {
@@ -251,54 +243,6 @@ class Employee {
     data['email_verified_at'] = this.emailVerifiedAt;
     data['remember_token'] = this.rememberToken;
     data['deleted_at'] = this.deletedAt;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    if (this.duties != null) {
-      data['duties'] = this.duties!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
-
-class Duties {
-  int? id;
-  String? day;
-  String? shift;
-  String? startAt;
-  String? endAt;
-  int? employeeId;
-  Null? createdAt;
-  Null? updatedAt;
-
-  Duties(
-      {this.id,
-      this.day,
-      this.shift,
-      this.startAt,
-      this.endAt,
-      this.employeeId,
-      this.createdAt,
-      this.updatedAt});
-
-  Duties.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    day = json['day'];
-    shift = json['shift'];
-    startAt = json['start_at'];
-    endAt = json['end_at'];
-    employeeId = json['employee_id'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['day'] = this.day;
-    data['shift'] = this.shift;
-    data['start_at'] = this.startAt;
-    data['end_at'] = this.endAt;
-    data['employee_id'] = this.employeeId;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     return data;

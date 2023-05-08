@@ -1,6 +1,9 @@
 import 'dart:math' as math;
+import 'package:flutter/cupertino.dart';
 import 'package:maps_launcher/maps_launcher.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../base/service/base_service.dart';
+import '../utils/snack_bars.dart';
 
 class CommonService extends BaseService {
   // static final _storageInstance = FirebaseStorage.instance;
@@ -150,6 +153,23 @@ class CommonService extends BaseService {
     }
   }
 
+  static Future<void> openWhatsapp(String phone, BuildContext context) async {
+    var whatsappUrl = "whatsapp://send?phone=+2${phone}";
+    try {
+      launch(whatsappUrl);
+    } catch (e) {
+      CustomSnackBars.somethingWentWrongSnackBar(context);
+    }
+  }
+
+  static Future<void> callNumber(String phone, BuildContext context) async {
+    try {
+      launchUrl(Uri.parse("tel:$phone"));
+    } catch (e) {
+      CustomSnackBars.somethingWentWrongSnackBar(context);
+    }
+  }
+
   static String generateRandomString(int len) {
     var r = math.Random();
     const _chars = '1234567890';
@@ -159,35 +179,35 @@ class CommonService extends BaseService {
         .join();
   }
 
-  // static Future<bool> checkIsThereUpdate(
-  //     String androidLatestVersion, String iOSLatestVersion) async {
-  //   final packageInfo = await PackageInfo.fromPlatform();
-  //
-  //   bool needUpdate = false;
-  //   final currentVersion = packageInfo.version.split(".");
-  //   final remoteVersionAndroid = androidLatestVersion.split(".");
-  //   final remoteVersionIOS = iOSLatestVersion.split(".");
-  //   if (Platform.isAndroid) {
-  //     if (int.parse(remoteVersionAndroid[0]) > int.parse(currentVersion[0])) {
-  //       needUpdate = true;
-  //     } else if (int.parse(remoteVersionAndroid[1]) >
-  //         int.parse(currentVersion[1])) {
-  //       needUpdate = true;
-  //     } else if (int.parse(remoteVersionAndroid[2]) >
-  //         int.parse(currentVersion[2])) {
-  //       needUpdate = true;
-  //     }
-  //   } else {
-  //     if (int.parse(remoteVersionIOS[0]) > int.parse(currentVersion[0])) {
-  //       needUpdate = true;
-  //     } else if (int.parse(remoteVersionIOS[1]) >
-  //         int.parse(currentVersion[1])) {
-  //       needUpdate = true;
-  //     } else if (int.parse(remoteVersionIOS[2]) >
-  //         int.parse(currentVersion[2])) {
-  //       needUpdate = true;
-  //     }
-  //   }
-  //   return needUpdate;
-  // }
+// static Future<bool> checkIsThereUpdate(
+//     String androidLatestVersion, String iOSLatestVersion) async {
+//   final packageInfo = await PackageInfo.fromPlatform();
+//
+//   bool needUpdate = false;
+//   final currentVersion = packageInfo.version.split(".");
+//   final remoteVersionAndroid = androidLatestVersion.split(".");
+//   final remoteVersionIOS = iOSLatestVersion.split(".");
+//   if (Platform.isAndroid) {
+//     if (int.parse(remoteVersionAndroid[0]) > int.parse(currentVersion[0])) {
+//       needUpdate = true;
+//     } else if (int.parse(remoteVersionAndroid[1]) >
+//         int.parse(currentVersion[1])) {
+//       needUpdate = true;
+//     } else if (int.parse(remoteVersionAndroid[2]) >
+//         int.parse(currentVersion[2])) {
+//       needUpdate = true;
+//     }
+//   } else {
+//     if (int.parse(remoteVersionIOS[0]) > int.parse(currentVersion[0])) {
+//       needUpdate = true;
+//     } else if (int.parse(remoteVersionIOS[1]) >
+//         int.parse(currentVersion[1])) {
+//       needUpdate = true;
+//     } else if (int.parse(remoteVersionIOS[2]) >
+//         int.parse(currentVersion[2])) {
+//       needUpdate = true;
+//     }
+//   }
+//   return needUpdate;
+// }
 }
