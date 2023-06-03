@@ -17,7 +17,7 @@ class LogOutDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       child: CustomContainer(
-        width: 321,
+        // width: 321,
         height: 233,
         radiusCircular: 12,
         padding: symmetricEdgeInsets(horizontal: 24, vertical: 38),
@@ -25,19 +25,21 @@ class LogOutDialog extends StatelessWidget {
           children: [
             TextWidget(
               text: 'Logout',
-              fontWeight: MyFontWeight.bold,
-              textSize: MyFontSize.size18,
+              fontWeight: MyFontWeight.bold2,
+              textSize: MyFontSize.size19,
               color: const Color(0xFFF24955),
             ),
             verticalSpace(24),
             TextWidget(
-              text: 'Are you sure you want to logout',
+              text: 'Are you sure you want to logout?',
               fontWeight: MyFontWeight.semiBold,
+              textAlign: TextAlign.center,
               textSize: MyFontSize.size20,
               color: const Color(0xFF2D2D2D),
             ),
             verticalSpace(32),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 DefaultButton(
                   text: 'Cancel and back',
@@ -50,7 +52,6 @@ class LogOutDialog extends StatelessWidget {
                     Navigator.pop(context);
                   },
                 ),
-                horizontalSpace(16),
                 DefaultButton(
                   text: 'Logout',
                   fontWeight: MyFontWeight.bold,

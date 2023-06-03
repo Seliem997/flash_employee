@@ -1,3 +1,4 @@
+import 'package:flash_employee/main.dart';
 import 'package:flash_employee/models/employeesModel.dart';
 import 'package:flash_employee/models/transactionReasonsModel.dart';
 import 'package:flash_employee/models/warehousesModel.dart';
@@ -5,9 +6,11 @@ import 'package:flash_employee/providers/inventory_provider.dart';
 import 'package:flash_employee/providers/transactions_provider.dart';
 import 'package:flash_employee/ui/widgets/custom_button.dart';
 import 'package:flash_employee/ui/widgets/data_loader.dart';
+import 'package:flash_employee/ui/widgets/no_data_place_holder.dart';
 import 'package:flash_employee/ui/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:invert_colors/invert_colors.dart';
 import 'package:provider/provider.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/font_styles.dart';
@@ -64,6 +67,7 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
             ? DataLoader()
             : CustomContainer(
                 padding: symmetricEdgeInsets(horizontal: 25, vertical: 30),
+                borderColorDark: Colors.transparent,
                 child: ListView(
                   shrinkWrap: true,
                   children: [
@@ -89,16 +93,21 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                               child: DropdownButtonHideUnderline(
                                 child: DropdownButton(
                                   value: transactionsProvider.selectedWarehouse,
+                                  icon: InvertColors(
+                                    child: const Icon(Icons.arrow_drop_down,
+                                        color: Colors.black),
+                                  ),
                                   iconSize: 24,
                                   elevation: 16,
                                   isExpanded: true,
-                                  hint: TextWidget(
-                                    text: "Select",
-                                    color: Colors.black,
-                                    textSize: 16,
+                                  hint: Text(
+                                    "Select",
+                                    style: TextStyle(fontSize: 16),
                                   ),
-                                  style:
-                                      const TextStyle(color: Colors.deepPurple),
+                                  style: TextStyle(
+                                      color: MyApp.themeMode(context)
+                                          ? Colors.white
+                                          : Colors.black),
                                   underline: Container(),
                                   items: List.generate(
                                       transactionsProvider.warehouses!.length,
@@ -111,12 +120,11 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                                                       .warehouses![index].name!
                                                       .toCapitalCase(),
                                                   style: const TextStyle(
-                                                      color: Colors.black,
                                                       fontSize: 16)))),
                                   onChanged: (newValue) {
                                     if (newValue!.name == "Me") {
-                                      transactionsProvider.inventoryItems =
-                                          inventoryProvider.inventoryItems!;
+                                      transactionsProvider
+                                          .getMineInventoryItems();
                                     }
                                     transactionsProvider.selectedWarehouse =
                                         newValue;
@@ -130,6 +138,7 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                             height: 35,
                             width: 45,
                             margin: symmetricEdgeInsets(vertical: 5),
+                            borderColorDark: Colors.transparent,
                             child:
                                 Image.asset("assets/images/arrow-right 1.png")),
                         Column(
@@ -150,16 +159,21 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                               child: DropdownButtonHideUnderline(
                                 child: DropdownButton(
                                   value: transactionsProvider.selectedEmployee,
+                                  icon: const InvertColors(
+                                    child: Icon(Icons.arrow_drop_down,
+                                        color: Colors.black),
+                                  ),
                                   iconSize: 24,
                                   elevation: 16,
-                                  hint: TextWidget(
-                                    text: "Me",
-                                    color: Colors.black,
-                                    textSize: 16,
+                                  hint: const Text(
+                                    "Me",
+                                    style: TextStyle(fontSize: 16),
                                   ),
                                   isExpanded: true,
-                                  style:
-                                      const TextStyle(color: Colors.deepPurple),
+                                  style: TextStyle(
+                                      color: MyApp.themeMode(context)
+                                          ? Colors.white
+                                          : Colors.black),
                                   underline: Container(),
                                   items: List.generate(
                                       transactionsProvider.employees!.length,
@@ -171,7 +185,6 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                                                   .employees![index].username!
                                                   .toCapitalCase(),
                                               style: const TextStyle(
-                                                  color: Colors.black,
                                                   fontSize: 16)))),
                                   onChanged: (newValue) {
                                     // error = false;
@@ -189,7 +202,7 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                     transactionsProvider.loadingInventoryItems
                         ? DataLoader()
                         : transactionsProvider.inventoryItems!.isEmpty
-                            ? Container()
+                            ? NoDataPlaceHolder(useExpand: false)
                             : Column(children: [
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -215,8 +228,9 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                                 ),
                                 verticalSpace(15),
                                 CustomContainer(
+                                  borderColorDark: Colors.transparent,
                                   height: 490,
-                                  child: ListView.builder(
+                                  child: ListView.separated(
                                     itemCount: transactionsProvider
                                         .inventoryItems!.length,
                                     shrinkWrap: true,
@@ -262,11 +276,13 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                                                   isExpanded: true,
                                                   hint: TextWidget(
                                                     text: "Choose",
-                                                    color: Colors.black,
                                                     textSize: 12,
                                                   ),
-                                                  style: const TextStyle(
-                                                      color: Colors.deepPurple),
+                                                  style: TextStyle(
+                                                      color: MyApp.themeMode(
+                                                              context)
+                                                          ? Colors.white
+                                                          : Colors.black),
                                                   underline: Container(),
                                                   items: List.generate(
                                                       transactionsProvider
@@ -281,10 +297,10 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                                                                       index]
                                                                   .name!
                                                                   .toCapitalCase(),
-                                                              style: const TextStyle(
-                                                                  color:
-                                                                      Colors.black,
-                                                                  fontSize: 12)))),
+                                                              style:
+                                                                  const TextStyle(
+                                                                      fontSize:
+                                                                          12)))),
                                                   onChanged: (newValue) {
                                                     // error = false;
                                                     transactionsProvider
@@ -299,6 +315,8 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                                             CustomContainer(
                                                 width: 72,
                                                 height: 23,
+                                                borderColorDark:
+                                                    Colors.transparent,
                                                 child: Row(
                                                   children: [
                                                     CustomContainer(
@@ -368,6 +386,8 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                                         ),
                                       );
                                     },
+                                    separatorBuilder: (context, index) =>
+                                        verticalSpace(10),
                                   ),
                                 ),
                                 DefaultButton(

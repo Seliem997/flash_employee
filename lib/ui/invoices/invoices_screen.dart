@@ -1,5 +1,6 @@
 import 'package:flash_employee/events/events/invoice_added_event.dart';
 import 'package:flash_employee/events/global_event_bus.dart';
+import 'package:flash_employee/main.dart';
 import 'package:flash_employee/ui/invoices/widgets/new_invoice_screen.dart';
 import 'package:flash_employee/ui/request_details/request_details_screen.dart';
 import 'package:flash_employee/ui/widgets/custom_form_field.dart';
@@ -8,6 +9,7 @@ import 'package:flash_employee/ui/widgets/navigate.dart';
 import 'package:flash_employee/ui/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:invert_colors/invert_colors.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/invoices_provider.dart';
@@ -80,7 +82,10 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                         ),
                         filled: true,
                         fillColor: AppColor.babyBlue,
-                        icon: SvgPicture.asset('assets/svg/search.svg'),
+                        icon: Padding(
+                          padding: const EdgeInsets.only(left: 12.0),
+                          child: SvgPicture.asset('assets/svg/search.svg'),
+                        ),
                       ),
                       verticalSpace(15),
                       Row(
@@ -212,6 +217,9 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                     children: [
                                       Image.asset(
                                         'assets/images/Export Pdf.png',
+                                        color: MyApp.themeMode(context)
+                                            ? Colors.white
+                                            : Colors.black,
                                         height: 42,
                                         width: 42,
                                       ),
@@ -252,10 +260,11 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                         child: CustomContainer(
                           // width: double.infinity,
                           // height: 140,
-                          borderRadius: BorderRadius.only(
+                          backgroundColorDark: const Color(0xff444444),
+                          borderRadius: const BorderRadius.only(
                               topRight: Radius.circular(32),
                               topLeft: Radius.circular(32)),
-                          backgroundColor: Color(0xffC7E4F8),
+                          backgroundColor: const Color(0xffC7E4F8),
                           padding:
                               symmetricEdgeInsets(horizontal: 20, vertical: 4),
                           borderColor: AppColor.primary,

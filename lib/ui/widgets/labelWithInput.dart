@@ -1,6 +1,7 @@
 import 'package:flash_employee/ui/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 import '../../../utils/colors.dart';
+import '../../main.dart';
 import '../widgets/custom_container.dart';
 import '../widgets/spaces.dart';
 
@@ -53,7 +54,11 @@ class LabelWithInput extends StatelessWidget {
                 color: Colors.black,
               ),
               CustomContainer(
-                child: Image.asset(iconPath),
+                child: Image.asset(
+                  iconPath,
+                  color: MyApp.themeMode(context) ? Colors.white : Colors.black,
+                ),
+                borderColorDark: Colors.transparent,
               ),
               // horizontalSpace(5),
             ],

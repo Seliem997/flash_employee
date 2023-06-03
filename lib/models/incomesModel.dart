@@ -21,14 +21,14 @@ class IncomeData {
   int? id;
   String? requestId;
   String? status;
-  Null? rate;
+  String? rate;
   String? payBy;
-  Null? feedback;
-  Null? packageId;
+  String? feedback;
+  String? packageId;
   String? amount;
-  Null? lateTime;
-  Null? actualTime;
-  String? tax;
+  String? lateTime;
+  String? actualTime;
+  dynamic tax;
   String? discountAmount;
   String? totalAmount;
   String? totalDuration;
@@ -38,7 +38,6 @@ class IncomeData {
   City? city;
   Employee? employee;
   List<Services>? services;
-  VehicleRequest? vehicleRequest;
 
   IncomeData(
       {this.id,
@@ -60,8 +59,7 @@ class IncomeData {
       this.customer,
       this.city,
       this.employee,
-      this.services,
-      this.vehicleRequest});
+      this.services});
 
   IncomeData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -93,9 +91,6 @@ class IncomeData {
         services!.add(new Services.fromJson(v));
       });
     }
-    vehicleRequest = json['vehicleRequest'] != null
-        ? new VehicleRequest.fromJson(json['vehicleRequest'])
-        : null;
   }
 }
 
@@ -255,7 +250,7 @@ class Services {
   int? id;
   String? title;
   String? image;
-  Null? info;
+  String? info;
   String? type;
   int? duration;
   bool? countable;
@@ -286,69 +281,5 @@ class Services {
     requestServicePrice = json['request_service_price'];
     requestServiceCount = json['request_service_count'];
     requestServiceTotalPrice = json['request_service_total_price'];
-  }
-}
-
-class VehicleRequest {
-  int? id;
-  String? name;
-  Null? numbers;
-  Null? letters;
-  Null? color;
-  Null? year;
-  String? mainImage;
-  int? customerId;
-  int? manufacturerId;
-  String? manufacturerName;
-  String? manufacturerLogo;
-  int? vehicleModelId;
-  String? vehicleModelName;
-  int? vehicleTypeId;
-  String? vehicleTypeName;
-  Null? subVehicleTypeId;
-  Null? subVehicleTypeName;
-  Customer? customer;
-
-  VehicleRequest(
-      {this.id,
-      this.name,
-      this.numbers,
-      this.letters,
-      this.color,
-      this.year,
-      this.mainImage,
-      this.customerId,
-      this.manufacturerId,
-      this.manufacturerName,
-      this.manufacturerLogo,
-      this.vehicleModelId,
-      this.vehicleModelName,
-      this.vehicleTypeId,
-      this.vehicleTypeName,
-      this.subVehicleTypeId,
-      this.subVehicleTypeName,
-      this.customer});
-
-  VehicleRequest.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    numbers = json['numbers'];
-    letters = json['letters'];
-    color = json['color'];
-    year = json['year'];
-    mainImage = json['main_image'];
-    customerId = json['customer_id'];
-    manufacturerId = json['manufacturer_id'];
-    manufacturerName = json['manufacturer_name'];
-    manufacturerLogo = json['manufacturer_logo'];
-    vehicleModelId = json['vehicle_model_id'];
-    vehicleModelName = json['vehicle_model_name'];
-    vehicleTypeId = json['vehicle_type_id'];
-    vehicleTypeName = json['vehicle_type_name'];
-    subVehicleTypeId = json['sub_vehicle_type_id'];
-    subVehicleTypeName = json['sub_vehicle_type_name'];
-    customer = json['customer'] != null
-        ? new Customer.fromJson(json['customer'])
-        : null;
   }
 }

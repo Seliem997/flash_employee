@@ -89,7 +89,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                           ),
                           verticalSpace(15),
                           Expanded(
-                              child: ListView.builder(
+                              child: ListView.separated(
                             itemCount: inventoryProvider.inventoryItems!.length,
                             shrinkWrap: true,
                             padding: EdgeInsets.zero,
@@ -123,6 +123,8 @@ class _InventoryScreenState extends State<InventoryScreen> {
                                 ),
                               );
                             },
+                            separatorBuilder: (context, index) =>
+                                verticalSpace(10),
                           ))
                         ])),
           Align(
@@ -131,6 +133,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
               width: double.infinity,
               height: 125,
               backgroundColor: Colors.transparent,
+              borderColorDark: Colors.transparent,
               padding: symmetricEdgeInsets(horizontal: 20, vertical: 10),
               alignment: Alignment.center,
               child: Column(

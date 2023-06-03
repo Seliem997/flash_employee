@@ -20,7 +20,10 @@ class InvoicesProvider extends ChangeNotifier {
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
   double invoiceAmount = 0;
-
+  bool dateError = false;
+  bool typeError = false;
+  bool timeError = false;
+  bool amountError = false;
   XFile? invoicePhoto;
 
   void uploadAttachment(ImageSource source) async {
@@ -41,6 +44,9 @@ class InvoicesProvider extends ChangeNotifier {
 
   set selectedDate(DateTime? value) {
     _selectedDate = value;
+    if (value != null) {
+      dateError = false;
+    }
     notifyListeners();
   }
 
@@ -48,6 +54,9 @@ class InvoicesProvider extends ChangeNotifier {
 
   set selectedInvoiceTypeData(InvoiceTypeData? value) {
     _selectedInvoiceTypeData = value;
+    if (value != null) {
+      typeError = false;
+    }
     notifyListeners();
   }
 
@@ -93,10 +102,15 @@ class InvoicesProvider extends ChangeNotifier {
   }
 
   Future getInvoicesTypes() async {
+    dateError = false;
+    typeError = false;
+    timeError = false;
+    amountError = false;
     loadingInvoiceTypes = true;
     _selectedInvoiceTypeData = null;
     _selectedDate = null;
     _selectedTime = null;
+    invoicePhoto = null;
     invoiceAmount = 0;
     totalInvoices = 0;
     notifyListeners();
@@ -113,6 +127,9 @@ class InvoicesProvider extends ChangeNotifier {
 
   set selectedTime(TimeOfDay? value) {
     _selectedTime = value;
+    if (value != null) {
+      timeError = false;
+    }
     notifyListeners();
   }
 
@@ -120,20 +137,33 @@ class InvoicesProvider extends ChangeNotifier {
     bool isValid = true;
     if (selectedDate == null) {
       isValid = false;
-      CustomSnackBars.failureSnackBar(context, "Date Required!");
+      dateError = true;
+      // CustomSnackBars.failureSnackBar(context, "Date Required!");
+    } else {
+      dateError = false;
     }
     if (selectedTime == null) {
       isValid = false;
-      CustomSnackBars.failureSnackBar(context, "Time Required!");
+      timeError = true;
+      // CustomSnackBars.failureSnackBar(context, "Time Required!");
+    } else {
+      timeError = false;
     }
     if (selectedInvoiceTypeData == null) {
       isValid = false;
-      CustomSnackBars.failureSnackBar(context, "Invoice Type Required!");
+      typeError = true;
+      // CustomSnackBars.failureSnackBar(context, "Invoice Type Required!");
+    } else {
+      typeError = false;
     }
     if (invoiceAmount == 0) {
       isValid = false;
-      CustomSnackBars.failureSnackBar(context, "Invoice amount Required!");
+      amountError = true;
+      // CustomSnackBars.failureSnackBar(context, "Invoice amount Required!");
+    } else {
+      amountError = false;
     }
+    notifyListeners();
     return isValid;
   }
 }

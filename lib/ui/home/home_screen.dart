@@ -1,6 +1,9 @@
+import 'dart:developer';
+
+import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flash_employee/main.dart';
+import 'package:flash_employee/models/attributeOptionModel.dart';
 import 'package:flash_employee/ui/home/widgets/request_item.dart';
-import 'package:flash_employee/ui/request_details/request_details_screen.dart';
 import 'package:flash_employee/ui/widgets/custom_form_field.dart';
 import 'package:flash_employee/ui/widgets/data_loader.dart';
 import 'package:flash_employee/ui/widgets/navigate.dart';
@@ -8,13 +11,18 @@ import 'package:flash_employee/ui/widgets/no_data_place_holder.dart';
 import 'package:flash_employee/ui/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
+import '../../events/events/request_updated_event.dart';
+import '../../events/global_event_bus.dart';
 import '../../providers/requests_provider.dart';
 import '../../providers/user_provider.dart';
 import '../../utils/colors.dart';
+import '../../utils/enum/date_formats.dart';
 import '../../utils/font_styles.dart';
+import '../notifications/notifications_screen.dart';
 import '../sidebar_drawer/sidebar_drawer.dart';
+import '../widgets/attribute_selector.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_container.dart';
 import '../widgets/spaces.dart';
@@ -27,12 +35,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late TextEditingController searchController;
+
   @override
   void initState() {
+    searchController = TextEditingController();
     Future.delayed(const Duration(seconds: 0)).then((value) => loadData());
-    // mainEventBus.on<InvoiceAddedEvent>().listen((event) {
-    //   loadData();
-    // });
+    mainEventBus.on<RequestUpdatedEvent>().listen((event) {
+      loadData();
+    });
     super.initState();
   }
 
@@ -48,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final UserProvider userDataProvider = Provider.of<UserProvider>(context);
     final RequestsProvider requestsProvider =
         Provider.of<RequestsProvider>(context);
+    log("Rebuild");
 
     return Scaffold(
       // backgroundColor: Colors.white,
@@ -77,20 +89,48 @@ class _HomeScreenState extends State<HomeScreen> {
                   textSize: MyFontSize.size14,
                   color: const Color(0xFF292D32),
                 ),
+                Spacer(),
+                InkWell(
+                  child: ExpandTapWidget(
+                      onTap: () {
+                        navigateTo(context, NotificationsScreen());
+                      },
+                      tapPadding: EdgeInsets.all(30.0),
+                      child: Icon(Icons.notifications_none, size: 20)),
+                )
               ],
             ),
             verticalSpace(24),
             DefaultFormField(
-              hintText:
-                  'Search for request by Request ID / Customer ID / Mobile',
+              controller: searchController,
+              hintText: 'Search for request by Request ID / Customer Name',
               hintStyle: TextStyle(
                 fontWeight: MyFontWeight.medium,
                 fontSize: MyFontSize.size12,
                 color: const Color(0xFF949494),
               ),
+              onSubmit: (value) {
+                requestsProvider.searchRequests(value!);
+              },
               filled: true,
               fillColor: AppColor.babyBlue,
-              icon: SvgPicture.asset('assets/svg/search.svg'),
+              icon: Padding(
+                padding: const EdgeInsets.only(left: 12.0),
+                child: SvgPicture.asset('assets/svg/search.svg'),
+              ),
+              suffixIcon: Visibility(
+                visible: searchController.text.isNotEmpty,
+                child: GestureDetector(
+                  onTap: () {
+                    loadData();
+                  },
+                  child: const Icon(
+                    Icons.close,
+                    color: Colors.red,
+                    size: 20,
+                  ),
+                ),
+              ),
             ),
             verticalSpace(15),
             Row(
@@ -98,23 +138,74 @@ class _HomeScreenState extends State<HomeScreen> {
                 DefaultButtonWithIcon(
                   padding: symmetricEdgeInsets(horizontal: 10),
                   icon: SvgPicture.asset('assets/svg/filter.svg'),
-                  onPressed: () {},
-                  labelText: 'Status type',
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AttributeTypeSelector(
+                          title: "Status Type",
+                          choices: AttributeOption.statusOptions,
+                          previouslySelectedChoice:
+                              requestsProvider.selectedStatusType,
+                          onValueChanged: (value) {
+                            requestsProvider.selectedStatusType = value;
+                          },
+                        );
+                      },
+                    );
+                  },
+                  labelText: requestsProvider.selectedStatusType?.title ??
+                      'Status type',
                   textColor: AppColor.filterGrey,
                   backgroundButton: const Color(0xFFF0F0F0),
                   borderColor: AppColor.filterGrey,
                   border: true,
                 ),
                 const Spacer(),
-                DefaultButtonWithIcon(
-                  padding: symmetricEdgeInsets(horizontal: 10),
-                  icon: SvgPicture.asset('assets/svg/filter.svg'),
-                  onPressed: () {},
-                  labelText: 'Date filter',
-                  textColor: AppColor.filterGrey,
-                  backgroundButton: const Color(0xFFF0F0F0),
-                  borderColor: AppColor.filterGrey,
-                  border: true,
+                Row(
+                  children: [
+                    DefaultButtonWithIcon(
+                      padding: symmetricEdgeInsets(horizontal: 10),
+                      icon: SvgPicture.asset('assets/svg/filter.svg'),
+                      onPressed: () {
+                        showDatePicker(
+                                context: context,
+                                initialDate: requestsProvider.selectedDate ??
+                                    DateTime.now(),
+                                firstDate: DateTime.utc(DateTime.now().year),
+                                lastDate:
+                                    DateTime.now().add(Duration(days: 180)))
+                            .then((value) {
+                          if (value != null) {
+                            requestsProvider.selectedDate = value;
+                          }
+                        });
+                      },
+                      labelText: requestsProvider.selectedDate != null
+                          ? DateFormat(DFormat.dmyDecorated.key)
+                              .format(requestsProvider.selectedDate!)
+                          : 'Date filter',
+                      textColor: AppColor.filterGrey,
+                      backgroundButton: const Color(0xFFF0F0F0),
+                      borderColor: AppColor.filterGrey,
+                      border: true,
+                    ),
+                    horizontalSpace(5),
+                    Visibility(
+                      visible: requestsProvider.selectedDate != null,
+                      child: CustomContainer(
+                          onTap: () {
+                            requestsProvider.selectedDate = null;
+                          },
+                          radiusCircular: 5,
+                          height: 40,
+                          borderColor: Colors.red[200],
+                          padding: EdgeInsets.all(3),
+                          backgroundColor: AppColor.borderGray,
+                          child:
+                              Icon(Icons.close, color: Colors.red, size: 17)),
+                    )
+                  ],
                 ),
               ],
             ),

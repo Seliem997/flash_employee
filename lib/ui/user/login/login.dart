@@ -9,6 +9,7 @@ import 'package:flash_employee/utils/snack_bars.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../main.dart';
 import '../../../models/loginModel.dart';
 import '../../../providers/user_provider.dart';
 import '../../home/home_screen.dart';
@@ -102,9 +103,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         hintText: 'User Name',
                         controller: userNameController,
                         textInputAction: TextInputAction.next,
-                        prefixIcon: const DecorationImage(
-                            image: AssetImage("assets/images/profile_icon.png"),
-                            fit: BoxFit.cover),
+                        prefixIcon: CustomContainer(
+                            height: 5,
+                            width: 5,
+                            borderColorDark: Colors.transparent,
+                            padding: EdgeInsets.all(8),
+                            child: Image.asset(
+                              "assets/images/profile_icon.png",
+                              color: MyApp.themeMode(context)
+                                  ? Colors.white
+                                  : Colors.black,
+                              scale: 1,
+                            )),
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'please Enter Your User Name';
@@ -130,9 +140,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         controller: passwordController,
                         isPassword: _obscureText,
                         textInputAction: TextInputAction.done,
-                        prefixIcon: const DecorationImage(
-                            image: AssetImage("assets/images/password.png"),
-                            fit: BoxFit.cover),
+                        prefixIcon: CustomContainer(
+                          padding: EdgeInsets.zero,
+                          borderColorDark: Colors.transparent,
+                          child: Image.asset(
+                            "assets/images/lock.png",
+                            scale: 1,
+                            color: MyApp.themeMode(context)
+                                ? Colors.white
+                                : Colors.black,
+                          ),
+                        ),
                         suffixIcon: EyeWidget(
                             onTap: () => changeViewStatus, show: _obscureText),
                         validator: (value) {
@@ -194,6 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: double.infinity,
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
+                            FocusScope.of(context).unfocus();
                             AppLoader.showLoader(context);
                             await authenticationService
                                 .signIn(userNameController.text,
@@ -213,8 +232,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                 navigateAndFinish(context, HomeScreen());
                               } else {
-                                CustomSnackBars.somethingWentWrongSnackBar(
-                                    context);
+                                CustomSnackBars.failureSnackBar(
+                                    context, "Invalid Username or Password");
                               }
                             });
                           }

@@ -1,3 +1,4 @@
+import 'package:flash_employee/main.dart';
 import 'package:flash_employee/ui/widgets/custom_container.dart';
 import 'package:flash_employee/ui/widgets/spaces.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,7 @@ class DefaultFormField extends StatelessWidget {
       this.hintStyle,
       this.textAlign = TextAlign.start,
       this.inputFormatters = const [],
+      this.onSubmit,
       this.icon})
       : super(key: key);
 
@@ -47,8 +49,9 @@ class DefaultFormField extends StatelessWidget {
   final Color? fillColor, textColor;
   final String hintText;
   final String? Function(String?)? validator;
+  final String? Function(String?)? onSubmit;
   final Widget? suffixIcon, icon;
-  final DecorationImage? prefixIcon;
+  final Widget? prefixIcon;
   final EdgeInsetsGeometry? padding;
   final TextStyle? hintStyle;
   final double? letterSpacing;
@@ -59,11 +62,13 @@ class DefaultFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding ?? EdgeInsets.symmetric(horizontal: 3.w, vertical: 1),
+      padding: padding ?? EdgeInsets.symmetric(horizontal: 0, vertical: 1),
       decoration: BoxDecoration(
           color: enabled
               ? filled
-                  ? fillColor
+                  ? MyApp.themeMode(context)
+                      ? AppColor.secondaryDarkColor
+                      : fillColor
                   : null
               : Color(0xffE0E0E0),
           border: Border.all(
@@ -87,25 +92,26 @@ class DefaultFormField extends StatelessWidget {
         validator: validator,
         obscureText: isPassword,
         keyboardType: keyboardType,
+        onFieldSubmitted: onSubmit,
         style: TextStyle(
             color: textColor, letterSpacing: letterSpacing, height: textHeight),
         textInputAction: textInputAction,
         textAlign: textAlign,
         decoration: InputDecoration(
-          prefixIcon:
-              prefixIcon != null ? CustomContainer(image: prefixIcon!) : null,
-          prefixIconConstraints: prefixIcon != null
-              ? BoxConstraints.tight(Size.fromRadius(12))
-              : null,
-          prefix: horizontalSpace(5),
+          prefixIcon: prefixIcon,
+
+          // prefix: horizontalSpace(5),
           suffixIcon: suffixIcon,
+          contentPadding: symmetricEdgeInsets(vertical: 15, horizontal: 10),
           icon: icon,
           border: InputBorder.none,
           hintText: hintText,
           filled: filled,
-          fillColor: fillColor,
+          fillColor: MyApp.themeMode(context)
+              ? AppColor.secondaryDarkColor
+              : fillColor,
           hintStyle:
-              hintStyle ?? TextStyle(color: Colors.grey[500], fontSize: 12),
+              hintStyle ?? TextStyle(color: Colors.grey[500], fontSize: 14),
         ),
       ),
     );

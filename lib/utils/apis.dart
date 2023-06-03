@@ -17,7 +17,28 @@ class Api {
       "$baseUrl/employee/all-transaction-reasons";
   static const String getInventoryItems = "$baseUrl/employee/my-materials";
   static const String getContacts = "$baseUrl/employee/contactus";
-  static const String getIncomes = "$baseUrl/employee/incomes";
+
+  static const String getIncomeCounters = "$baseUrl/employee/getIncomeDetails";
+
+  static const String getBasicServices = "$baseUrl/services?type=basic";
+
+  static const String getExtraServices = "$baseUrl/services?type=extra";
+
+  static const String getOtherServices = "$baseUrl/services?type=other";
+
+  static const String getManufacturers = "$baseUrl/customer/manufacturers";
+
+  static const String getManufacturersOfType =
+      "$baseUrl/customer/vehicle_types/get/by/type/id/";
+
+  static const String getVehiclesModels =
+      "$baseUrl/customer/vehicle_models/get/by/manufacturers/id/";
+
+  static String updateVehicle(int vehicleId) =>
+      "$baseUrl/update-vehicle/$vehicleId";
+
+  static String updateRequestServices(int reqId) =>
+      "$baseUrl/employee/change-request-services/$reqId";
 
   static String getInventoryItemsOfWarehouse(int warehouseId) =>
       "$baseUrl/employee/materials/any-warehouse/$warehouseId";
@@ -29,8 +50,40 @@ class Api {
   static const String resetPassword = "$baseUrl/reset-password";
   static const String register = "$baseUrl/register";
   static const String contactUs = "$baseUrl/contact-us";
-  static const String updateProfile = "$baseUrl/update-profile";
-  static const String getRequests = "$baseUrl/employee/requests";
+  static const String updateProfile = "$baseUrl/employee/update-my-profile";
+  static String getIncomes(
+      {String reqIdOrCustomerName = "",
+      String paymentType = "",
+      String date = ""}) {
+    String path = "$baseUrl/employee/incomes";
+    if (reqIdOrCustomerName.isNotEmpty) {
+      path += "${path.contains("?") ? "&" : "?"}search=$reqIdOrCustomerName";
+    }
+    if (paymentType.isNotEmpty) {
+      path += "${path.contains("?") ? "&" : "?"}pay_by=$paymentType";
+    }
+    if (date.isNotEmpty) {
+      path += "${path.contains("?") ? "&" : "?"}date=$date";
+    }
+    return path;
+  }
+
+  static String getRequests(
+      {String reqIdOrCustomerName = "",
+      String statusType = "",
+      String date = ""}) {
+    String path = "$baseUrl/employee/requests";
+    if (reqIdOrCustomerName.isNotEmpty) {
+      path += "${path.contains("?") ? "&" : "?"}search=$reqIdOrCustomerName";
+    }
+    if (statusType.isNotEmpty) {
+      path += "${path.contains("?") ? "&" : "?"}status=$statusType";
+    }
+    if (date.isNotEmpty) {
+      path += "${path.contains("?") ? "&" : "?"}date=$date";
+    }
+    return path;
+  }
 
   static String getRequestDetails(String requestId) =>
       "$baseUrl/employee/requests/$requestId";

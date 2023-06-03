@@ -26,7 +26,7 @@ class RequestData {
   Null? feedback;
   Null? packageId;
   String? amount;
-  String? tax;
+  dynamic tax;
   String? discountAmount;
   String? totalAmount;
   String? totalDuration;
@@ -36,7 +36,11 @@ class RequestData {
   City? city;
   Employee? employee;
   VehicleRequest? vehicleRequest;
+  Location? locationRequest;
   List<Services>? services;
+  List<Services>? extraServices;
+  List<Services>? basicServices;
+  List<Services>? otherServices;
 
   RequestData(
       {this.id,
@@ -83,10 +87,31 @@ class RequestData {
     vehicleRequest = json['vehicleRequest'] != null
         ? VehicleRequest.fromJson(json['vehicleRequest'])
         : null;
+    locationRequest = json['request_address'] != null
+        ? Location.fromJson(json['request_address'])
+        : null;
     if (json['services'] != null) {
       services = <Services>[];
       json['services'].forEach((v) {
-        services!.add(new Services.fromJson(v));
+        services!.add(Services.fromJson(v));
+      });
+    }
+    if (json['services_other'] != null) {
+      otherServices = <Services>[];
+      json['services_other'].forEach((v) {
+        otherServices!.add(Services.fromJson(v));
+      });
+    }
+    if (json['services_extra'] != null) {
+      extraServices = <Services>[];
+      json['services_extra'].forEach((v) {
+        extraServices!.add(Services.fromJson(v));
+      });
+    }
+    if (json['services_basic'] != null) {
+      basicServices = <Services>[];
+      json['services_basic'].forEach((v) {
+        basicServices!.add(Services.fromJson(v));
       });
     }
   }
@@ -107,7 +132,7 @@ class Customer {
     if (json['location'] != null) {
       location = <Location>[];
       json['location'].forEach((v) {
-        location!.add(new Location.fromJson(v));
+        location!.add(Location.fromJson(v));
       });
     }
   }
@@ -116,10 +141,11 @@ class Customer {
 class VehicleRequest {
   int? id;
   String? name;
-  Null? numbers;
-  Null? letters;
-  Null? color;
-  Null? year;
+  String? numbers;
+  String? letters;
+  String? lettersInArabic;
+  String? color;
+  String? year;
   String? mainImage;
   int? customerId;
   int? manufacturerId;
@@ -129,8 +155,8 @@ class VehicleRequest {
   String? vehicleModelName;
   int? vehicleTypeId;
   String? vehicleTypeName;
-  Null? subVehicleTypeId;
-  Null? subVehicleTypeName;
+  int? subVehicleTypeId;
+  String? subVehicleTypeName;
 
   VehicleRequest(
       {this.id,
@@ -156,6 +182,7 @@ class VehicleRequest {
     name = json['name'];
     numbers = json['numbers'];
     letters = json['letters'];
+    lettersInArabic = json['letters_others'];
     color = json['color'];
     year = json['year'];
     mainImage = json['main_image'];
@@ -172,7 +199,7 @@ class VehicleRequest {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
     data['numbers'] = this.numbers;
@@ -223,7 +250,7 @@ class Location {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = this.id;
     data['image'] = this.image;
     data['type'] = this.type;
@@ -251,7 +278,7 @@ class City {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
     data['min_amount'] = this.minAmount;
@@ -272,7 +299,7 @@ class Employee {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
     return data;
@@ -283,10 +310,11 @@ class Services {
   int? id;
   String? title;
   String? image;
-  Null? info;
+  String? info;
   String? type;
   int? duration;
   bool? countable;
+  int? count;
 
   Services(
       {this.id,
@@ -305,10 +333,11 @@ class Services {
     type = json['type'];
     duration = json['duration'];
     countable = json['countable'];
+    count = json['request_service_count'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = this.id;
     data['title'] = this.title;
     data['image'] = this.image;

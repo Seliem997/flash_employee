@@ -1,6 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flash_employee/main.dart';
 import 'package:flash_employee/services/common_service.dart';
 import 'package:flash_employee/ui/contact_us/contact_us_screen.dart';
+import 'package:flash_employee/ui/request_details/screens/edit_services_screen.dart';
+import 'package:flash_employee/ui/request_details/screens/edit_vehicle_screen.dart';
 import 'package:flash_employee/ui/request_details/widgets/late_minutes_dialog.dart';
 import 'package:flash_employee/ui/widgets/custom_form_field.dart';
 import 'package:flash_employee/ui/widgets/data_loader.dart';
@@ -10,9 +13,13 @@ import 'package:flash_employee/ui/widgets/text_widget.dart';
 import 'package:flash_employee/utils/enum/status_types.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:invert_colors/invert_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../events/events/invoice_added_event.dart';
+import '../../events/events/request_updated_event.dart';
+import '../../events/global_event_bus.dart';
 import '../../providers/requests_provider.dart';
 import '../../utils/colors.dart';
 import '../../utils/snack_bars.dart';
@@ -31,9 +38,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   @override
   void initState() {
     Future.delayed(const Duration(seconds: 0)).then((value) => loadData());
-    // mainEventBus.on<InvoiceAddedEvent>().listen((event) {
-    //   loadData();
-    // });
+    mainEventBus.on<RequestUpdatedEvent>().listen((event) {
+      loadData();
+    });
     super.initState();
   }
 
@@ -56,14 +63,14 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                 fontWeight: FontWeight.bold,
               ),
               elevation: 0,
-              leading: BackButton(),
+              leading: const BackButton(),
               centerTitle: true,
             )
           : null,
       body: requestsProvider.loadingRequestDetails
-          ? DataLoader()
+          ? const DataLoader()
           : requestsProvider.selectedRequest == null
-              ? NoDataPlaceHolder(useExpand: false)
+              ? const NoDataPlaceHolder(useExpand: false)
               : Stack(
                   children: [
                     Padding(
@@ -92,6 +99,15 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                 StatusType.pending.key
                                             ? AppColor.pendingButton
                                             : AppColor.onTheWayButton,
+                                backgroundColorDark:
+                                    requestsProvider.selectedRequest!.status ==
+                                            StatusType.completed.key
+                                        ? AppColor.completedButton
+                                        : requestsProvider
+                                                    .selectedRequest!.status ==
+                                                StatusType.pending.key
+                                            ? AppColor.pendingButton
+                                            : AppColor.onTheWayButton,
                                 padding: EdgeInsets.zero,
                                 alignment: Alignment.center,
                                 child: TextWidget(
@@ -104,7 +120,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               ),
                             ),
                             verticalSpace(24),
-                            TextWidget(
+                            const TextWidget(
                               text: "Request info",
                               textSize: 15,
                               isTitle: true,
@@ -116,7 +132,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               radiusCircular: 4,
                               backgroundColor: MyApp.themeMode(context)
                                   ? AppColor.darkScaffoldColor
-                                  : Color(0xffE0E0E0),
+                                  : const Color(0xffE0E0E0),
                               padding: symmetricEdgeInsets(
                                   horizontal: 20, vertical: 20),
                               borderColor: Colors.grey,
@@ -184,7 +200,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               ),
                             ),
                             verticalSpace(32),
-                            TextWidget(
+                            const TextWidget(
                               text: "Customer Contact",
                               textSize: 15,
                               isTitle: true,
@@ -196,7 +212,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               radiusCircular: 4,
                               backgroundColor: MyApp.themeMode(context)
                                   ? AppColor.darkScaffoldColor
-                                  : Color(0xffE0E0E0),
+                                  : const Color(0xffE0E0E0),
                               padding: symmetricEdgeInsets(
                                   horizontal: 20, vertical: 20),
                               borderColor: Colors.grey,
@@ -228,19 +244,80 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      const CustomContainer(
-                                        height: 78,
-                                        width: 117,
-                                        padding: EdgeInsets.zero,
-                                        image: DecorationImage(
-                                            image: AssetImage(
-                                                "assets/images/Nature.png"),
-                                            fit: BoxFit.cover),
-                                      ),
+                                      CustomContainer(
+                                          onTap: () {
+                                            showDialog(
+                                                context: context,
+                                                builder: (context) => Dialog(
+                                                      elevation: 0,
+                                                      backgroundColor:
+                                                          Colors.transparent,
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Align(
+                                                            alignment: Alignment
+                                                                .centerRight,
+                                                            child:
+                                                                CustomContainer(
+                                                              onTap: () {
+                                                                Navigator.pop(
+                                                                    context);
+                                                              },
+                                                              alignment: Alignment
+                                                                  .centerRight,
+                                                              height: 50,
+                                                              width: 50,
+                                                              child: const Icon(
+                                                                  Icons.close,
+                                                                  size: 30,
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                          ),
+                                                          verticalSpace(20),
+                                                          CustomContainer(
+                                                              height: 300,
+                                                              width: 300,
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .zero,
+                                                              image: DecorationImage(
+                                                                  image: CachedNetworkImageProvider(requestsProvider
+                                                                      .selectedRequest!
+                                                                      .locationRequest!
+                                                                      .image!))),
+                                                        ],
+                                                      ),
+                                                    ));
+                                          },
+                                          height: 78,
+                                          width: 117,
+                                          padding: EdgeInsets.zero,
+                                          image: DecorationImage(
+                                              image: CachedNetworkImageProvider(
+                                                  requestsProvider
+                                                      .selectedRequest!
+                                                      .locationRequest!
+                                                      .image!))),
                                       horizontalSpace(65),
                                       CustomContainer(
                                         onTap: () {
-                                          // CommonService.openMap(latitude, longitude );
+                                          CommonService.openMap(
+                                              double.tryParse(requestsProvider
+                                                          .selectedRequest
+                                                          ?.locationRequest
+                                                          ?.latitude ??
+                                                      "") ??
+                                                  0,
+                                              double.tryParse(requestsProvider
+                                                          .selectedRequest
+                                                          ?.locationRequest
+                                                          ?.langitude ??
+                                                      "") ??
+                                                  0);
                                         },
                                         height: 65,
                                         width: 65,
@@ -315,7 +392,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               ),
                             ),
                             verticalSpace(32),
-                            TextWidget(
+                            const TextWidget(
                               text: "Vehicle info",
                               textSize: 15,
                               isTitle: true,
@@ -327,7 +404,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               radiusCircular: 4,
                               backgroundColor: MyApp.themeMode(context)
                                   ? AppColor.darkScaffoldColor
-                                  : Color(0xffF1F6FE),
+                                  : const Color(0xffF1F6FE),
                               padding: symmetricEdgeInsets(
                                   horizontal: 20, vertical: 20),
                               borderColor: AppColor.primary,
@@ -351,6 +428,23 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black,
                                       ),
+                                      const Spacer(),
+                                      if (requestsProvider.editingMode)
+                                        CustomContainer(
+                                          onTap: () {
+                                            navigateTo(
+                                                context, EditVehicleScreen());
+                                          },
+                                          height: 20,
+                                          width: 20,
+                                          radiusCircular: 0,
+                                          borderColorDark: Colors.transparent,
+                                          child: Image.asset(
+                                              "assets/images/edit-2.png",
+                                              color: MyApp.themeMode(context)
+                                                  ? Colors.white
+                                                  : Colors.black),
+                                        )
                                     ],
                                   ),
                                   verticalSpace(16),
@@ -431,14 +525,18 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                             color: Colors.black,
                                           ),
                                           verticalSpace(10),
-                                          CustomContainer(
-                                            height: 25,
-                                            width: 40,
-                                            radiusCircular: 3,
-                                            backgroundColor: Colors.black,
-                                            // backgroundColor: Color(int.parse(
-                                            //     "0xff${requestsProvider.selectedRequest!.customer!.vehicle![0].color!.replaceAll("#", "")}")),
-                                          )
+                                          requestsProvider.selectedRequest!
+                                                      .vehicleRequest!.color !=
+                                                  null
+                                              ? CustomContainer(
+                                                  height: 25,
+                                                  width: 40,
+                                                  radiusCircular: 3,
+                                                  backgroundColor: Color(int.parse(
+                                                      "0xff${requestsProvider.selectedRequest!.vehicleRequest!.color!.replaceAll("#", "")}")),
+                                                )
+                                              : const TextWidget(
+                                                  text: "Not Selected")
                                         ],
                                       ),
                                       horizontalSpace(100),
@@ -454,14 +552,85 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                           ),
                                           verticalSpace(10),
                                           CustomContainer(
-                                            height: 30,
-                                            width: 60,
+                                            height: 40,
+                                            width: 90,
                                             radiusCircular: 3,
-                                            image: DecorationImage(
+                                            image: const DecorationImage(
                                                 image: AssetImage(
-                                                    "assets/images/plate.png"),
-                                                fit: BoxFit.cover),
-                                            backgroundColor: Color(0xff0400CC),
+                                                    "assets/images/plate-2.png"),
+                                                fit: BoxFit.fill),
+                                            child: Stack(
+                                              children: [
+                                                Positioned(
+                                                  right: 5,
+                                                  top: 1,
+                                                  child: CustomContainer(
+                                                    width: 50,
+                                                    height: 18,
+                                                    radiusCircular: 0,
+                                                    alignment: Alignment.center,
+                                                    padding: EdgeInsets.zero,
+                                                    child: TextWidget(
+                                                      text:
+                                                          "${requestsProvider.selectedRequest!.vehicleRequest!.lettersInArabic}",
+                                                      textSize: 10,
+                                                      colorDark: Colors.black,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  right: 5,
+                                                  bottom: 0,
+                                                  child: CustomContainer(
+                                                    width: 50,
+                                                    height: 18,
+                                                    radiusCircular: 0,
+                                                    padding: EdgeInsets.zero,
+                                                    alignment: Alignment.center,
+                                                    child: TextWidget(
+                                                      text:
+                                                          "${requestsProvider.selectedRequest!.vehicleRequest!.letters}",
+                                                      textSize: 10,
+                                                      colorDark: Colors.black,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  left: -4,
+                                                  bottom: 0,
+                                                  child: CustomContainer(
+                                                    width: 50,
+                                                    height: 18,
+                                                    radiusCircular: 0,
+                                                    padding: EdgeInsets.zero,
+                                                    alignment: Alignment.center,
+                                                    child: TextWidget(
+                                                      text:
+                                                          "${requestsProvider.selectedRequest!.vehicleRequest!.numbers}",
+                                                      textSize: 10,
+                                                      colorDark: Colors.black,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  left: -4,
+                                                  top: 0,
+                                                  child: CustomContainer(
+                                                    width: 50,
+                                                    height: 18,
+                                                    radiusCircular: 0,
+                                                    padding: EdgeInsets.zero,
+                                                    alignment: Alignment.center,
+                                                    child: TextWidget(
+                                                      text:
+                                                          "${requestsProvider.selectedRequest!.vehicleRequest!.numbers}",
+                                                      textSize: 10,
+                                                      colorDark: Colors.black,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           )
                                         ],
                                       ),
@@ -471,7 +640,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               ),
                             ),
                             verticalSpace(32),
-                            TextWidget(
+                            const TextWidget(
                               text: "Services",
                               textSize: 15,
                               isTitle: true,
@@ -483,7 +652,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               radiusCircular: 4,
                               backgroundColor: MyApp.themeMode(context)
                                   ? AppColor.darkScaffoldColor
-                                  : Color(0xffF1F6FE),
+                                  : const Color(0xffF1F6FE),
                               padding: symmetricEdgeInsets(
                                   horizontal: 20, vertical: 20),
                               borderColor: AppColor.primary,
@@ -502,14 +671,30 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       horizontalSpace(10),
                                       TextWidget(
                                         text: requestsProvider.selectedRequest!
-                                                    .services![0].type ==
-                                                "basic"
+                                                .basicServices!.isNotEmpty
                                             ? "Wash"
                                             : "Other Service",
                                         textSize: 14,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black,
                                       ),
+                                      const Spacer(),
+                                      if (requestsProvider.editingMode)
+                                        CustomContainer(
+                                          onTap: () {
+                                            navigateTo(
+                                                context, EditServicesScreen());
+                                          },
+                                          height: 20,
+                                          width: 20,
+                                          radiusCircular: 0,
+                                          borderColorDark: Colors.transparent,
+                                          child: Image.asset(
+                                              "assets/images/edit-2.png",
+                                              color: MyApp.themeMode(context)
+                                                  ? Colors.white
+                                                  : Colors.black),
+                                        )
                                     ],
                                   ),
                                   verticalSpace(16),
@@ -532,33 +717,45 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                     ],
                                   ),
                                   verticalSpace(16),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const TextWidget(
-                                        text: "Extra :",
-                                        textSize: 18,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.black,
-                                      ),
-                                      verticalSpace(10),
-                                      const TextWidget(
-                                        text: "Nano Shampoo",
-                                        textSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.black,
-                                      ),
-                                      verticalSpace(3),
-                                      const TextWidget(
-                                        text: "Full Chair Washing",
-                                        textSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.black,
-                                      ),
-                                    ],
+                                  Visibility(
+                                    visible: requestsProvider.selectedRequest!
+                                        .extraServices!.isNotEmpty,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const TextWidget(
+                                          text: "Extra :",
+                                          textSize: 18,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.black,
+                                        ),
+                                        verticalSpace(10),
+                                        ListView.separated(
+                                          padding: EdgeInsets.zero,
+                                          shrinkWrap: true,
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          itemCount: requestsProvider
+                                              .selectedRequest!
+                                              .extraServices!
+                                              .length,
+                                          itemBuilder: (context, index) {
+                                            return TextWidget(
+                                              text:
+                                                  "${requestsProvider.selectedRequest!.extraServices![index].title}",
+                                              textSize: 14,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black,
+                                            );
+                                          },
+                                          separatorBuilder: (context, index) =>
+                                              verticalSpace(5),
+                                        ),
+                                        verticalSpace(16),
+                                      ],
+                                    ),
                                   ),
-                                  verticalSpace(16),
                                   Row(
                                     children: [
                                       const TextWidget(
@@ -581,7 +778,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               ),
                             ),
                             verticalSpace(32),
-                            TextWidget(
+                            const TextWidget(
                               text: "Payment",
                               textSize: 15,
                               isTitle: true,
@@ -593,7 +790,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                               radiusCircular: 4,
                               backgroundColor: MyApp.themeMode(context)
                                   ? AppColor.darkScaffoldColor
-                                  : Color(0xffF1F6FE),
+                                  : const Color(0xffF1F6FE),
                               padding: symmetricEdgeInsets(
                                   horizontal: 20, vertical: 20),
                               borderColor: AppColor.primary,
@@ -703,12 +900,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       child: CustomContainer(
                         width: double.infinity,
                         height: 120,
-                        borderRadius: BorderRadius.only(
+                        borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(32),
                             topLeft: Radius.circular(32)),
-                        backgroundColor: MyApp.themeMode(context)
-                            ? AppColor.darkScaffoldColor
-                            : Color(0xff9DD0F3),
+                        backgroundColorDark: Color(0xff444444),
+                        backgroundColor: const Color(0xffC7E4F8),
                         padding: symmetricEdgeInsets(horizontal: 20),
                         borderColor: MyApp.themeMode(context)
                             ? AppColor.grey
@@ -720,65 +916,33 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                CustomContainer(
-                                  onTap: () {
-                                    requestsProvider.savePdf();
-                                  },
-                                  height: 27,
-                                  width: 27,
-                                  padding: EdgeInsets.zero,
-                                  radiusCircular: 0,
-                                  backgroundColor: Colors.transparent,
-                                  image: const DecorationImage(
-                                      image:
-                                          AssetImage("assets/images/share.png"),
-                                      fit: BoxFit.fitHeight),
-                                ),
+                                !requestsProvider.editingMode
+                                    ? CustomContainer(
+                                        onTap: () {
+                                          requestsProvider.savePdf(context);
+                                        },
+                                        height: 27,
+                                        width: 27,
+                                        padding: EdgeInsets.zero,
+                                        radiusCircular: 0,
+                                        backgroundColor: Colors.transparent,
+                                        image: const DecorationImage(
+                                            image: AssetImage(
+                                                "assets/images/share.png"),
+                                            fit: BoxFit.fitHeight),
+                                      )
+                                    : Container(),
                                 if (requestsProvider.selectedRequest!.status !=
                                         StatusType.completed.key &&
                                     requestsProvider.selectedRequest!.status !=
                                         StatusType.canceled.key)
-                                  Row(
-                                    children: [
-                                      DefaultButton(
-                                        text: buttonTitle(requestsProvider
-                                            .selectedRequest!.status!),
-                                        height: 40,
-                                        width: 178,
-                                        padding: EdgeInsets.zero,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w700,
-                                        onPressed: () async {
-                                          await requestsProvider
-                                              .updateRequestStatus(context);
-                                        },
-                                      ),
-                                      horizontalSpace(25),
-                                      DefaultButton(
-                                        text: "Late",
-                                        height: 33,
-                                        width: 55,
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w700,
-                                        padding: EdgeInsets.zero,
-                                        backgroundColor: Color(0xffC73E49),
-                                        onPressed: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return LateMinutesDialog();
-                                            },
-                                          );
-                                        },
-                                      )
-                                    ],
-                                  ),
+                                  mainRequestButtons(requestsProvider, context),
                               ],
                             ),
                             verticalSpace(15),
                             GestureDetector(
                               onTap: () {
-                                navigateTo(context, ContactUsScreen());
+                                navigateTo(context, const ContactUsScreen());
                               },
                               child: const TextWidget(
                                 text: "Contact Customer Service",
@@ -797,6 +961,111 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     );
   }
 
+  Row mainRequestButtons(
+      RequestsProvider requestsProvider, BuildContext context) {
+    return requestsProvider.editingMode
+        ? Row(
+            children: [
+              Row(
+                children: [
+                  DefaultButton(
+                    text: "Cancel",
+                    backgroundColor: AppColor.pendingButton,
+                    height: 33,
+                    width: 127,
+                    padding: EdgeInsets.zero,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    onPressed: () {
+                      requestsProvider.editingMode = false;
+                    },
+                  ),
+                  horizontalSpace(25),
+                  DefaultButton(
+                    text: "Save",
+                    backgroundColor: AppColor.completedButton,
+                    height: 33,
+                    width: 127,
+                    padding: EdgeInsets.zero,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    onPressed: () {
+                      requestsProvider.editingMode = false;
+                    },
+                  ),
+                  horizontalSpace(25),
+                ],
+              ),
+            ],
+          )
+        : Row(
+            children: [
+              if (requestsProvider.selectedRequest!.status! ==
+                  StatusType.arrived.key)
+                Row(
+                  children: [
+                    DefaultButton(
+                      text: "Edit",
+                      backgroundColor: AppColor.pendingButton,
+                      height: 33,
+                      width: 127,
+                      padding: EdgeInsets.zero,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      onPressed: () {
+                        requestsProvider.editingMode = true;
+                      },
+                    ),
+                    horizontalSpace(25),
+                  ],
+                ),
+              DefaultButton(
+                text: buttonTitle(requestsProvider.selectedRequest!.status!),
+                backgroundColor: requestsProvider.selectedRequest!.status! ==
+                        StatusType.arrived.key
+                    ? AppColor.completedButton
+                    : null,
+                height: requestsProvider.selectedRequest!.status! ==
+                        StatusType.arrived.key
+                    ? 33
+                    : 40,
+                width: requestsProvider.selectedRequest!.status! ==
+                        StatusType.arrived.key
+                    ? 127
+                    : 178,
+                padding: EdgeInsets.zero,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                onPressed: () async {
+                  await requestsProvider.updateRequestStatus(context);
+                },
+              ),
+              horizontalSpace(25),
+              if (requestsProvider.selectedRequest!.status ==
+                      StatusType.onTheWay2.key ||
+                  requestsProvider.selectedRequest!.status ==
+                      StatusType.pending.key)
+                DefaultButton(
+                  text: "Late",
+                  height: 33,
+                  width: 55,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  padding: EdgeInsets.zero,
+                  backgroundColor: const Color(0xffC73E49),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return LateMinutesDialog();
+                      },
+                    );
+                  },
+                )
+            ],
+          );
+  }
+
   String buttonTitle(String status) {
     String title = "";
     if (status == StatusType.pending.key) {
@@ -804,7 +1073,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     } else if (status == StatusType.onTheWay2.key) {
       title = "Arrived";
     } else if (status == StatusType.arrived.key) {
-      title = "Completed";
+      title = "Complete";
     } else {
       title = "No Action";
     }

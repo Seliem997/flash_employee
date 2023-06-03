@@ -8,6 +8,7 @@ class AppColor {
   static const Color borderBlue = Color(0xff0285E0);
   static const Color darkScaffoldColor = Color(0xff131517);
   static const Color secondaryDarkColor = Color(0xff131517);
+  static const Color thirdDarkColor = Color(0xff444444);
   static const Color lightScaffoldColor = Colors.white;
 
   static const Color buttonGrey = Color(0xFFD9D9D9);

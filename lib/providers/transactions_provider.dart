@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 
 import '../events/global_event_bus.dart';
 import '../models/inventoryModel.dart';
+import '../services/inventory_service.dart';
 import '../services/transactions_service.dart';
 
 class TransactionsProvider extends ChangeNotifier {
@@ -68,6 +69,22 @@ class TransactionsProvider extends ChangeNotifier {
     await transactionsService
         .getInventoryItemsOfWarehouse(warehouseId)
         .then((value) {
+      loadingInventoryItems = false;
+      if (value.status == Status.success) {
+        inventoryItems = value.data as List<InventoryItemData>?;
+      }
+    });
+    notifyListeners();
+  }
+
+  Future getMineInventoryItems() async {
+    final InventoryService inventoryService = InventoryService();
+
+    loadingInventoryItems = true;
+    inventoryItems = [];
+    selectedItems = [];
+    notifyListeners();
+    await inventoryService.getInventoryItems().then((value) {
       loadingInventoryItems = false;
       if (value.status == Status.success) {
         inventoryItems = value.data as List<InventoryItemData>?;

@@ -1,8 +1,11 @@
 import 'dart:developer';
+import 'package:flash_employee/models/incomeCountersModel.dart';
 import 'package:flash_employee/models/incomesModel.dart';
 import 'package:flash_employee/models/inventoryModel.dart';
 import 'package:flash_employee/models/invoiceTypesModel.dart';
 import 'package:flash_employee/models/profileModel.dart';
+import 'package:flash_employee/utils/enum/date_formats.dart';
+import 'package:intl/intl.dart';
 
 import '../base/service/base_service.dart';
 import '../models/invoicesModel.dart';
@@ -15,13 +18,18 @@ import '../utils/enum/shared_preference_keys.dart';
 import '../utils/enum/statuses.dart';
 
 class IncomeService extends BaseService {
-  Future<ResponseResult> getIncomes() async {
+  Future<ResponseResult> getIncomes(
+      {String requestIdOrCustomerName = "",
+      String paymentType = "",
+      String date = ""}) async {
     Status status = Status.error;
     List<IncomeData>? incomes;
-    // Map<String, dynamic> body = {"nameOrEmail": email};
     try {
       await requestFutureData(
-          api: Api.getIncomes,
+          api: Api.getIncomes(
+              reqIdOrCustomerName: requestIdOrCustomerName,
+              date: date,
+              paymentType: paymentType),
           // body: body,
           requestType: Request.get,
           withToken: true,
@@ -38,5 +46,33 @@ class IncomeService extends BaseService {
       logger.e("Error in getting incomes $e");
     }
     return ResponseResult(status, incomes);
+  }
+
+  Future<ResponseResult> getIncomeCounters() async {
+    Status status = Status.error;
+    IncomeCountersData? incomeCounters;
+    Map<String, dynamic> body = {
+      "employee_id": CacheHelper.returnData(key: CacheKey.userId),
+      "date_time": DateFormat(DFormat.ymd.key).format(DateTime.now())
+    };
+    try {
+      await requestFutureData(
+          api: Api.getIncomeCounters,
+          body: body,
+          requestType: Request.get,
+          withToken: true,
+          onSuccess: (response) {
+            if (response["status_code"] == 200) {
+              status = Status.success;
+              incomeCounters = IncomeCountersModel.fromJson(response).data;
+            } else {
+              status = Status.error;
+            }
+          });
+    } catch (e) {
+      status = Status.error;
+      logger.e("Error in getting income counters $e");
+    }
+    return ResponseResult(status, incomeCounters);
   }
 }

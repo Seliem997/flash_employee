@@ -50,10 +50,16 @@ class _SidebarDrawerState extends State<SidebarDrawer> {
 
   Widget buildHeader(UserProvider userDataProvider) {
     return CustomContainer(
+      onTap: () {
+        userDataProvider.selectedTap = 0;
+        navigateTo(context, ProfileScreen());
+      },
       backgroundColor:
           MyApp.themeMode(context) ? Color(0xFF3C1E70) : AppColor.babyBlue,
       width: 272,
       height: 175,
+      backgroundColorDark: AppColor.secondaryDarkColor,
+      borderColorDark: Colors.transparent,
       padding: onlyEdgeInsets(top: 32, bottom: 16, start: 24, end: 18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

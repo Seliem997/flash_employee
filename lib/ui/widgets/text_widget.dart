@@ -6,6 +6,7 @@ class TextWidget extends StatelessWidget {
     Key? key,
     required this.text,
     this.color = Colors.black,
+    this.colorDark,
     this.textSize = 16,
     this.maxLines = 10,
     this.height = 1.0,
@@ -18,6 +19,7 @@ class TextWidget extends StatelessWidget {
   }) : super(key: key);
   final String text;
   final Color color;
+  final Color? colorDark;
   final double textSize;
   final double height;
   final double? width;
@@ -40,7 +42,7 @@ class TextWidget extends StatelessWidget {
         style: TextStyle(
           decoration: underLine ? TextDecoration.underline : null,
           fontSize: textSize,
-          color: MyApp.themeMode(context) ? null : color,
+          color: MyApp.themeMode(context) ? colorDark : color,
           height: height,
           overflow: TextOverflow.ellipsis,
           fontFamily: "Montserrat",

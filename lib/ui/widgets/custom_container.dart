@@ -15,6 +15,8 @@ class CustomContainer extends StatelessWidget {
     this.margin,
     this.alignment,
     this.backgroundColor,
+    this.backgroundColorDark,
+    this.borderColorDark,
     this.onTap,
     this.borderColor = Colors.transparent,
     this.image,
@@ -28,6 +30,7 @@ class CustomContainer extends StatelessWidget {
   final Widget? child;
   final EdgeInsetsGeometry? padding, margin;
   final Color? backgroundColor, borderColor;
+  final Color? backgroundColorDark, borderColorDark;
   final AlignmentGeometry? alignment;
   final GestureTapCallback? onTap;
   final DecorationImage? image;
@@ -50,11 +53,16 @@ class CustomContainer extends StatelessWidget {
         margin: margin ?? const EdgeInsets.all(0),
         decoration: BoxDecoration(
           image: image,
-          color: MyApp.themeMode(context) ? null : backgroundColor,
+          color:
+              MyApp.themeMode(context) ? backgroundColorDark : backgroundColor,
           borderRadius: borderRadius ?? BorderRadius.circular(radiusCircular),
           border: borderColor != null
               ? Border.all(
-                  color: MyApp.themeMode(context) ? Colors.grey : borderColor!)
+                  color: MyApp.themeMode(context)
+                      ? child == null
+                          ? Colors.transparent
+                          : borderColorDark ?? Colors.grey
+                      : borderColor!)
               : null,
           shape: isCircle ? BoxShape.circle : BoxShape.rectangle,
           /*boxShadow: const [

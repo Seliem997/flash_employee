@@ -1,13 +1,24 @@
 enum StatusType {
   pending("Pending"),
-  onTheWay('on_the_way'),
-  onTheWay2('On the way'),
+  pending2("pending"),
+  onTheWay2('on_the_way'),
+  onTheWay('On the way'),
   arrived('Arrived'),
   arrived2('arrived'),
   completed('Complete'),
   completed2('completed'),
-  canceled('canceled');
+  initial('Initial'),
+  canceled('Canceled'),
+  canceled2('canceled');
 
   const StatusType(this.key);
+  final String key;
+}
+
+enum PaymentType {
+  stc('STC Pay'),
+  cash('cash');
+
+  const PaymentType(this.key);
   final String key;
 }

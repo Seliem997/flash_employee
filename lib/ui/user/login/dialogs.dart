@@ -9,6 +9,7 @@ import 'package:flash_employee/utils/snack_bars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../main.dart';
 import '../../widgets/custom_container.dart';
 import '../../widgets/custom_form_field.dart';
 import '../../widgets/spaces.dart';
@@ -50,9 +51,18 @@ class ForgetPassword extends StatelessWidget {
                     hintText: 'Enter your username / email',
                     // controller: userNameController,
                     textInputAction: TextInputAction.next,
-                    prefixIcon: const DecorationImage(
-                        image: AssetImage("assets/images/profile_icon.png"),
-                        fit: BoxFit.cover),
+                    prefixIcon: CustomContainer(
+                        height: 5,
+                        width: 5,
+                        borderColorDark: Colors.transparent,
+                        padding: EdgeInsets.all(8),
+                        child: Image.asset(
+                          "assets/images/profile_icon.png",
+                          color: MyApp.themeMode(context)
+                              ? Colors.white
+                              : Colors.black,
+                          scale: 1,
+                        )),
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'please Enter Your User Name';
@@ -76,6 +86,7 @@ class ForgetPassword extends StatelessWidget {
                 width: 225,
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
+                    FocusScope.of(context).unfocus();
                     AppLoader.showLoader(context);
                     AuthenticationService auth = AuthenticationService();
                     await auth.forgotPassword(userName).then((value) {
@@ -84,7 +95,8 @@ class ForgetPassword extends StatelessWidget {
                         CustomSnackBars.successSnackBar(
                             context, "New Password sent successfully");
                       } else {
-                        CustomSnackBars.somethingWentWrongSnackBar(context);
+                        CustomSnackBars.failureSnackBar(
+                            context, "Username or Email Not Registered");
                       }
                       Navigator.pop(context);
                     });

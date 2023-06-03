@@ -1,4 +1,6 @@
 import 'package:fl_country_code_picker/fl_country_code_picker.dart';
+import 'package:flash_employee/main.dart';
+import 'package:flash_employee/ui/widgets/app_loader.dart';
 import 'package:flash_employee/ui/widgets/custom_button.dart';
 import 'package:flash_employee/ui/widgets/navigate.dart';
 import 'package:flash_employee/utils/cache_helper.dart';
@@ -7,6 +9,8 @@ import 'package:flash_employee/utils/enum/shared_preference_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:invert_colors/invert_colors.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/user_provider.dart';
@@ -23,14 +27,13 @@ class ProfileScreen extends StatelessWidget {
   final countryPicker = const FlCountryCodePicker();
   CountryCode? countryCode =
       const CountryCode(name: "Saudi Arabia", code: "SA", dialCode: "+966");
-  TextEditingController phoneController = TextEditingController(
-      text: CacheHelper.returnData(key: CacheKey.phoneNumber));
 
   @override
   Widget build(BuildContext context) {
     final UserProvider userDataProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
+      backgroundColor: MyApp.themeMode(context) ? Color(0xff444444) : null,
       body: Column(
         children: [
           CustomContainer(
@@ -39,6 +42,8 @@ class ProfileScreen extends StatelessWidget {
                 bottomRight: Radius.circular(45),
                 bottomLeft: Radius.circular(45)),
             backgroundColor: Color(0xffC7E4F8),
+            backgroundColorDark: AppColor.secondaryDarkColor,
+            borderColorDark: Colors.transparent,
             child: Column(
               children: [
                 AppBar(
@@ -48,13 +53,13 @@ class ProfileScreen extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                   elevation: 0,
-                  leading: BackButton(),
+                  leading: const BackButton(),
                   actions: [
                     IconButton(
                         onPressed: () {
                           navigateAndFinish(context, HomeScreen());
                         },
-                        icon: Icon(Icons.home, color: AppColor.black))
+                        icon: const Icon(Icons.home))
                   ],
                   backgroundColor: Colors.transparent,
                   centerTitle: true,
@@ -64,6 +69,19 @@ class ProfileScreen extends StatelessWidget {
                   height: 111,
                   width: 111,
                   showEditIcon: true,
+                  onTap: () async {
+                    await ImagePicker.platform
+                        .getImage(source: ImageSource.gallery, imageQuality: 30)
+                        .then((image) async {
+                      if (image != null) {
+                        await userDataProvider.updateProfilePicture(
+                            context, image);
+                        // profileProvider.setUserTempImage(image);
+                        // await navigateTo(context, CropSample());
+                        // setState(() {});
+                      }
+                    });
+                  },
                 ),
                 verticalSpace(20),
                 TextWidget(
@@ -82,7 +100,8 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Padding(
+            child: CustomContainer(
+              borderColorDark: Colors.transparent,
               padding: symmetricEdgeInsets(horizontal: 25, vertical: 0),
               child: ListView(
                 shrinkWrap: true,
@@ -195,6 +214,7 @@ class ProfileScreen extends StatelessWidget {
                           minRating: 1,
                           direction: Axis.horizontal,
                           allowHalfRating: true,
+                          ignoreGestures: true,
                           itemCount: 5,
                           itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
                           itemBuilder: (context, _) => const Icon(
@@ -223,119 +243,17 @@ class ProfileScreen extends StatelessWidget {
                           showDialog(
                             context: context,
                             builder: (context) {
-                              return Dialog(
-                                child: StatefulBuilder(
-                                  builder: (context1, setState) {
-                                    return CustomContainer(
-                                      height: 220,
-                                      padding: symmetricEdgeInsets(
-                                          horizontal: 10, vertical: 20),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const TextWidget(
-                                            text: "Update Phone Number",
-                                            textSize: 15,
-                                            isTitle: true,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                          verticalSpace(20),
-                                          Row(
-                                            children: [
-                                              CustomContainer(
-                                                padding: symmetricEdgeInsets(
-                                                    horizontal: 4),
-                                                width: 72,
-                                                height: 48,
-                                                radiusCircular: 5,
-                                                alignment: Alignment.center,
-                                                backgroundColor:
-                                                    Color(0xffE0E0E0),
-                                                // borderColor: AppColor.borderBlue,
-                                                onTap: () async {
-                                                  // final code =
-                                                  //     await countryPicker.showPicker(context: context);
-                                                  // setState(() {
-                                                  //   countryCode = code;
-                                                  // });
-                                                },
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    CustomSizedBox(
-                                                      width: 20,
-                                                      height: 14,
-                                                      child: countryCode != null
-                                                          ? (countryCode!
-                                                              .flagImage())
-                                                          : const SizedBox(),
-                                                    ),
-                                                    horizontalSpace(2),
-                                                    TextWidget(
-                                                      text: countryCode != null
-                                                          ? countryCode!
-                                                              .dialCode
-                                                          : '',
-                                                      textSize: 14,
-                                                      fontWeight:
-                                                          MyFontWeight.regular,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              horizontalSpace(6),
-                                              Expanded(
-                                                  child: DefaultFormField(
-                                                controller: phoneController,
-                                                hintText: '545548879',
-                                                keyboardType:
-                                                    TextInputType.phone,
-                                                padding: symmetricEdgeInsets(
-                                                    horizontal: 15),
-                                                textInputAction:
-                                                    TextInputAction.done,
-                                                letterSpacing: 3,
-                                                textHeight: 0.8,
-                                                inputFormatters: [
-                                                  LengthLimitingTextInputFormatter(
-                                                      11),
-                                                  FilteringTextInputFormatter
-                                                      .digitsOnly,
-                                                ],
-                                              ))
-                                            ],
-                                          ),
-                                          verticalSpace(20),
-                                          DefaultButton(
-                                            text: "Update",
-                                            width: 150,
-                                            onPressed: () {
-                                              userDataProvider.phone =
-                                                  phoneController.text;
-                                              CacheHelper.saveData(
-                                                  key: CacheKey.phoneNumber,
-                                                  value: phoneController.text);
-                                              Navigator.pop(context);
-                                            },
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                              );
+                              return ChangePhoneNumberDialog(
+                                  countryCode: countryCode);
                             },
                           );
                         },
-                        child: Material(
-                          child: TextWidget(
-                            text: "Change Phone Number",
-                            textSize: 10,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xff006CB8),
-                          ),
+                        child: TextWidget(
+                          text: "Change Phone Number",
+                          textSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xff006CB8),
+                          colorDark: AppColor.primary,
                         ),
                       ),
                     ],
@@ -399,6 +317,136 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ChangePhoneNumberDialog extends StatefulWidget {
+  const ChangePhoneNumberDialog({
+    Key? key,
+    required this.countryCode,
+  }) : super(key: key);
+
+  final CountryCode? countryCode;
+
+  @override
+  State<ChangePhoneNumberDialog> createState() =>
+      _ChangePhoneNumberDialogState();
+}
+
+class _ChangePhoneNumberDialogState extends State<ChangePhoneNumberDialog> {
+  final GlobalKey<FormState> key = GlobalKey<FormState>();
+  late TextEditingController phoneController;
+
+  @override
+  void initState() {
+    phoneController = TextEditingController(
+        text: CacheHelper.returnData(key: CacheKey.phoneNumber));
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final UserProvider userDataProvider = Provider.of<UserProvider>(context);
+
+    return Dialog(
+      child: StatefulBuilder(
+        builder: (context1, setState) {
+          return Form(
+            key: key,
+            child: CustomContainer(
+              padding: symmetricEdgeInsets(horizontal: 10, vertical: 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const TextWidget(
+                    text: "Update Phone Number",
+                    textSize: 15,
+                    isTitle: true,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  verticalSpace(20),
+                  Row(
+                    children: [
+                      CustomContainer(
+                        padding: symmetricEdgeInsets(horizontal: 4),
+                        width: 72,
+                        height: 48,
+                        radiusCircular: 5,
+                        alignment: Alignment.center,
+                        backgroundColor: Color(0xffE0E0E0),
+                        // borderColor: AppColor.borderBlue,
+                        onTap: () async {
+                          // final code =
+                          //     await countryPicker.showPicker(context: context);
+                          // setState(() {
+                          //   countryCode = code;
+                          // });
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CustomSizedBox(
+                              width: 20,
+                              height: 14,
+                              child: widget.countryCode != null
+                                  ? (widget.countryCode!.flagImage())
+                                  : const SizedBox(),
+                            ),
+                            horizontalSpace(2),
+                            TextWidget(
+                              text: widget.countryCode != null
+                                  ? widget.countryCode!.dialCode
+                                  : '',
+                              textSize: 14,
+                              fontWeight: MyFontWeight.regular,
+                            ),
+                          ],
+                        ),
+                      ),
+                      horizontalSpace(6),
+                      Expanded(
+                          child: DefaultFormField(
+                        controller: phoneController,
+                        hintText: '545548879',
+                        keyboardType: TextInputType.phone,
+                        padding: symmetricEdgeInsets(horizontal: 15),
+                        textInputAction: TextInputAction.done,
+                        letterSpacing: 3,
+                        textHeight: 0.8,
+                        isNumber: true,
+                        validator: (v) {
+                          if (v!.isEmpty) {
+                            return "Phone is required";
+                          } else if (v!.length < 9) {
+                            return "Digits cannot be less than 9";
+                          }
+                        },
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(9),
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                      ))
+                    ],
+                  ),
+                  verticalSpace(20),
+                  DefaultButton(
+                    text: "Update",
+                    width: 150,
+                    onPressed: () async {
+                      if (key.currentState!.validate()) {
+                        await userDataProvider.updatePhoneNumber(
+                            context, phoneController.text);
+                      }
+                    },
+                  )
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flash_employee/providers/contact_us_provider.dart';
 import 'package:flash_employee/providers/income_provider.dart';
 import 'package:flash_employee/providers/inventory_provider.dart';
@@ -5,6 +6,7 @@ import 'package:flash_employee/providers/invoices_provider.dart';
 import 'package:flash_employee/providers/requests_provider.dart';
 import 'package:flash_employee/providers/transactions_provider.dart';
 import 'package:flash_employee/providers/user_provider.dart';
+import 'package:flash_employee/services/firebase_service.dart';
 import 'package:flash_employee/ui/splash/app_splash.dart';
 import 'package:flash_employee/utils/cache_helper.dart';
 import 'package:flash_employee/utils/colors.dart';
@@ -16,9 +18,14 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
+import 'firebase_options.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await FirebaseService.initializeFirebase();
   await CacheHelper.init();
   runApp(MyApp());
 }

@@ -76,6 +76,7 @@ class TransactionItem extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       margin: EdgeInsets.zero,
                       width: 110,
+                      borderColorDark: Colors.transparent,
                       child: TextWidget(
                         text: transaction
                                 .transactionMaterials![index].materialName ??
@@ -88,6 +89,7 @@ class TransactionItem extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       margin: EdgeInsets.zero,
                       width: 120,
+                      borderColorDark: Colors.transparent,
                       child: TextWidget(
                         text: transaction.transactionMaterials![index]
                                 .transactionReasonName ??
@@ -101,6 +103,7 @@ class TransactionItem extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       margin: EdgeInsets.zero,
                       width: 30,
+                      borderColorDark: Colors.transparent,
                       child: TextWidget(
                         text: transaction.transactionMaterials![index].quantity
                             .toString(),
@@ -137,6 +140,7 @@ class TransactionItem extends StatelessWidget {
               CustomContainer(
                   height: 35,
                   width: 45,
+                  borderColorDark: Colors.transparent,
                   child: Image.asset("assets/images/arrow-right 1.png")),
               CustomContainer(
                 width: 110,

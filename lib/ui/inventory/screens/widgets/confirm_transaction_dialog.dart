@@ -1,4 +1,5 @@
 import 'package:change_case/change_case.dart';
+import 'package:flash_employee/main.dart';
 import 'package:flash_employee/ui/widgets/custom_button.dart';
 import 'package:flash_employee/ui/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,8 @@ class _ConfirmTransactionDialogState extends State<ConfirmTransactionDialog> {
         Provider.of<TransactionsProvider>(context);
     return Dialog(
       insetPadding: EdgeInsets.zero,
-      backgroundColor: Colors.transparent,
+      backgroundColor:
+          MyApp.themeMode(context) ? Color(0xff444444) : Colors.transparent,
       child: CustomContainer(
         backgroundColor: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -66,6 +68,7 @@ class _ConfirmTransactionDialogState extends State<ConfirmTransactionDialog> {
             verticalSpace(15),
             CustomContainer(
               height: 130,
+              borderColorDark: Colors.transparent,
               child: ListView.separated(
                 itemCount: transactionsProvider.selectedItems!.length,
                 shrinkWrap: true,
@@ -85,6 +88,7 @@ class _ConfirmTransactionDialogState extends State<ConfirmTransactionDialog> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         CustomContainer(
+                          borderColorDark: Colors.transparent,
                           padding: EdgeInsets.zero,
                           margin: EdgeInsets.zero,
                           width: 110,
@@ -96,6 +100,7 @@ class _ConfirmTransactionDialogState extends State<ConfirmTransactionDialog> {
                           ),
                         ),
                         CustomContainer(
+                          borderColorDark: Colors.transparent,
                           padding: EdgeInsets.zero,
                           margin: EdgeInsets.zero,
                           width: 120,
@@ -112,6 +117,7 @@ class _ConfirmTransactionDialogState extends State<ConfirmTransactionDialog> {
                           padding: EdgeInsets.zero,
                           margin: EdgeInsets.zero,
                           width: 30,
+                          borderColorDark: Colors.transparent,
                           child: TextWidget(
                             text:
                                 '${transactionsProvider.selectedItems![index].neededQuantity}',
@@ -156,6 +162,7 @@ class _ConfirmTransactionDialogState extends State<ConfirmTransactionDialog> {
                   ],
                 ),
                 CustomContainer(
+                    borderColorDark: Colors.transparent,
                     height: 35,
                     width: 45,
                     child: Image.asset("assets/images/arrow-right 1.png")),

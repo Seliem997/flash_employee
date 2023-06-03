@@ -63,6 +63,15 @@ dependencies:
   url_launcher: ^6.1.10
   maps_launcher: ^2.2.0
   fluttertoast: ^8.2.1
+  path_provider: ^2.0.15
+  syncfusion_flutter_pdfviewer: ^21.2.3
+  share_plus: ^7.0.0
+  invert_colors: ^0.0.4
+  flutter_colorpicker: ^1.0.3
+  expand_tap_area: ^1.1.1
+  firebase_messaging: ^14.6.2
+  flutter_local_notifications: ^8.2.0
+  permission_handler: ^10.2.0
 
 dev_dependencies:
   flutter_test:

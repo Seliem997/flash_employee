@@ -28,7 +28,7 @@ class RequestItem extends StatelessWidget {
     final RequestsProvider requestsProvider =
         Provider.of<RequestsProvider>(context);
     return CustomContainer(
-      onTap: () {
+      onTap: () async {
         requestsProvider.selectedRequestId = request.id.toString();
         navigateTo(context, RequestDetailsScreen());
       },

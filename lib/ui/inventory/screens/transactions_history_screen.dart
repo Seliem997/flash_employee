@@ -71,7 +71,10 @@ class _TransactionsHistoryScreenState extends State<TransactionsHistoryScreen> {
                       ),
                       filled: true,
                       fillColor: AppColor.babyBlue,
-                      icon: SvgPicture.asset('assets/svg/search.svg'),
+                      icon: Padding(
+                        padding: const EdgeInsets.only(left: 12.0),
+                        child: SvgPicture.asset('assets/svg/search.svg'),
+                      ),
                     ),
                     verticalSpace(15),
                     Row(
