@@ -38,6 +38,9 @@ class IncomeData {
   City? city;
   Employee? employee;
   List<Services>? services;
+  List<Services>? extraServices;
+  List<Services>? basicServices;
+  List<Services>? otherServices;
 
   IncomeData(
       {this.id,
@@ -89,6 +92,24 @@ class IncomeData {
       services = <Services>[];
       json['services'].forEach((v) {
         services!.add(new Services.fromJson(v));
+      });
+    }
+    if (json['services_other'] != null) {
+      otherServices = <Services>[];
+      json['services_other'].forEach((v) {
+        otherServices!.add(Services.fromJson(v));
+      });
+    }
+    if (json['services_extra'] != null) {
+      extraServices = <Services>[];
+      json['services_extra'].forEach((v) {
+        extraServices!.add(Services.fromJson(v));
+      });
+    }
+    if (json['services_basic'] != null) {
+      basicServices = <Services>[];
+      json['services_basic'].forEach((v) {
+        basicServices!.add(Services.fromJson(v));
       });
     }
   }

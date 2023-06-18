@@ -136,7 +136,7 @@ class ContactItem extends StatelessWidget {
               horizontalSpace(10),
               CustomContainer(
                 onTap: () {
-                  CommonService.openWhatsapp(contact.phone!, context);
+                  CommonService.callNumber(contact.phone!, context);
                 },
                 height: 25,
                 width: 25,

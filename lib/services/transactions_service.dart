@@ -19,13 +19,18 @@ import '../utils/enum/statuses.dart';
 import '../utils/enum/transaction_type.dart';
 
 class TransactionsService extends BaseService {
-  Future<ResponseResult> getTransactions() async {
+  Future<ResponseResult> getTransactions(
+      {String transactionId = "", String type = "", String date = ""}) async {
     Status status = Status.error;
     List<TransactionData>? transactions;
     // Map<String, dynamic> body = {"nameOrEmail": email};
     try {
       await requestFutureData(
-          api: Api.getTransactions,
+          api: Api.getTransactions(
+            transactionId: transactionId,
+            date: date,
+            type: type,
+          ),
           // body: body,
           requestType: Request.get,
           withToken: true,
@@ -155,11 +160,10 @@ class TransactionsService extends BaseService {
       "Accept": "application/json"
     };
     Map<String, dynamic> body = {
-      if (warehouse.name != "Me")
-        "type": TransactionType.fromWarehouseToEmployee.key,
+      "type": warehouse.name != "Me"
+          ? FromToTransactionType.fromWarehouseToEmployee.key
+          : FromToTransactionType.fromEmployeeToEmployee.key,
       if (warehouse.name != "Me") "warehouse_id": warehouse.id!,
-      if (warehouse.name == "Me")
-        "type": TransactionType.fromEmployeeToEmployee.key,
       if (warehouse.name == "Me") "employee_id_to": employee!.id!,
       "items": items.map((e) => e.toJson()).toList()
     };

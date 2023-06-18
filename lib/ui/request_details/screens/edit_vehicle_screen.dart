@@ -438,7 +438,7 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
                           requestsProvider.selectedVehicleModel!.id!,
                       numbers: numbersController.text,
                       letters: lettersController.text,
-                      color: '0xFFdedede',
+                      color: vehicleColor,
                       name: nameController.text,
                       year: yearController.text,
                       subVehicleTypeId: 1,

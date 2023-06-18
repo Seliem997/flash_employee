@@ -170,7 +170,15 @@ class RequestsProvider extends ChangeNotifier {
     requests = [];
     notifyListeners();
     await requestsService
-        .getRequests(requestIdOrCustomerName: requestIdOrCustomerName)
+        .getRequests(
+            requestIdOrCustomerName: requestIdOrCustomerName,
+            statusType: _selectedStatusType == null ||
+                    _selectedStatusType!.value == "all"
+                ? ""
+                : _selectedStatusType!.value,
+            date: _selectedDate != null
+                ? DateFormat(DFormat.ymd.key).format(_selectedDate!)
+                : "")
         .then((value) {
       if (value.status == Status.success) {
         log("Search Result :${value.data}");
@@ -182,11 +190,13 @@ class RequestsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future getRequestDetails() async {
+  Future getRequestDetails({String? reqId}) async {
     loadingRequestDetails = true;
     _editingMode = false;
     notifyListeners();
-    await requestsService.getRequestDetails(selectedRequestId!).then((value) {
+    await requestsService
+        .getRequestDetails(reqId ?? selectedRequestId!)
+        .then((value) {
       loadingRequestDetails = false;
       if (value.status == Status.success) {
         selectedRequest = value.data as RequestData?;
@@ -269,6 +279,11 @@ class RequestsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void resetRequestsScreen() {
+    _selectedStatusType = null;
+    _selectedDate = null;
+  }
+
   Future<void> updateRequestServices(BuildContext context) async {
     AppLoader.showLoader(context);
     extraServicesList.forEach((element) {
@@ -314,8 +329,8 @@ class RequestsProvider extends ChangeNotifier {
     if (cancel) {
       nextStatus = StatusType.canceled.key;
     } else if (selectedRequest!.status == StatusType.pending.key) {
-      nextStatus = StatusType.onTheWay.key;
-    } else if (selectedRequest!.status == StatusType.onTheWay2.key) {
+      nextStatus = StatusType.onTheWay2.key;
+    } else if (selectedRequest!.status == StatusType.onTheWay.key) {
       nextStatus = StatusType.arrived2.key;
     } else if (selectedRequest!.status == StatusType.arrived.key) {
       nextStatus = StatusType.completed2.key;

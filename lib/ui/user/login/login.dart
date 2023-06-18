@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 
 import '../../../main.dart';
 import '../../../models/loginModel.dart';
+import '../../../models/problemSignInProblem.dart';
 import '../../../providers/user_provider.dart';
 import '../../home/home_screen.dart';
 import '../../widgets/custom_button.dart';
@@ -41,7 +42,18 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     userNameController = TextEditingController();
     passwordController = TextEditingController();
+    loadData();
     super.initState();
+  }
+
+  void loadData() async {
+    final UserProvider userDataProvider =
+        Provider.of<UserProvider>(context, listen: false);
+    final AuthenticationService authenticationService = AuthenticationService();
+
+    await authenticationService.getProblemSignIn().then((value) {
+      userDataProvider.problemSignInData = value.data as ProblemSignInData?;
+    });
   }
 
   @override
@@ -219,7 +231,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                     passwordController.text)
                                 .then((value) {
                               AppLoader.stopLoader();
-
                               if (value.status == Status.success) {
                                 final userData = (value.data as UserData?);
                                 if ((value.data as UserData?) != null) {
@@ -229,11 +240,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                   userDataProvider.email = userData.email;
                                   userDataProvider.duties = userData.duties;
                                 }
-
                                 navigateAndFinish(context, HomeScreen());
-                              } else {
+                              } else if (value.status ==
+                                  Status.invalidEmailOrPass) {
                                 CustomSnackBars.failureSnackBar(
                                     context, "Invalid Username or Password");
+                              } else {
+                                CustomSnackBars.failureSnackBar(
+                                    context, "Employee is not active");
                               }
                             });
                           }

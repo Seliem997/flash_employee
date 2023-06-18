@@ -1,3 +1,7 @@
+import 'package:intl/intl.dart';
+
+import 'enum/date_formats.dart';
+
 class Api {
   static const String testUrl = "https://ahmos.smartsols.co/api";
 
@@ -7,18 +11,66 @@ class Api {
 
   static const String login = "$baseUrl/employee/login";
   static const String getMyProfile = "$baseUrl/employee/my-profile";
+  static const String getProblemSignIn = "$baseUrl/employee/maintenanceAll";
   static const String loginSocial = "$baseUrl/login-by-social-media";
   static const String forgotPassword = "$baseUrl/employee/forget-password";
-  static const String getInvoices = "$baseUrl/employee/my-invoices";
+
+  static String getInvoices(
+      {String invoiceId = "", String category = "", String date = ""}) {
+    String path = "$baseUrl/employee/my-invoices";
+    if (invoiceId.isNotEmpty) {
+      path += "${path.contains("?") ? "&" : "?"}search=$invoiceId";
+    }
+    if (category.isNotEmpty) {
+      path += "${path.contains("?") ? "&" : "?"}category=$category";
+    }
+    if (date.isNotEmpty) {
+      path += "${path.contains("?") ? "&" : "?"}date=$date";
+    } else {
+      path +=
+          "${path.contains("?") ? "&" : "?"}date=${DateFormat(DFormat.ymd.key).format(DateTime.now())}";
+    }
+    return path;
+  }
+
   static const String getEmployees = "$baseUrl/employee/all-employees";
   static const String getWarehouses = "$baseUrl/employee/all-warehouses";
-  static const String getTransactions = "$baseUrl/employee/my-transactions";
+  static String downloadInvoice(int invoiceId) =>
+      "$baseUrl/download-invoice/$invoiceId";
+
+  static String getTransactions(
+      {String transactionId = "", String type = "", String date = ""}) {
+    String path = "$baseUrl/employee/my-transactions";
+    if (transactionId.isNotEmpty) {
+      path += "${path.contains("?") ? "&" : "?"}search=$transactionId";
+    }
+    if (type.isNotEmpty) {
+      path += "${path.contains("?") ? "&" : "?"}type=$type";
+    }
+    if (date.isNotEmpty) {
+      path += "${path.contains("?") ? "&" : "?"}date=$date";
+    } else {
+      path +=
+          "${path.contains("?") ? "&" : "?"}date=${DateFormat(DFormat.ymd.key).format(DateTime.now())}";
+    }
+    return path;
+  }
+
   static const String getTransactionReasons =
       "$baseUrl/employee/all-transaction-reasons";
   static const String getInventoryItems = "$baseUrl/employee/my-materials";
   static const String getContacts = "$baseUrl/employee/contactus";
 
-  static const String getIncomeCounters = "$baseUrl/employee/getIncomeDetails";
+  static String getIncomeCounters({String date = ""}) {
+    String path = "$baseUrl/employee/getIncomeDetails";
+    if (date.isNotEmpty) {
+      path += "${path.contains("?") ? "&" : "?"}date=$date";
+    } else {
+      path +=
+          "${path.contains("?") ? "&" : "?"}date=${DateFormat(DFormat.ymd.key).format(DateTime.now())}";
+    }
+    return path;
+  }
 
   static const String getBasicServices = "$baseUrl/services?type=basic";
 
@@ -51,19 +103,22 @@ class Api {
   static const String register = "$baseUrl/register";
   static const String contactUs = "$baseUrl/contact-us";
   static const String updateProfile = "$baseUrl/employee/update-my-profile";
+  static const String notifications = "$baseUrl/employee/my-notification";
+  static const String seeNotification = "$baseUrl/employee/see_notifications";
   static String getIncomes(
-      {String reqIdOrCustomerName = "",
-      String paymentType = "",
-      String date = ""}) {
+      {String incomeId = "", String paymentType = "", String date = ""}) {
     String path = "$baseUrl/employee/incomes";
-    if (reqIdOrCustomerName.isNotEmpty) {
-      path += "${path.contains("?") ? "&" : "?"}search=$reqIdOrCustomerName";
+    if (incomeId.isNotEmpty) {
+      path += "${path.contains("?") ? "&" : "?"}search=$incomeId";
     }
     if (paymentType.isNotEmpty) {
       path += "${path.contains("?") ? "&" : "?"}pay_by=$paymentType";
     }
     if (date.isNotEmpty) {
       path += "${path.contains("?") ? "&" : "?"}date=$date";
+    } else {
+      path +=
+          "${path.contains("?") ? "&" : "?"}date=${DateFormat(DFormat.ymd.key).format(DateTime.now())}";
     }
     return path;
   }
@@ -81,6 +136,9 @@ class Api {
     }
     if (date.isNotEmpty) {
       path += "${path.contains("?") ? "&" : "?"}date=$date";
+    } else {
+      path +=
+          "${path.contains("?") ? "&" : "?"}date=${DateFormat(DFormat.ymd.key).format(DateTime.now())}";
     }
     return path;
   }

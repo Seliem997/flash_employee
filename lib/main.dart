@@ -3,6 +3,7 @@ import 'package:flash_employee/providers/contact_us_provider.dart';
 import 'package:flash_employee/providers/income_provider.dart';
 import 'package:flash_employee/providers/inventory_provider.dart';
 import 'package:flash_employee/providers/invoices_provider.dart';
+import 'package:flash_employee/providers/notifications_provider.dart';
 import 'package:flash_employee/providers/requests_provider.dart';
 import 'package:flash_employee/providers/transactions_provider.dart';
 import 'package:flash_employee/providers/user_provider.dart';
@@ -83,6 +84,9 @@ class _MyAppState extends State<MyApp> {
         providers: [
           ChangeNotifierProvider(
             create: (context) => UserProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => NotificationsProvider(),
           ),
           ChangeNotifierProvider(
             create: (context) => InvoicesProvider(),

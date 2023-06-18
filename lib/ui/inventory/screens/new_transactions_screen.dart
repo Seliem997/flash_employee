@@ -202,7 +202,9 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                     transactionsProvider.loadingInventoryItems
                         ? DataLoader()
                         : transactionsProvider.inventoryItems!.isEmpty
-                            ? NoDataPlaceHolder(useExpand: false)
+                            ? const NoDataPlaceHolder(
+                                useExpand: false,
+                                title: "No Materials Available")
                             : Column(children: [
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -359,12 +361,21 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                                                     horizontalSpace(9),
                                                     CustomContainer(
                                                       onTap: () {
-                                                        transactionsProvider
-                                                            .inventoryItems![
-                                                                index]
-                                                            .neededQuantity++;
-                                                        transactionsProvider
-                                                            .notifyListeners();
+                                                        if (transactionsProvider
+                                                                .inventoryItems![
+                                                                    index]
+                                                                .quantity! >
+                                                            transactionsProvider
+                                                                .inventoryItems![
+                                                                    index]
+                                                                .neededQuantity) {
+                                                          transactionsProvider
+                                                              .inventoryItems![
+                                                                  index]
+                                                              .neededQuantity++;
+                                                          transactionsProvider
+                                                              .notifyListeners();
+                                                        }
                                                       },
                                                       width: 20,
                                                       height: 20,

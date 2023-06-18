@@ -1,3 +1,4 @@
+import 'package:flash_employee/models/problemSignInProblem.dart';
 import 'package:flash_employee/services/authentication_service.dart';
 import 'package:flash_employee/utils/enum/statuses.dart';
 import 'package:flash_employee/utils/snack_bars.dart';
@@ -15,6 +16,8 @@ class UserProvider extends ChangeNotifier {
   String? _userImage;
   String? _phone;
   int _selectedTap = 1;
+
+  ProblemSignInData? problemSignInData;
 
   int get selectedTap => _selectedTap;
 

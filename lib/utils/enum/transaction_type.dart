@@ -1,7 +1,7 @@
-enum TransactionType {
+enum FromToTransactionType {
   fromWarehouseToEmployee('from_warehouse_to_employee'),
   fromEmployeeToEmployee('from_employee_to_employee');
 
-  const TransactionType(this.key);
+  const FromToTransactionType(this.key);
   final String key;
 }

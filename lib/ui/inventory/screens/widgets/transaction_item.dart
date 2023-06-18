@@ -25,7 +25,7 @@ class TransactionItem extends StatelessWidget {
       width: 345,
       radiusCircular: 6,
       backgroundColor:
-          transaction.type == TransactionType.fromEmployeeToEmployee.key
+          transaction.type == FromToTransactionType.fromEmployeeToEmployee.key
               ? Color(0xffCBFFAB)
               : Color(0xffFFC0C3),
       padding: symmetricEdgeInsets(vertical: 13, horizontal: 15),
@@ -130,7 +130,7 @@ class TransactionItem extends StatelessWidget {
                 alignment: Alignment.center,
                 child: TextWidget(
                   text: transaction.type ==
-                          TransactionType.fromWarehouseToEmployee.key
+                          FromToTransactionType.fromWarehouseToEmployee.key
                       ? transaction.warehouse!.name ?? ""
                       : "Me",
                   color: Colors.white,
@@ -151,7 +151,7 @@ class TransactionItem extends StatelessWidget {
                 alignment: Alignment.center,
                 child: TextWidget(
                   text: transaction.type ==
-                          TransactionType.fromWarehouseToEmployee.key
+                          FromToTransactionType.fromWarehouseToEmployee.key
                       ? "Me"
                       : transaction.employeeTo!.username ?? "",
                   color: Colors.white,
@@ -189,7 +189,7 @@ class TransactionItem extends StatelessWidget {
                   ),
                   TextWidget(
                     text: transaction.type ==
-                            TransactionType.fromEmployeeToEmployee.key
+                            FromToTransactionType.fromEmployeeToEmployee.key
                         ? "Sell"
                         : "Buy",
                     textSize: 13,

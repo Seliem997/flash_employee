@@ -51,6 +51,10 @@ class UserData {
   String? phone;
   String? countryCode;
   String? image;
+  String? stcId;
+  String? busNo;
+  String? mada;
+  double? rate;
   List<Duties>? duties;
 
   UserData(
@@ -71,6 +75,10 @@ class UserData {
     phone = json['phone'];
     countryCode = json['country_code'];
     image = json['image'];
+    mada = json['mada'];
+    stcId = json['stc_id'];
+    rate = json['rate'].toDouble();
+    busNo = json['bus_no'];
     if (json['duties'] != null) {
       duties = <Duties>[];
       json['duties'].forEach((v) {

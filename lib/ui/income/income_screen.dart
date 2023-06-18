@@ -39,9 +39,12 @@ class _IncomeScreenState extends State<IncomeScreen> {
     super.initState();
   }
 
-  void loadData() async {
+  void loadData({bool clearSearch = false}) async {
     final IncomeProvider incomeProvider =
         Provider.of<IncomeProvider>(context, listen: false);
+    if (!clearSearch) {
+      incomeProvider.resetIncomeScreen();
+    }
     incomeProvider.getIncomes();
     incomeProvider.getIncomeCounters();
   }
@@ -87,7 +90,8 @@ class _IncomeScreenState extends State<IncomeScreen> {
                     visible: searchController.text.isNotEmpty,
                     child: GestureDetector(
                       onTap: () {
-                        loadData();
+                        searchController.clear();
+                        loadData(clearSearch: true);
                       },
                       child: const Icon(
                         Icons.close,
@@ -108,7 +112,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
                           context: context,
                           builder: (context) {
                             return AttributeTypeSelector(
-                              title: "Status Type",
+                              title: "Payment Type",
                               choices: AttributeOption.incomePaymentOptions,
                               previouslySelectedChoice:
                                   incomeProvider.selectedPaymentType,
@@ -150,7 +154,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
                           labelText: incomeProvider.selectedDate != null
                               ? DateFormat(DFormat.dmyDecorated.key)
                                   .format(incomeProvider.selectedDate!)
-                              : 'Date filter',
+                              : 'Today',
                           textColor: AppColor.filterGrey,
                           backgroundButton: const Color(0xFFF0F0F0),
                           borderColor: AppColor.filterGrey,
@@ -414,42 +418,20 @@ class _IncomeScreenState extends State<IncomeScreen> {
                             ),
                           ],
                         ),
+                        verticalSpace(15),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const CustomContainer(
-                              height: 22,
-                              width: 22,
-                              padding: EdgeInsets.zero,
-                              radiusCircular: 0,
-                              backgroundColor: Colors.transparent,
-                              image: DecorationImage(
-                                  image: AssetImage("assets/images/share.png"),
-                                  fit: BoxFit.fitHeight),
+                            TextWidget(
+                              text: 'Total :  ',
+                              textSize: 14,
+                              fontWeight: MyFontWeight.semiBold,
                             ),
-                            Row(
-                              children: [
-                                Row(
-                                  children: [
-                                    TextWidget(
-                                      text: 'Total :  ',
-                                      textSize: 14,
-                                      fontWeight: MyFontWeight.semiBold,
-                                    ),
-                                    TextWidget(
-                                      text:
-                                          '${incomeProvider.incomeCountersData!.totalCash} SR',
-                                      textSize: 14,
-                                      fontWeight: MyFontWeight.semiBold,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Image.asset(
-                              'assets/images/Export Pdf.png',
-                              height: 42,
-                              width: 42,
+                            TextWidget(
+                              text:
+                                  '${incomeProvider.incomeCountersData!.totalCash} SR',
+                              textSize: 14,
+                              fontWeight: MyFontWeight.semiBold,
                             ),
                           ],
                         ),

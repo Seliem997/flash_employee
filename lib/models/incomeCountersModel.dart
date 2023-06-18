@@ -25,18 +25,18 @@ class IncomeCountersModel {
 }
 
 class IncomeCountersData {
-  int? totalCash;
-  int? totalMadaMachine;
-  int? totalMadaVisaPay;
-  int? totalStcPayLater;
-  int? totalStcPayNow;
-  int? totalApplePay;
-  int? totalWallet;
-  int? totalBankTransfer;
-  int? totalLeft;
-  int? totalInvoices;
-  int? totalCashLeft;
-  int? totalDay;
+  num? totalCash;
+  num? totalMadaMachine;
+  num? totalMadaVisaPay;
+  num? totalStcPayLater;
+  num? totalStcPayNow;
+  num? totalApplePay;
+  num? totalWallet;
+  num? totalBankTransfer;
+  num? totalLeft;
+  num? totalInvoices;
+  num? totalCashLeft;
+  num? totalDay;
 
   IncomeCountersData(
       {this.totalCash,

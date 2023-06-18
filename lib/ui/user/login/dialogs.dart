@@ -8,8 +8,11 @@ import 'package:flash_employee/utils/font_styles.dart';
 import 'package:flash_employee/utils/snack_bars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 import '../../../main.dart';
+import '../../../providers/user_provider.dart';
+import '../../../services/common_service.dart';
 import '../../widgets/custom_container.dart';
 import '../../widgets/custom_form_field.dart';
 import '../../widgets/spaces.dart';
@@ -116,6 +119,7 @@ class ProblemSigning extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final UserProvider userDataProvider = Provider.of<UserProvider>(context);
     return Dialog(
       child: CustomContainer(
         width: 321,
@@ -140,22 +144,34 @@ class ProblemSigning extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const CustomContainer(
+                CustomContainer(
+                  onTap: () {
+                    CommonService.callNumber(
+                        userDataProvider
+                            .problemSignInData!.data!.first.phoneSignProblem!,
+                        context);
+                  },
                   height: 35,
                   width: 35,
                   padding: EdgeInsets.zero,
                   backgroundColor: Colors.transparent,
-                  image: DecorationImage(
+                  image: const DecorationImage(
                       image: AssetImage("assets/images/telephone.png"),
                       fit: BoxFit.fitHeight),
                 ),
                 horizontalSpace(30),
-                const CustomContainer(
+                CustomContainer(
+                  onTap: () {
+                    CommonService.openWhatsapp(
+                        userDataProvider.problemSignInData!.data!.first
+                            .whatsappSignProblem!,
+                        context);
+                  },
                   height: 35,
                   width: 35,
                   padding: EdgeInsets.zero,
                   backgroundColor: Colors.transparent,
-                  image: DecorationImage(
+                  image: const DecorationImage(
                       image: AssetImage("assets/images/whatsapp.png"),
                       fit: BoxFit.fitHeight),
                 ),

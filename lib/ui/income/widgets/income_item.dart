@@ -1,7 +1,12 @@
+import 'package:change_case/change_case.dart';
+import 'package:flash_employee/main.dart';
 import 'package:flash_employee/models/incomesModel.dart';
+import 'package:flash_employee/ui/widgets/app_loader.dart';
 import 'package:flash_employee/ui/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
+import '../../../providers/requests_provider.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/font_styles.dart';
 import '../../widgets/custom_container.dart';
@@ -38,7 +43,7 @@ class IncomeItem extends StatelessWidget {
                       fontWeight: MyFontWeight.semiBold,
                     ),
                     TextWidget(
-                      text: 'FLASH154841965',
+                      text: '${income.requestId}',
                       textSize: 14,
                       fontWeight: MyFontWeight.medium,
                       color: AppColor.grey,
@@ -54,7 +59,9 @@ class IncomeItem extends StatelessWidget {
                       fontWeight: MyFontWeight.semiBold,
                     ),
                     TextWidget(
-                      text: 'Other services',
+                      text: income.basicServices!.isNotEmpty
+                          ? "Wash"
+                          : "Other Service",
                       textSize: 14,
                       fontWeight: MyFontWeight.medium,
                       color: AppColor.grey,
@@ -70,7 +77,7 @@ class IncomeItem extends StatelessWidget {
                       fontWeight: MyFontWeight.semiBold,
                     ),
                     TextWidget(
-                      text: 'Cash',
+                      text: '${income.payBy!.toCapitalCase()}',
                       textSize: 14,
                       fontWeight: MyFontWeight.medium,
                       color: AppColor.grey,
@@ -83,7 +90,7 @@ class IncomeItem extends StatelessWidget {
                     SvgPicture.asset('assets/svg/alarm.svg'),
                     horizontalSpace(15),
                     TextWidget(
-                      text: '03:15 PM',
+                      text: '${income.time} PM',
                       textSize: 14,
                       fontWeight: MyFontWeight.medium,
                       color: AppColor.grey,
@@ -100,7 +107,7 @@ class IncomeItem extends StatelessWidget {
                     ),
                     horizontalSpace(15),
                     TextWidget(
-                      text: 'Monday, 23 January 2023',
+                      text: '${income.date}',
                       textSize: 14,
                       fontWeight: MyFontWeight.medium,
                       color: AppColor.grey,
@@ -113,14 +120,26 @@ class IncomeItem extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                'assets/images/Export Pdf.png',
-                height: 42,
-                width: 42,
+              InkWell(
+                onTap: () async {
+                  final RequestsProvider requestsProvider =
+                      Provider.of<RequestsProvider>(context, listen: false);
+                  AppLoader.showLoader(context);
+                  await requestsProvider.getRequestDetails(
+                      reqId: income.id.toString());
+                  AppLoader.stopLoader();
+                  requestsProvider.savePdf(context);
+                },
+                child: Image.asset(
+                  'assets/images/Export Pdf.png',
+                  height: 42,
+                  width: 42,
+                  color: MyApp.themeMode(context) ? Colors.white : null,
+                ),
               ),
               verticalSpace(10),
               TextWidget(
-                text: '75 SR',
+                text: '${income.amount} SR',
                 fontWeight: MyFontWeight.bold,
                 textSize: 18,
               ),

@@ -70,12 +70,20 @@ class IncomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future searchIncomes(String requestIdOrCustomerName) async {
+  Future searchIncomes(String incomeId) async {
     loadingIncomes = true;
     incomes = [];
     notifyListeners();
     await incomeService
-        .getIncomes(requestIdOrCustomerName: requestIdOrCustomerName)
+        .getIncomes(
+            incomeId: incomeId,
+            paymentType: _selectedPaymentType == null ||
+                    _selectedPaymentType!.value == "all"
+                ? ""
+                : _selectedPaymentType!.value,
+            date: _selectedDate != null
+                ? DateFormat(DFormat.ymd.key).format(_selectedDate!)
+                : "")
         .then((value) {
       if (value.status == Status.success) {
         incomes = value.data as List<IncomeData>?;
@@ -83,5 +91,10 @@ class IncomeProvider extends ChangeNotifier {
     });
     loadingIncomes = false;
     notifyListeners();
+  }
+
+  void resetIncomeScreen() {
+    _selectedPaymentType = null;
+    _selectedDate = null;
   }
 }

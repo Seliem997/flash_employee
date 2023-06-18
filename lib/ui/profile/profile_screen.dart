@@ -145,8 +145,10 @@ class ProfileScreen extends StatelessWidget {
                               color: Colors.black,
                             ),
                             horizontalSpace(10),
-                            const TextWidget(
-                              text: "00013",
+                            TextWidget(
+                              text:
+                                  CacheHelper.returnData(key: CacheKey.busNo) ??
+                                      "Not Assigned",
                               textSize: 14,
                               fontWeight: FontWeight.w400,
                               color: Colors.black,
@@ -163,8 +165,10 @@ class ProfileScreen extends StatelessWidget {
                               color: Colors.black,
                             ),
                             horizontalSpace(10),
-                            const TextWidget(
-                              text: "26548742",
+                            TextWidget(
+                              text: CacheHelper.returnData(
+                                      key: CacheKey.madaMachineId) ??
+                                  "Not Assigned",
                               textSize: 14,
                               fontWeight: FontWeight.w400,
                               color: Colors.black,
@@ -181,8 +185,10 @@ class ProfileScreen extends StatelessWidget {
                               color: Colors.black,
                             ),
                             horizontalSpace(10),
-                            const TextWidget(
-                              text: "0013",
+                            TextWidget(
+                              text:
+                                  CacheHelper.returnData(key: CacheKey.stcId) ??
+                                      "Not Assigned",
                               textSize: 14,
                               fontWeight: FontWeight.w400,
                               color: Colors.black,
@@ -210,7 +216,8 @@ class ProfileScreen extends StatelessWidget {
                         ),
                         verticalSpace(16),
                         RatingBar.builder(
-                          initialRating: 3,
+                          initialRating:
+                              CacheHelper.returnData(key: CacheKey.rate) ?? 0,
                           minRating: 1,
                           direction: Axis.horizontal,
                           allowHalfRating: true,

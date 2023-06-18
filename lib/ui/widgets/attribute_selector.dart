@@ -58,7 +58,7 @@ class _AttributeTypeSelectorState extends State<AttributeTypeSelector> {
                 children: [
                   Center(
                     child: TextWidget(
-                      text: widget.title,
+                      text: widget.title.toCapitalCase(),
                       textSize: 16,
                       height: .9,
                       fontWeight: FontWeight.w500,

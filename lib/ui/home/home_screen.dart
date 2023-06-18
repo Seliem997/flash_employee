@@ -47,9 +47,12 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  void loadData() async {
+  void loadData({bool clearSearch = false}) async {
     final RequestsProvider requestsProvider =
         Provider.of<RequestsProvider>(context, listen: false);
+    if (!clearSearch) {
+      requestsProvider.resetRequestsScreen();
+    }
     await requestsProvider.getRequests();
   }
 
@@ -122,7 +125,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 visible: searchController.text.isNotEmpty,
                 child: GestureDetector(
                   onTap: () {
-                    loadData();
+                    searchController.clear();
+                    loadData(clearSearch: true);
                   },
                   child: const Icon(
                     Icons.close,
@@ -184,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       labelText: requestsProvider.selectedDate != null
                           ? DateFormat(DFormat.dmyDecorated.key)
                               .format(requestsProvider.selectedDate!)
-                          : 'Date filter',
+                          : 'Today',
                       textColor: AppColor.filterGrey,
                       backgroundButton: const Color(0xFFF0F0F0),
                       borderColor: AppColor.filterGrey,

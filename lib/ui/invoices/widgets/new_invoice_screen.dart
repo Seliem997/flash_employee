@@ -88,13 +88,13 @@ class _NewInvoiceScreenState extends State<NewInvoiceScreen> {
                               '${DateTime.now().year + 1}-12-30',
                             ),
                           ).then((value) {
-                            invoicesProvider.selectedDate = value;
+                            invoicesProvider.newInvoiceDate = value;
                           });
                         },
                         title: "Date",
-                        value: invoicesProvider.selectedDate != null
+                        value: invoicesProvider.newInvoiceDate != null
                             ? DateFormat(DFormat.dmy.key, LanguageKey.en.key)
-                                .format(invoicesProvider.selectedDate!)
+                                .format(invoicesProvider.newInvoiceDate!)
                             : "Today",
                         iconPath: "assets/images/calendar.png",
                       ),

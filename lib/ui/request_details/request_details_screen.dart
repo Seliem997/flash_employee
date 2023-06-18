@@ -532,8 +532,24 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                   height: 25,
                                                   width: 40,
                                                   radiusCircular: 3,
-                                                  backgroundColor: Color(int.parse(
-                                                      "0xff${requestsProvider.selectedRequest!.vehicleRequest!.color!.replaceAll("#", "")}")),
+                                                  backgroundColorDark:
+                                                      // Color(
+                                                      // int.parse(
+                                                      //     "0xff${requestsProvider.selectedRequest!.vehicleRequest!.color!.replaceAll("#", "")}")),
+                                                      Color(int.parse(
+                                                          requestsProvider
+                                                              .selectedRequest!
+                                                              .vehicleRequest!
+                                                              .color!)),
+                                                  backgroundColor:
+
+                                                      // Color(int.parse(
+                                                      //     "0xff${requestsProvider.selectedRequest!.vehicleRequest!.color!.replaceAll("#", "")}")),
+                                                      Color(int.parse(
+                                                          requestsProvider
+                                                              .selectedRequest!
+                                                              .vehicleRequest!
+                                                              .color!)),
                                                 )
                                               : const TextWidget(
                                                   text: "Not Selected")
@@ -1042,7 +1058,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
               ),
               horizontalSpace(25),
               if (requestsProvider.selectedRequest!.status ==
-                      StatusType.onTheWay2.key ||
+                      StatusType.onTheWay.key ||
                   requestsProvider.selectedRequest!.status ==
                       StatusType.pending.key)
                 DefaultButton(
@@ -1070,7 +1086,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
     String title = "";
     if (status == StatusType.pending.key) {
       title = "Start";
-    } else if (status == StatusType.onTheWay2.key) {
+    } else if (status == StatusType.onTheWay.key) {
       title = "Arrived";
     } else if (status == StatusType.arrived.key) {
       title = "Complete";

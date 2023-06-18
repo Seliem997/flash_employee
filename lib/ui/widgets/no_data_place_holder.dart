@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import '../../utils/colors.dart';
 
 class NoDataPlaceHolder extends StatelessWidget {
-  const NoDataPlaceHolder({Key? key, this.useExpand = true}) : super(key: key);
+  const NoDataPlaceHolder({Key? key, this.useExpand = true, this.title})
+      : super(key: key);
   final bool useExpand;
+  final String? title;
 
   @override
   Widget build(BuildContext context) {
@@ -13,15 +15,15 @@ class NoDataPlaceHolder extends StatelessWidget {
         ? Expanded(
             child: Container(
               alignment: Alignment.center,
-              child: const TextWidget(
-                text: 'No Data Available',
+              child: TextWidget(
+                text: title ?? 'No Data Available',
                 color: AppColor.grey,
               ),
             ),
           )
-        : const Center(
+        : Center(
             child: TextWidget(
-              text: 'No Data Available',
+              text: title ?? 'No Data Available',
               color: AppColor.grey,
             ),
           );

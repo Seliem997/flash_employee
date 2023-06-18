@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flash_employee/models/invoiceTypesModel.dart';
 import 'package:flash_employee/services/invoices_service.dart';
 import 'package:flash_employee/utils/enum/statuses.dart';
@@ -7,8 +10,13 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
+import '../models/attributeOptionModel.dart';
 import '../models/invoicesModel.dart';
 import '../models/loginModel.dart';
+import '../ui/request_details/widgets/pdf_viewer_screen.dart';
+import '../ui/widgets/app_loader.dart';
+import '../ui/widgets/navigate.dart';
+import '../utils/apis.dart';
 import '../utils/enum/date_formats.dart';
 import '../utils/enum/languages.dart';
 
@@ -17,13 +25,41 @@ class InvoicesProvider extends ChangeNotifier {
   List<InvoiceData>? invoices;
   List<InvoiceTypeData>? invoicesTypes;
   InvoiceTypeData? _selectedInvoiceTypeData;
-  DateTime? _selectedDate;
+  DateTime? _newInvoiceDate;
   TimeOfDay? _selectedTime;
   double invoiceAmount = 0;
   bool dateError = false;
   bool typeError = false;
   bool timeError = false;
   bool amountError = false;
+  bool _hideTotals = false;
+  AttributeOption? _selectedInvoiceCategory;
+  DateTime? _selectedDate;
+
+  DateTime? get selectedDate => _selectedDate;
+
+  set selectedDate(DateTime? value) {
+    _selectedDate = value;
+    getInvoices();
+  }
+
+  AttributeOption? get selectedInvoiceCategory => _selectedInvoiceCategory;
+
+  set selectedInvoiceCategory(AttributeOption? value) {
+    _selectedInvoiceCategory = value;
+    if (value != null) {
+      getInvoices();
+    }
+    notifyListeners();
+  }
+
+  bool get hideTotals => _hideTotals;
+
+  set hideTotals(bool value) {
+    _hideTotals = value;
+    notifyListeners();
+  }
+
   XFile? invoicePhoto;
 
   void uploadAttachment(ImageSource source) async {
@@ -40,10 +76,10 @@ class InvoicesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  DateTime? get selectedDate => _selectedDate;
+  DateTime? get newInvoiceDate => _newInvoiceDate;
 
-  set selectedDate(DateTime? value) {
-    _selectedDate = value;
+  set newInvoiceDate(DateTime? value) {
+    _newInvoiceDate = value;
     if (value != null) {
       dateError = false;
     }
@@ -68,7 +104,16 @@ class InvoicesProvider extends ChangeNotifier {
     loadingInvoices = true;
     totalInvoices = 0;
     notifyListeners();
-    await invoicesService.getInvoices().then((value) {
+    await invoicesService
+        .getInvoices(
+            category: _selectedInvoiceCategory == null ||
+                    _selectedInvoiceCategory!.value == "all"
+                ? ""
+                : _selectedInvoiceCategory!.value,
+            date: _selectedDate != null
+                ? DateFormat(DFormat.ymd.key).format(_selectedDate!)
+                : "")
+        .then((value) {
       // loadingInvoices = false;
       if (value.status == Status.success) {
         invoices = value.data as List<InvoiceData>?;
@@ -86,12 +131,35 @@ class InvoicesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future searchInvoices(String invoiceId) async {
+    loadingInvoices = true;
+    totalInvoices = 0;
+    notifyListeners();
+    await invoicesService
+        .getInvoices(
+            invoiceId: invoiceId,
+            category: _selectedInvoiceCategory == null ||
+                    _selectedInvoiceCategory!.value == "all"
+                ? ""
+                : _selectedInvoiceCategory!.value,
+            date: _selectedDate != null
+                ? DateFormat(DFormat.ymd.key).format(_selectedDate!)
+                : "")
+        .then((value) {
+      if (value.status == Status.success) {
+        invoices = value.data as List<InvoiceData>?;
+      }
+    });
+    loadingInvoices = false;
+    notifyListeners();
+  }
+
   Future<Status> addInvoice() async {
     Status status = Status.error;
     await invoicesService
         .addInvoice(
             date: DateFormat(DFormat.ymd.key, LanguageKey.en.key)
-                .format(_selectedDate!),
+                .format(_newInvoiceDate!),
             time: "${_selectedTime!.hour}:${_selectedTime!.minute}:00",
             invoiceTypeId: selectedInvoiceTypeData!.id.toString(),
             amount: invoiceAmount.toString())
@@ -108,7 +176,7 @@ class InvoicesProvider extends ChangeNotifier {
     amountError = false;
     loadingInvoiceTypes = true;
     _selectedInvoiceTypeData = null;
-    _selectedDate = null;
+    _newInvoiceDate = null;
     _selectedTime = null;
     invoicePhoto = null;
     invoiceAmount = 0;
@@ -135,7 +203,7 @@ class InvoicesProvider extends ChangeNotifier {
 
   bool checkValidation(BuildContext context) {
     bool isValid = true;
-    if (selectedDate == null) {
+    if (newInvoiceDate == null) {
       isValid = false;
       dateError = true;
       // CustomSnackBars.failureSnackBar(context, "Date Required!");
@@ -165,5 +233,30 @@ class InvoicesProvider extends ChangeNotifier {
     }
     notifyListeners();
     return isValid;
+  }
+
+  void downloadInvoice(BuildContext context, int index) async {
+    AppLoader.showLoader(context);
+    await Dio()
+        .download(Api.downloadInvoice(invoices![index].id!),
+            '/storage/emulated/0/Download/invoice${invoices![index].id!}.pdf')
+        .then((value) {
+      AppLoader.stopLoader();
+      if (value.statusCode == 200) {
+        CustomSnackBars.successSnackBar(context, "Downloaded Successfully");
+        navigateTo(
+            context,
+            PdfViewerPage(
+                path:
+                    '/storage/emulated/0/Download/invoice${invoices![index].id!}.pdf'));
+      } else {
+        CustomSnackBars.somethingWentWrongSnackBar(context);
+      }
+    });
+  }
+
+  void resetInvoicesScreen() {
+    _selectedInvoiceCategory = null;
+    _selectedDate = null;
   }
 }

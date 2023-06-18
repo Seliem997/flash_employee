@@ -8,11 +8,14 @@ import 'package:flash_employee/utils/enum/statuses.dart';
 import 'package:flash_employee/utils/snack_bars.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../events/global_event_bus.dart';
+import '../models/attributeOptionModel.dart';
 import '../models/inventoryModel.dart';
 import '../services/inventory_service.dart';
 import '../services/transactions_service.dart';
+import '../utils/enum/date_formats.dart';
 
 class TransactionsProvider extends ChangeNotifier {
   final TransactionsService transactionsService = TransactionsService();
@@ -30,6 +33,26 @@ class TransactionsProvider extends ChangeNotifier {
   bool loadingEmployees = true;
   bool loadingInventoryItems = false;
   bool loadingTransactions = false;
+
+  AttributeOption? _selectedTransactionType;
+  DateTime? _selectedDate;
+
+  DateTime? get selectedDate => _selectedDate;
+
+  set selectedDate(DateTime? value) {
+    _selectedDate = value;
+    loadTransactions();
+  }
+
+  AttributeOption? get selectedTransactionType => _selectedTransactionType;
+
+  set selectedTransactionType(AttributeOption? value) {
+    _selectedTransactionType = value;
+    if (value != null) {
+      loadTransactions();
+    }
+    notifyListeners();
+  }
 
   Future loadNewTransactionData() async {
     loadingReasons = true;
@@ -97,7 +120,39 @@ class TransactionsProvider extends ChangeNotifier {
     loadingTransactions = true;
     transactions = [];
     notifyListeners();
-    await transactionsService.getTransactions().then((value) {
+    await transactionsService
+        .getTransactions(
+            type: _selectedTransactionType == null ||
+                    _selectedTransactionType!.value == "all"
+                ? ""
+                : _selectedTransactionType!.value,
+            date: _selectedDate != null
+                ? DateFormat(DFormat.ymd.key).format(_selectedDate!)
+                : "")
+        .then((value) {
+      loadingTransactions = false;
+      if (value.status == Status.success) {
+        transactions = value.data as List<TransactionData>?;
+      }
+    });
+    notifyListeners();
+  }
+
+  Future searchTransactions(String transactionId) async {
+    loadingTransactions = true;
+    transactions = [];
+    notifyListeners();
+    await transactionsService
+        .getTransactions(
+            transactionId: transactionId,
+            type: _selectedTransactionType == null ||
+                    _selectedTransactionType!.value == "all"
+                ? ""
+                : _selectedTransactionType!.value,
+            date: _selectedDate != null
+                ? DateFormat(DFormat.ymd.key).format(_selectedDate!)
+                : "")
+        .then((value) {
       loadingTransactions = false;
       if (value.status == Status.success) {
         transactions = value.data as List<TransactionData>?;
@@ -186,5 +241,10 @@ class TransactionsProvider extends ChangeNotifier {
       });
     }
     notifyListeners();
+  }
+
+  void resetTransactionsScreen() {
+    _selectedTransactionType = null;
+    _selectedDate = null;
   }
 }

@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import '../base/service/base_service.dart';
 import '../models/invoicesModel.dart';
 import '../models/loginModel.dart';
+import '../models/notificationModel.dart';
 import '../models/requestResult.dart';
 import '../utils/apis.dart';
 import '../utils/cache_helper.dart';
@@ -17,22 +18,19 @@ import '../utils/enum/request_types.dart';
 import '../utils/enum/shared_preference_keys.dart';
 import '../utils/enum/statuses.dart';
 
-class IncomeService extends BaseService {
-  Future<ResponseResult> getIncomes(
-      {String incomeId = "", String paymentType = "", String date = ""}) async {
+class NotificationsService extends BaseService {
+  Future<ResponseResult> getNotifications() async {
     Status status = Status.error;
-    List<IncomeData>? incomes;
+    List<NotificationData>? notifications;
     try {
       await requestFutureData(
-          api: Api.getIncomes(
-              incomeId: incomeId, date: date, paymentType: paymentType),
-          // body: body,
+          api: Api.notifications,
           requestType: Request.get,
           withToken: true,
           onSuccess: (response) {
             if (response["status_code"] == 200) {
               status = Status.success;
-              incomes = IncomesModel.fromJson(response).data;
+              notifications = NotificationsModel.fromJson(response).data;
             } else {
               status = Status.error;
             }
@@ -41,34 +39,35 @@ class IncomeService extends BaseService {
       status = Status.error;
       logger.e("Error in getting incomes $e");
     }
-    return ResponseResult(status, incomes);
+    return ResponseResult(status, notifications);
   }
 
-  Future<ResponseResult> getIncomeCounters({String date = ""}) async {
-    Status status = Status.error;
-    IncomeCountersData? incomeCounters;
+  Future<ResponseResult> seeNotification({required int notificationId}) async {
+    Status result = Status.error;
+    Map<String, String> headers = const {'Content-Type': 'application/json'};
     Map<String, dynamic> body = {
-      "employee_id": CacheHelper.returnData(key: CacheKey.userId),
-      "date_time": DateFormat(DFormat.ymd.key).format(DateTime.now())
+      "id": notificationId,
     };
+
     try {
       await requestFutureData(
-          api: Api.getIncomeCounters(date: date),
+          api: Api.seeNotification,
+          requestType: Request.post,
           body: body,
-          requestType: Request.get,
+          jsonBody: true,
           withToken: true,
-          onSuccess: (response) {
-            if (response["status_code"] == 200) {
-              status = Status.success;
-              incomeCounters = IncomeCountersModel.fromJson(response).data;
-            } else {
-              status = Status.error;
+          headers: headers,
+          onSuccess: (response) async {
+            try {
+              result = Status.success;
+            } catch (e) {
+              logger.e("Error seeing notification \n$e");
             }
           });
     } catch (e) {
-      status = Status.error;
-      logger.e("Error in getting income counters $e");
+      result = Status.error;
+      log("Error in seeing notification$e");
     }
-    return ResponseResult(status, incomeCounters);
+    return ResponseResult(result, "");
   }
 }

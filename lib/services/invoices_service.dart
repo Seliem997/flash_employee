@@ -13,13 +13,18 @@ import '../utils/enum/shared_preference_keys.dart';
 import '../utils/enum/statuses.dart';
 
 class InvoicesService extends BaseService {
-  Future<ResponseResult> getInvoices() async {
+  Future<ResponseResult> getInvoices(
+      {String invoiceId = "", String category = "", String date = ""}) async {
     Status status = Status.error;
     List<InvoiceData>? invoices;
     // Map<String, dynamic> body = {"nameOrEmail": email};
     try {
       await requestFutureData(
-          api: Api.getInvoices,
+          api: Api.getInvoices(
+            date: date,
+            invoiceId: invoiceId,
+            category: category,
+          ),
           // body: body,
           requestType: Request.get,
           withToken: true,

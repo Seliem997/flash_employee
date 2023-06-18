@@ -39,9 +39,9 @@ class InventoryItemData {
   int? taxId;
   Tax? tax;
   int? warehouseId;
-  Warehouse? warehouse;
+  // Warehouse? warehouse;
   int? employeeId;
-  Employee? employee;
+  // Employee? employee;
   int? countTypeId;
   CountType? countType;
   String? createdAt;
@@ -55,9 +55,9 @@ class InventoryItemData {
       this.taxId,
       this.tax,
       this.warehouseId,
-      this.warehouse,
+      // this.warehouse,
       this.employeeId,
-      this.employee,
+      // this.employee,
       this.countTypeId,
       this.countType,
       this.createdAt,
@@ -71,13 +71,13 @@ class InventoryItemData {
     taxId = json['tax_id'];
     tax = json['tax'] != null ? new Tax.fromJson(json['tax']) : null;
     warehouseId = json['warehouse_id'];
-    warehouse = json['warehouse'] != null
-        ? Warehouse.fromJson(json['warehouse'])
-        : null;
+    // warehouse = json['warehouse'] != null
+    //     ? Warehouse.fromJson(json['warehouse'])
+    //     : null;
     employeeId = json['employee_id'];
-    employee = json['employee'] != null
-        ? new Employee.fromJson(json['employee'])
-        : null;
+    // employee = json['employee'] != null
+    //     ? new Employee.fromJson(json['employee'])
+    //     : null;
     countTypeId = json['count_type_id'];
     countType = json['count_type'] != null
         ? new CountType.fromJson(json['count_type'])

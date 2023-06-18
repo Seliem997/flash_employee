@@ -14,11 +14,3 @@ enum StatusType {
   const StatusType(this.key);
   final String key;
 }
-
-enum PaymentType {
-  stc('STC Pay'),
-  cash('cash');
-
-  const PaymentType(this.key);
-  final String key;
-}

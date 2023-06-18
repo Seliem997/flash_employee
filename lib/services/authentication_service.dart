@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:flash_employee/models/problemSignInProblem.dart';
 import 'package:flash_employee/models/profileModel.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -13,6 +14,8 @@ import '../utils/enum/request_types.dart';
 import '../utils/enum/shared_preference_keys.dart';
 import '../utils/enum/statuses.dart';
 import 'package:http/http.dart' as http;
+
+import 'firebase_service.dart';
 
 class AuthenticationService extends BaseService {
   Future<ResponseResult> forgotPassword(String email) async {
@@ -138,7 +141,11 @@ class AuthenticationService extends BaseService {
     Status status = Status.error;
     late LoginModel loginModel;
     UserData? userData;
-    Map<String, dynamic> body = {"username": userName, "password": password};
+    Map<String, dynamic> body = {
+      "username": userName,
+      "password": password,
+      "fcm_token": await FirebaseService.getDeviceToken()
+    };
     try {
       await requestFutureData(
           api: Api.login,
@@ -167,8 +174,20 @@ class AuthenticationService extends BaseService {
                   key: CacheKey.empId, value: userData!.fwId);
               await CacheHelper.saveData(
                   key: CacheKey.countryCode, value: userData!.countryCode);
+              await CacheHelper.saveData(
+                  key: CacheKey.busNo, value: userData!.busNo);
+              await CacheHelper.saveData(
+                  key: CacheKey.stcId, value: userData!.stcId);
+              await CacheHelper.saveData(
+                  key: CacheKey.madaMachineId, value: userData!.mada);
+              await CacheHelper.saveData(
+                  key: CacheKey.rate, value: userData!.rate);
             } else if (response["status_code"] == 400) {
-              status = Status.invalidEmailOrPass;
+              if (response["message"].toString().contains("not active")) {
+                status = Status.employeeNotActive;
+              } else {
+                status = Status.invalidEmailOrPass;
+              }
             }
           });
     } catch (e) {
@@ -204,6 +223,14 @@ class AuthenticationService extends BaseService {
                   key: CacheKey.countryCode, value: userData!.countryCode);
               await CacheHelper.saveData(
                   key: CacheKey.empId, value: userData!.fwId);
+              await CacheHelper.saveData(
+                  key: CacheKey.busNo, value: userData!.busNo);
+              await CacheHelper.saveData(
+                  key: CacheKey.stcId, value: userData!.stcId);
+              await CacheHelper.saveData(
+                  key: CacheKey.madaMachineId, value: userData!.mada);
+              await CacheHelper.saveData(
+                  key: CacheKey.rate, value: userData!.rate);
             } else if (response["status_code"] == 400) {
               status = Status.invalidEmailOrPass;
             }
@@ -213,6 +240,30 @@ class AuthenticationService extends BaseService {
       logger.e("Error Signing in $e");
     }
     return ResponseResult(status, userData);
+  }
+
+  Future<ResponseResult> getProblemSignIn() async {
+    Status status = Status.error;
+    ProblemSignInData? problemSignInData;
+    try {
+      await requestFutureData(
+          api: Api.getProblemSignIn,
+          withToken: true,
+          requestType: Request.get,
+          onSuccess: (response) async {
+            if (response["status_code"] == 200) {
+              status = Status.success;
+              problemSignInData =
+                  ProblemSignInModel.fromJson(response).problemSignInData!;
+            } else if (response["status_code"] == 400) {
+              status = Status.invalidEmailOrPass;
+            }
+          });
+    } catch (e) {
+      status = Status.error;
+      logger.e("Error Signing in $e");
+    }
+    return ResponseResult(status, problemSignInData);
   }
 
   void signOut() async {
