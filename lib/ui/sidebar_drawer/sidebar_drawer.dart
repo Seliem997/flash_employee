@@ -18,11 +18,12 @@ import '../../providers/user_provider.dart';
 import '../../utils/colors.dart';
 import '../../utils/font_styles.dart';
 import '../contact_us/contact_us_screen.dart';
+import '../home/home_screen.dart';
 import '../invoices/invoices_screen.dart';
 import '../widgets/custom_container.dart';
 import '../widgets/spaces.dart';
 import '../widgets/text_widget.dart';
-import 'logout_dialog.dart';
+import 'widgets/logout_dialog.dart';
 
 class SidebarDrawer extends StatefulWidget {
   const SidebarDrawer({Key? key}) : super(key: key);
@@ -352,8 +353,7 @@ class _SidebarDrawerState extends State<SidebarDrawer> {
                   ),
                   onToggle: (val) {
                     MyApp.changeThemeMode(context);
-                    setState(() {});
-                    Restart.restartApp();
+                    navigateAndFinish(context, HomeScreen());
                   },
                 ),
               ],

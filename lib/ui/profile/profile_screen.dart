@@ -57,7 +57,7 @@ class ProfileScreen extends StatelessWidget {
                   actions: [
                     IconButton(
                         onPressed: () {
-                          navigateAndFinish(context, HomeScreen());
+                          navigateAndFinish(context, const HomeScreen());
                         },
                         icon: const Icon(Icons.home))
                   ],
@@ -76,9 +76,6 @@ class ProfileScreen extends StatelessWidget {
                       if (image != null) {
                         await userDataProvider.updateProfilePicture(
                             context, image);
-                        // profileProvider.setUserTempImage(image);
-                        // await navigateTo(context, CropSample());
-                        // setState(() {});
                       }
                     });
                   },

@@ -56,16 +56,19 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         Provider.of<RequestsProvider>(context);
     return Scaffold(
       appBar: requestsProvider.selectedRequest != null
-          ? AppBar(
-              title: TextWidget(
-                text: "Request :${requestsProvider.selectedRequest!.id}",
-                textSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-              elevation: 0,
-              leading: const BackButton(),
-              centerTitle: true,
-            )
+          ? requestsProvider.loadingRequestDetails
+              ? null
+              : AppBar(
+                  title: TextWidget(
+                    text:
+                        "Request :${requestsProvider.selectedRequest!.requestId}",
+                    textSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  elevation: 0,
+                  leading: const BackButton(),
+                  centerTitle: true,
+                )
           : null,
       body: requestsProvider.loadingRequestDetails
           ? const DataLoader()
@@ -151,7 +154,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       horizontalSpace(10),
                                       TextWidget(
                                         text:
-                                            "${requestsProvider.selectedRequest!.id}",
+                                            "${requestsProvider.selectedRequest!.requestId}",
                                         textSize: 14,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black,
@@ -356,8 +359,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       CustomContainer(
                                         onTap: () {
                                           CommonService.callNumber(
-                                              requestsProvider.selectedRequest!
-                                                  .customer!.phone!,
+                                              "0${requestsProvider.selectedRequest!.customer!.phone!}",
                                               context);
                                         },
                                         height: 35,

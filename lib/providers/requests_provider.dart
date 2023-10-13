@@ -9,11 +9,13 @@ import 'package:flash_employee/utils/enum/status_types.dart';
 import 'package:flash_employee/utils/enum/statuses.dart';
 import 'package:flash_employee/utils/snack_bars.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'dart:io';
 import 'package:pdf/widgets.dart';
+import 'package:share_plus/share_plus.dart';
 import '../events/events/request_updated_event.dart';
 import '../events/global_event_bus.dart';
 import '../models/manufacturersModel.dart';
@@ -71,6 +73,7 @@ class RequestsProvider extends ChangeNotifier {
     loadingExtraServices = true;
     loadingOtherServices = true;
     extraServicesList = [];
+    selectedExtraServices = [];
     notifyListeners();
     if (selectedRequest!.basicServices!.isNotEmpty) {
       _selectedServiceType = ServiceType.wash;
@@ -353,7 +356,7 @@ class RequestsProvider extends ChangeNotifier {
               child: pw.Row(
                   mainAxisAlignment: pw.MainAxisAlignment.center,
                   children: <pw.Widget>[
-                    pw.Text('Request: ${selectedRequest?.id ?? "01"}',
+                    pw.Text('Request: ${selectedRequest?.requestId ?? "01"}',
                         textScaleFactor: 2),
                   ])),
           pw.Header(
@@ -395,7 +398,7 @@ class RequestsProvider extends ChangeNotifier {
                       pw.Text('Request ID: ',
                           style: pw.TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold)),
-                      pw.Text(selectedRequest?.id.toString() ?? "01",
+                      pw.Text(selectedRequest?.requestId.toString() ?? "01",
                           style: pw.TextStyle(
                             fontSize: 14,
                           )),
@@ -620,15 +623,23 @@ class RequestsProvider extends ChangeNotifier {
                               style: pw.TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold)),
                           pw.SizedBox(height: 2),
-                          pw.Text("Nano Shampoo",
-                              style: pw.TextStyle(
-                                fontSize: 14,
-                              )),
-                          pw.SizedBox(height: 2),
-                          pw.Text("Full Chair Washing",
-                              style: pw.TextStyle(
-                                fontSize: 14,
-                              )),
+                          pw.ListView.separated(
+                            padding: pw.EdgeInsets.zero,
+                            // shrinkWrap: true,
+                            // physics:
+                            // const NeverScrollableScrollPhysics(),
+                            itemCount: selectedRequest!.extraServices!.length,
+                            itemBuilder: (context, index) {
+                              return pw.Text(
+                                "${selectedRequest!.extraServices![index].title}",
+                                style: pw.TextStyle(
+                                  fontSize: 14,
+                                ),
+                              );
+                            },
+                            separatorBuilder: (context, index) =>
+                                pw.SizedBox(height: 5),
+                          )
                         ]),
                     pw.SizedBox(height: 5),
                     pw.Row(
@@ -650,10 +661,12 @@ class RequestsProvider extends ChangeNotifier {
     ));
     final String dir = (await getApplicationDocumentsDirectory()).path;
 
-    final file = File('$dir/req${selectedRequest?.id}.pdf');
+    final file = File('$dir/req${selectedRequest?.requestId}.pdf');
     await file.writeAsBytes(await pdf.save());
-    navigateTo(
-        context, PdfViewerPage(path: '$dir/req${selectedRequest?.id}.pdf'));
+    // navigateTo(
+    //     context, PdfViewerPage(path: '$dir/req${selectedRequest?.requestId}.pdf'));
+    Share.shareXFiles([XFile('$dir/req${selectedRequest?.requestId}.pdf')],
+        text: "");
   }
 
   ServiceData? get selectedBasicService => _selectedBasicService;

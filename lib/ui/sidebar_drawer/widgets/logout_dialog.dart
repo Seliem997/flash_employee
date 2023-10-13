@@ -1,14 +1,14 @@
 import 'package:flash_employee/utils/colors.dart';
 import 'package:flutter/material.dart';
 
-import '../../services/authentication_service.dart';
-import '../../utils/font_styles.dart';
-import '../user/login/login.dart';
-import '../widgets/custom_button.dart';
-import '../widgets/custom_container.dart';
-import '../widgets/navigate.dart';
-import '../widgets/spaces.dart';
-import '../widgets/text_widget.dart';
+import '../../../services/authentication_service.dart';
+import '../../../utils/font_styles.dart';
+import '../../user/login/login.dart';
+import '../../widgets/custom_button.dart';
+import '../../widgets/custom_container.dart';
+import '../../widgets/navigate.dart';
+import '../../widgets/spaces.dart';
+import '../../widgets/text_widget.dart';
 
 class LogOutDialog extends StatelessWidget {
   const LogOutDialog({Key? key}) : super(key: key);

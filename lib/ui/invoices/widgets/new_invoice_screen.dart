@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flash_employee/events/events/invoice_added_event.dart';
 import 'package:flash_employee/models/invoiceTypesModel.dart';
+import 'package:flash_employee/ui/invoices/widgets/no_image_warning_dialog.dart';
 import 'package:flash_employee/ui/widgets/app_loader.dart';
 import 'package:flash_employee/ui/widgets/custom_button.dart';
 import 'package:flash_employee/ui/widgets/data_loader.dart';
@@ -338,19 +339,28 @@ class _NewInvoiceScreenState extends State<NewInvoiceScreen> {
                       width: double.infinity,
                       onPressed: () async {
                         if (invoicesProvider.checkValidation(context)) {
-                          AppLoader.showLoader(context);
-                          await invoicesProvider.addInvoice().then((value) {
-                            AppLoader.stopLoader();
-                            if (value == Status.success) {
-                              CustomSnackBars.successSnackBar(
-                                  context, "Invoice Added!");
-                              mainEventBus.fire(InvoiceAddedEvent());
-                              Navigator.pop(context, true);
-                            } else {
-                              CustomSnackBars.somethingWentWrongSnackBar(
-                                  context);
-                            }
-                          });
+                          if (invoicesProvider.invoicePhoto == null) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return const NoImageDialog();
+                              },
+                            );
+                          } else {
+                            AppLoader.showLoader(context);
+                            await invoicesProvider.addInvoice().then((value) {
+                              AppLoader.stopLoader();
+                              if (value == Status.success) {
+                                CustomSnackBars.successSnackBar(
+                                    context, "Invoice Added!");
+                                mainEventBus.fire(InvoiceAddedEvent());
+                                Navigator.pop(context, true);
+                              } else {
+                                CustomSnackBars.somethingWentWrongSnackBar(
+                                    context);
+                              }
+                            });
+                          }
                         }
                       },
                     ),

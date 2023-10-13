@@ -25,7 +25,7 @@ class IncomeCountersModel {
 }
 
 class IncomeCountersData {
-  num? totalCash;
+  String? totalCash;
   num? totalMadaMachine;
   num? totalMadaVisaPay;
   num? totalStcPayLater;

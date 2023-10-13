@@ -54,12 +54,12 @@ class _MyAppState extends State<MyApp> {
 
   void changeThemeMode() {
     isDarkMode = !isDarkMode;
-    setState(() {});
     if (isDarkMode) {
       CacheHelper.saveData(key: CacheKey.darkMode, value: true);
     } else {
       CacheHelper.saveData(key: CacheKey.darkMode, value: false);
     }
+    setState(() {});
   }
 
   @override

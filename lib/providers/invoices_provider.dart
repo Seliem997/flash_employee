@@ -25,7 +25,7 @@ class InvoicesProvider extends ChangeNotifier {
   List<InvoiceData>? invoices;
   List<InvoiceTypeData>? invoicesTypes;
   InvoiceTypeData? _selectedInvoiceTypeData;
-  DateTime? _newInvoiceDate;
+  DateTime? _newInvoiceDate = DateTime.now();
   TimeOfDay? _selectedTime;
   double invoiceAmount = 0;
   bool dateError = false;
@@ -176,7 +176,7 @@ class InvoicesProvider extends ChangeNotifier {
     amountError = false;
     loadingInvoiceTypes = true;
     _selectedInvoiceTypeData = null;
-    _newInvoiceDate = null;
+    _newInvoiceDate = DateTime.now();
     _selectedTime = null;
     invoicePhoto = null;
     invoiceAmount = 0;

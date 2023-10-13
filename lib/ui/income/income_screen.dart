@@ -137,23 +137,21 @@ class _IncomeScreenState extends State<IncomeScreen> {
                           padding: symmetricEdgeInsets(horizontal: 10),
                           icon: SvgPicture.asset('assets/svg/filter.svg'),
                           onPressed: () {
-                            showDatePicker(
+                            showDateRangePicker(
                                     context: context,
-                                    initialDate: incomeProvider.selectedDate ??
-                                        DateTime.now(),
                                     firstDate:
                                         DateTime.utc(DateTime.now().year),
-                                    lastDate:
-                                        DateTime.now().add(Duration(days: 180)))
+                                    lastDate: DateTime.now()
+                                        .add(const Duration(days: 180)))
                                 .then((value) {
                               if (value != null) {
-                                incomeProvider.selectedDate = value;
+                                incomeProvider.selectedDateFrom = value.start;
+                                incomeProvider.selectedDateTo = value.end;
                               }
                             });
                           },
-                          labelText: incomeProvider.selectedDate != null
-                              ? DateFormat(DFormat.dmyDecorated.key)
-                                  .format(incomeProvider.selectedDate!)
+                          labelText: incomeProvider.selectedDateFrom != null
+                              ? "${DateFormat(DFormat.dmDecorated.key).format(incomeProvider.selectedDateFrom!)} -> ${DateFormat(DFormat.dmDecorated.key).format(incomeProvider.selectedDateTo!)}"
                               : 'Today',
                           textColor: AppColor.filterGrey,
                           backgroundButton: const Color(0xFFF0F0F0),
@@ -162,10 +160,11 @@ class _IncomeScreenState extends State<IncomeScreen> {
                         ),
                         horizontalSpace(5),
                         Visibility(
-                          visible: incomeProvider.selectedDate != null,
+                          visible: incomeProvider.selectedDateFrom != null,
                           child: CustomContainer(
                               onTap: () {
-                                incomeProvider.selectedDate = null;
+                                incomeProvider.selectedDateFrom = null;
+                                incomeProvider.selectedDateTo = null;
                               },
                               radiusCircular: 5,
                               height: 40,
@@ -245,7 +244,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
                                     ),
                                     TextWidget(
                                       text:
-                                          '${incomeProvider.incomeCountersData!.totalCash} SR',
+                                          '${incomeProvider.incomeCountersData?.totalCash ?? "0"} SR',
                                       textSize: 14,
                                       fontWeight: MyFontWeight.medium,
                                       color: AppColor.grey,
@@ -262,7 +261,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
                                     ),
                                     TextWidget(
                                       text:
-                                          '${incomeProvider.incomeCountersData!.totalMadaMachine} SR',
+                                          '${incomeProvider.incomeCountersData?.totalMadaMachine ?? 0} SR',
                                       textSize: 14,
                                       fontWeight: MyFontWeight.medium,
                                       color: AppColor.grey,
@@ -279,7 +278,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
                                     ),
                                     TextWidget(
                                       text:
-                                          '${incomeProvider.incomeCountersData!.totalMadaVisaPay} SR',
+                                          '${incomeProvider.incomeCountersData?.totalMadaVisaPay ?? 0} SR',
                                       textSize: 14,
                                       fontWeight: MyFontWeight.medium,
                                       color: AppColor.grey,
@@ -296,7 +295,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
                                     ),
                                     TextWidget(
                                       text:
-                                          '${incomeProvider.incomeCountersData!.totalWallet} SR',
+                                          '${incomeProvider.incomeCountersData?.totalWallet ?? 0} SR',
                                       textSize: 14,
                                       fontWeight: MyFontWeight.medium,
                                       color: AppColor.pendingButton,
@@ -314,7 +313,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
                                     ),
                                     TextWidget(
                                       text:
-                                          '${incomeProvider.incomeCountersData!.totalInvoices} SR',
+                                          '${incomeProvider.incomeCountersData?.totalInvoices ?? 0} SR',
                                       textSize: 14,
                                       fontWeight: MyFontWeight.medium,
                                       color: AppColor.pendingButton,
@@ -336,7 +335,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
                                     ),
                                     TextWidget(
                                       text:
-                                          '${incomeProvider.incomeCountersData!.totalStcPayNow} SR',
+                                          '${incomeProvider.incomeCountersData?.totalStcPayNow ?? 0} SR',
                                       textSize: 14,
                                       fontWeight: MyFontWeight.medium,
                                       color: AppColor.grey,
@@ -353,7 +352,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
                                     ),
                                     TextWidget(
                                       text:
-                                          '${incomeProvider.incomeCountersData!.totalApplePay} SR',
+                                          '${incomeProvider.incomeCountersData?.totalApplePay ?? 0} SR',
                                       textSize: 14,
                                       fontWeight: MyFontWeight.medium,
                                       color: AppColor.grey,
@@ -370,7 +369,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
                                     ),
                                     TextWidget(
                                       text:
-                                          '${incomeProvider.incomeCountersData!.totalBankTransfer} SR',
+                                          '${incomeProvider.incomeCountersData?.totalBankTransfer ?? 0} SR',
                                       textSize: 14,
                                       fontWeight: MyFontWeight.medium,
                                       color: AppColor.grey,
@@ -388,7 +387,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
                                     ),
                                     TextWidget(
                                       text:
-                                          '${incomeProvider.incomeCountersData!.totalLeft} SR',
+                                          '${incomeProvider.incomeCountersData?.totalLeft ?? 0} SR',
                                       textSize: 14,
                                       fontWeight: MyFontWeight.medium,
                                       color: Color(0xff008A0E),
@@ -406,7 +405,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
                                     ),
                                     TextWidget(
                                       text:
-                                          '${incomeProvider.incomeCountersData!.totalCashLeft} SR',
+                                          '${incomeProvider.incomeCountersData?.totalCashLeft ?? 0} SR',
                                       textSize: 14,
                                       fontWeight: MyFontWeight.medium,
                                       color: Color(0xff011BA3),
@@ -429,7 +428,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
                             ),
                             TextWidget(
                               text:
-                                  '${incomeProvider.incomeCountersData!.totalCash} SR',
+                                  '${incomeProvider.incomeCountersData?.totalDay ?? 0} SR',
                               textSize: 14,
                               fontWeight: MyFontWeight.semiBold,
                             ),

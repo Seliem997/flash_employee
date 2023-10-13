@@ -19,13 +19,19 @@ import '../utils/enum/statuses.dart';
 
 class IncomeService extends BaseService {
   Future<ResponseResult> getIncomes(
-      {String incomeId = "", String paymentType = "", String date = ""}) async {
+      {String incomeId = "",
+      String paymentType = "",
+      String dateFrom = "",
+      String dateTo = ""}) async {
     Status status = Status.error;
     List<IncomeData>? incomes;
     try {
       await requestFutureData(
           api: Api.getIncomes(
-              incomeId: incomeId, date: date, paymentType: paymentType),
+              incomeId: incomeId,
+              dateFrom: dateFrom,
+              dateTo: dateTo,
+              paymentType: paymentType),
           // body: body,
           requestType: Request.get,
           withToken: true,
@@ -44,7 +50,8 @@ class IncomeService extends BaseService {
     return ResponseResult(status, incomes);
   }
 
-  Future<ResponseResult> getIncomeCounters({String date = ""}) async {
+  Future<ResponseResult> getIncomeCounters(
+      {String dateFrom = "", String dateTo = ""}) async {
     Status status = Status.error;
     IncomeCountersData? incomeCounters;
     Map<String, dynamic> body = {
@@ -53,7 +60,7 @@ class IncomeService extends BaseService {
     };
     try {
       await requestFutureData(
-          api: Api.getIncomeCounters(date: date),
+          api: Api.getIncomeCounters(dateFrom: dateFrom, dateTo: dateTo),
           body: body,
           requestType: Request.get,
           withToken: true,

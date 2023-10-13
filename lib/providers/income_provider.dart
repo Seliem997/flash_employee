@@ -17,14 +17,22 @@ class IncomeProvider extends ChangeNotifier {
   bool loadingIncomeCounters = true;
 
   AttributeOption? _selectedPaymentType;
-  DateTime? _selectedDate;
+  DateTime? _selectedDateFrom;
+  DateTime? _selectedDateTo;
 
-  DateTime? get selectedDate => _selectedDate;
+  DateTime? get selectedDateTo => _selectedDateTo;
 
-  set selectedDate(DateTime? value) {
-    _selectedDate = value;
+  set selectedDateTo(DateTime? value) {
+    _selectedDateTo = value;
     getIncomes();
     getIncomeCounters();
+  }
+
+  DateTime? get selectedDateFrom => _selectedDateFrom;
+
+  set selectedDateFrom(DateTime? value) {
+    _selectedDateFrom = value;
+    notifyListeners();
   }
 
   AttributeOption? get selectedPaymentType => _selectedPaymentType;
@@ -46,8 +54,11 @@ class IncomeProvider extends ChangeNotifier {
                     _selectedPaymentType!.value == "all"
                 ? ""
                 : _selectedPaymentType!.value,
-            date: _selectedDate != null
-                ? DateFormat(DFormat.ymd.key).format(_selectedDate!)
+            dateFrom: _selectedDateFrom != null
+                ? DateFormat(DFormat.ymd.key).format(_selectedDateFrom!)
+                : "",
+            dateTo: _selectedDateTo != null
+                ? DateFormat(DFormat.ymd.key).format(_selectedDateTo!)
                 : "")
         .then((value) {
       loadingIncomes = false;
@@ -61,7 +72,15 @@ class IncomeProvider extends ChangeNotifier {
   Future getIncomeCounters() async {
     loadingIncomeCounters = true;
     notifyListeners();
-    await incomeService.getIncomeCounters().then((value) {
+    await incomeService
+        .getIncomeCounters(
+            dateFrom: _selectedDateFrom != null
+                ? DateFormat(DFormat.ymd.key).format(_selectedDateFrom!)
+                : "",
+            dateTo: _selectedDateTo != null
+                ? DateFormat(DFormat.ymd.key).format(_selectedDateTo!)
+                : "")
+        .then((value) {
       loadingIncomeCounters = false;
       if (value.status == Status.success) {
         incomeCountersData = value.data as IncomeCountersData?;
@@ -81,8 +100,11 @@ class IncomeProvider extends ChangeNotifier {
                     _selectedPaymentType!.value == "all"
                 ? ""
                 : _selectedPaymentType!.value,
-            date: _selectedDate != null
-                ? DateFormat(DFormat.ymd.key).format(_selectedDate!)
+            dateFrom: _selectedDateFrom != null
+                ? DateFormat(DFormat.ymd.key).format(_selectedDateFrom!)
+                : "",
+            dateTo: _selectedDateTo != null
+                ? DateFormat(DFormat.ymd.key).format(_selectedDateTo!)
                 : "")
         .then((value) {
       if (value.status == Status.success) {
@@ -95,6 +117,6 @@ class IncomeProvider extends ChangeNotifier {
 
   void resetIncomeScreen() {
     _selectedPaymentType = null;
-    _selectedDate = null;
+    _selectedDateFrom = null;
   }
 }

@@ -24,10 +24,12 @@ class TransactionItem extends StatelessWidget {
       },
       width: 345,
       radiusCircular: 6,
-      backgroundColor:
-          transaction.type == FromToTransactionType.fromEmployeeToEmployee.key
-              ? Color(0xffCBFFAB)
-              : Color(0xffFFC0C3),
+      backgroundColor: transaction.type ==
+                  FromToTransactionType.fromEmployeeToEmployee.key ||
+              transaction.type ==
+                  FromToTransactionType.fromWarehouseToEmployee.key
+          ? Color(0xffCBFFAB)
+          : Color(0xffFFC0C3),
       padding: symmetricEdgeInsets(vertical: 13, horizontal: 15),
       child: Column(
         children: [
@@ -189,9 +191,13 @@ class TransactionItem extends StatelessWidget {
                   ),
                   TextWidget(
                     text: transaction.type ==
-                            FromToTransactionType.fromEmployeeToEmployee.key
-                        ? "Sell"
-                        : "Buy",
+                                FromToTransactionType
+                                    .fromEmployeeToEmployee.key ||
+                            transaction.type ==
+                                FromToTransactionType
+                                    .fromWarehouseToEmployee.key
+                        ? "Add"
+                        : "Remove",
                     textSize: 13,
                     fontWeight: MyFontWeight.medium,
                     color: AppColor.grey,

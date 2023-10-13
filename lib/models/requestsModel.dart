@@ -21,10 +21,10 @@ class RequestData {
   int? id;
   String? requestId;
   String? status;
-  Null? rate;
+  dynamic? rate;
   String? payBy;
-  Null? feedback;
-  Null? packageId;
+  dynamic? feedback;
+  dynamic? packageId;
   String? amount;
   dynamic tax;
   String? discountAmount;

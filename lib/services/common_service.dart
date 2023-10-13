@@ -154,7 +154,7 @@ class CommonService extends BaseService {
   }
 
   static Future<void> openWhatsapp(String phone, BuildContext context) async {
-    var whatsappUrl = "whatsapp://send?phone=+2${phone}";
+    var whatsappUrl = "whatsapp://send?phone=+966${phone}";
     try {
       launch(whatsappUrl);
     } catch (e) {

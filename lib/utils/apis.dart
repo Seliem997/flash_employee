@@ -61,10 +61,11 @@ class Api {
   static const String getInventoryItems = "$baseUrl/employee/my-materials";
   static const String getContacts = "$baseUrl/employee/contactus";
 
-  static String getIncomeCounters({String date = ""}) {
+  static String getIncomeCounters({String dateFrom = "", String dateTo = ""}) {
     String path = "$baseUrl/employee/getIncomeDetails";
-    if (date.isNotEmpty) {
-      path += "${path.contains("?") ? "&" : "?"}date=$date";
+    if (dateFrom.isNotEmpty && dateTo.isNotEmpty) {
+      path += "${path.contains("?") ? "&" : "?"}date=$dateFrom";
+      path += "${path.contains("?") ? "&" : "?"}date2=$dateTo";
     } else {
       path +=
           "${path.contains("?") ? "&" : "?"}date=${DateFormat(DFormat.ymd.key).format(DateTime.now())}";
@@ -106,7 +107,10 @@ class Api {
   static const String notifications = "$baseUrl/employee/my-notification";
   static const String seeNotification = "$baseUrl/employee/see_notifications";
   static String getIncomes(
-      {String incomeId = "", String paymentType = "", String date = ""}) {
+      {String incomeId = "",
+      String paymentType = "",
+      String dateFrom = "",
+      String dateTo = ""}) {
     String path = "$baseUrl/employee/incomes";
     if (incomeId.isNotEmpty) {
       path += "${path.contains("?") ? "&" : "?"}search=$incomeId";
@@ -114,8 +118,9 @@ class Api {
     if (paymentType.isNotEmpty) {
       path += "${path.contains("?") ? "&" : "?"}pay_by=$paymentType";
     }
-    if (date.isNotEmpty) {
-      path += "${path.contains("?") ? "&" : "?"}date=$date";
+    if (dateFrom.isNotEmpty && dateTo.isNotEmpty) {
+      path += "${path.contains("?") ? "&" : "?"}date=$dateFrom";
+      path += "${path.contains("?") ? "&" : "?"}date2=$dateTo";
     } else {
       path +=
           "${path.contains("?") ? "&" : "?"}date=${DateFormat(DFormat.ymd.key).format(DateTime.now())}";

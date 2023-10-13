@@ -73,6 +73,7 @@ dependencies:
   flutter_local_notifications: ^8.2.0
   permission_handler: ^10.2.0
   dio: ^5.2.1
+  gif: ^2.2.0
 
 dev_dependencies:
   flutter_test:

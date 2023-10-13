@@ -1,50 +1,18 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
-
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../base/service/base_service.dart';
-import '../firebase_options.dart';
-import '../models/requestResult.dart';
 import '../providers/firebase_provider.dart';
-import '../utils/apis.dart';
-import '../utils/enum/request_types.dart';
-import '../utils/enum/statuses.dart';
 
 class FirebaseService extends BaseService {
   static FirebaseMessaging? _firebaseMessaging;
   static FirebaseMessaging get firebaseMessaging =>
       FirebaseService._firebaseMessaging ?? FirebaseMessaging.instance;
-
-  Future<ResponseResult> updateFCMToken() async {
-    Status status = Status.error;
-
-    try {
-      await requestFutureData(
-          api: "Api.updateFCMToken",
-          requestType: Request.post,
-          body: {"fcm_token": await FirebaseMessaging.instance.getToken()},
-          jsonBody: true,
-          withToken: true,
-          headers: {'Content-Type': 'application/json'},
-          onSuccess: (response) async {
-            try {
-              status = Status.success;
-            } catch (e) {
-              logger.e("Error updating token\n$e");
-            }
-          });
-    } catch (e) {
-      status = Status.error;
-      logger.e("Error in updating token $e");
-    }
-    return ResponseResult(status, "");
-  }
 
   static Future<void> initializeFirebase() async {
     // await Firebase.initializeApp(
