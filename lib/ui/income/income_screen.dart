@@ -139,12 +139,14 @@ class _IncomeScreenState extends State<IncomeScreen> {
                           onPressed: () {
                             showDateRangePicker(
                                     context: context,
+
                                     firstDate:
                                         DateTime.utc(DateTime.now().year),
                                     lastDate: DateTime.now()
                                         .add(const Duration(days: 180)))
                                 .then((value) {
                               if (value != null) {
+                                print('object');
                                 incomeProvider.selectedDateFrom = value.start;
                                 incomeProvider.selectedDateTo = value.end;
                               }
@@ -189,7 +191,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
                       child: ListView(
                         padding: EdgeInsets.zero,
                         children: [
-                          incomeProvider.loadingIncomes
+                          incomeProvider.loadingIncomes || incomeProvider.incomes ==null
                               ? const DataLoader()
                               : incomeProvider.incomes!.isEmpty
                                   ? const NoDataPlaceHolder(useExpand: false)

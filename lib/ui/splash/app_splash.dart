@@ -85,7 +85,7 @@ class _AppSplashState extends State<AppSplash> with TickerProviderStateMixin {
                   : Gif(
                       height: 400,
                       image:
-                          const AssetImage('assets/images/logo_animation.gif'),
+                          const AssetImage('assets/images/logo.png'),
                       controller:
                           _controller, // if duration and fps is null, original gif fps will be used.
                       autostart: Autostart.once,

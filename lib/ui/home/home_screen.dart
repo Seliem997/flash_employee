@@ -11,12 +11,16 @@ import 'package:flash_employee/ui/widgets/no_data_place_holder.dart';
 import 'package:flash_employee/ui/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../events/events/request_updated_event.dart';
 import '../../events/global_event_bus.dart';
+import '../../generated/l10n.dart';
 import '../../providers/requests_provider.dart';
 import '../../providers/user_provider.dart';
+import '../../utils/app_loader.dart';
 import '../../utils/colors.dart';
 import '../../utils/enum/date_formats.dart';
 import '../../utils/font_styles.dart';
@@ -50,10 +54,64 @@ class _HomeScreenState extends State<HomeScreen> {
   void loadData({bool clearSearch = false}) async {
     final RequestsProvider requestsProvider =
         Provider.of<RequestsProvider>(context, listen: false);
+    await _handleLocationPermission();
+    await _getCurrentLocation();
     if (!clearSearch) {
       requestsProvider.resetRequestsScreen();
     }
     await requestsProvider.getRequests();
+  }
+
+
+  _getCurrentLocation() async {
+    final RequestsProvider requestsProvider =
+    Provider.of<RequestsProvider>(context, listen: false);
+    try {
+      AppLoader.showLoader(context);
+      await Geolocator.getCurrentPosition().then((Position position) async {
+        AppLoader.stopLoader();
+        requestsProvider.currentPosition = position;
+        requestsProvider.mapController.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: LatLng(position.latitude, position.longitude),
+              zoom: 15.5,
+            ),
+          ),
+        );
+      }).catchError((e) {
+        log("Error in accessing current location $e");
+      });
+    } catch (e) {
+      log("Error in accessing current location $e");
+    }
+  }
+
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('location Services Are Disabled Please Enable The Services')));
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('location Permissions Are Denied')));
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('location Permissions Are Permanently Denied We Cannot Request Permissions')));
+      return false;
+    }
+    return true;
   }
 
   @override
@@ -92,14 +150,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   textSize: MyFontSize.size14,
                   color: const Color(0xFF292D32),
                 ),
-                Spacer(),
+                const Spacer(),
                 InkWell(
                   child: ExpandTapWidget(
                       onTap: () {
-                        navigateTo(context, NotificationsScreen());
+                        navigateTo(context, const NotificationsScreen());
                       },
-                      tapPadding: EdgeInsets.all(30.0),
-                      child: Icon(Icons.notifications_none, size: 20)),
+                      tapPadding: const EdgeInsets.all(30.0),
+                      child: const Icon(Icons.notifications_none, size: 20)),
                 )
               ],
             ),
@@ -178,7 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     DateTime.now(),
                                 firstDate: DateTime.utc(DateTime.now().year),
                                 lastDate:
-                                    DateTime.now().add(Duration(days: 180)))
+                                    DateTime.now().add(const Duration(days: 180)))
                             .then((value) {
                           if (value != null) {
                             requestsProvider.selectedDate = value;
@@ -204,10 +262,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           radiusCircular: 5,
                           height: 40,
                           borderColor: Colors.red[200],
-                          padding: EdgeInsets.all(3),
+                          padding: const EdgeInsets.all(3),
                           backgroundColor: AppColor.borderGray,
                           child:
-                              Icon(Icons.close, color: Colors.red, size: 17)),
+                              const Icon(Icons.close, color: Colors.red, size: 17)),
                     )
                   ],
                 ),
@@ -229,7 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           : requestsProvider.requests!.isEmpty
                               ? const NoDataPlaceHolder(useExpand: false)
                               : ListView.separated(
-                                  physics: NeverScrollableScrollPhysics(),
+                                  physics: const NeverScrollableScrollPhysics(),
                                   padding: symmetricEdgeInsets(vertical: 10),
                                   shrinkWrap: true,
                                   itemCount: requestsProvider.requests!.length,

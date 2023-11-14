@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:invert_colors/invert_colors.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../events/events/invoice_added_event.dart';
@@ -47,7 +48,11 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
   void loadData() async {
     final RequestsProvider requestsProvider =
         Provider.of<RequestsProvider>(context, listen: false);
-    await requestsProvider.getRequestDetails();
+    if(requestsProvider.currentPosition != null){
+      await requestsProvider.getRequestDetails(lat: requestsProvider.currentPosition!.latitude, long: requestsProvider.currentPosition!.longitude);
+    }else{
+      CustomSnackBars.failureSnackBar(context, 'Please enable your location');
+    }
   }
 
   @override
@@ -90,28 +95,28 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                             Align(
                               alignment: Alignment.centerLeft,
                               child: CustomContainer(
-                                width: 120,
-                                height: 32,
+                                margin: EdgeInsets.symmetric(horizontal: 10.w),
                                 radiusCircular: 3,
-                                backgroundColor:
-                                    requestsProvider.selectedRequest!.status ==
-                                            StatusType.completed.key
-                                        ? AppColor.completedButton
-                                        : requestsProvider
-                                                    .selectedRequest!.status ==
-                                                StatusType.pending.key
-                                            ? AppColor.pendingButton
-                                            : AppColor.onTheWayButton,
-                                backgroundColorDark:
-                                    requestsProvider.selectedRequest!.status ==
-                                            StatusType.completed.key
-                                        ? AppColor.completedButton
-                                        : requestsProvider
-                                                    .selectedRequest!.status ==
-                                                StatusType.pending.key
-                                            ? AppColor.pendingButton
-                                            : AppColor.onTheWayButton,
-                                padding: EdgeInsets.zero,
+
+                                backgroundColor: requestsProvider.selectedRequest!.status == StatusType.completed.key
+                                    ? Colors.green
+                                    : requestsProvider.selectedRequest!.status == StatusType.pending.key
+                                    ? Colors.orange
+                                    : requestsProvider.selectedRequest!.status == StatusType.arrived.key ||  requestsProvider.selectedRequest!.status == StatusType.onTheWay.key
+                                    ? Colors.yellow
+                                    : requestsProvider.selectedRequest!.status == StatusType.canceled.key
+                                    ? Colors.red
+                                    : AppColor.textRed,
+                                backgroundColorDark: requestsProvider.selectedRequest!.status == StatusType.completed.key
+                                    ? Colors.green
+                                    : requestsProvider.selectedRequest!.status == StatusType.pending.key
+                                    ? Colors.orange
+                                    : requestsProvider.selectedRequest!.status == StatusType.arrived.key ||  requestsProvider.selectedRequest!.status == StatusType.onTheWay.key
+                                    ? Colors.yellow
+                                    : requestsProvider.selectedRequest!.status == StatusType.canceled.key
+                                    ? Colors.red
+                                    : AppColor.textRed,
+                                padding: EdgeInsets.symmetric(vertical: 1.h),
                                 alignment: Alignment.center,
                                 child: TextWidget(
                                   text:
@@ -137,7 +142,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                   ? AppColor.darkScaffoldColor
                                   : const Color(0xffE0E0E0),
                               padding: symmetricEdgeInsets(
-                                  horizontal: 20, vertical: 20),
+                                  horizontal: 10, vertical: 20),
                               borderColor: Colors.grey,
                               alignment: Alignment.center,
                               child: Column(
@@ -146,7 +151,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                   Row(
                                     children: [
                                       const TextWidget(
-                                        text: "Request ID :",
+                                        text: "Request ID:",
                                         textSize: 18,
                                         fontWeight: FontWeight.w500,
                                         color: Colors.black,
@@ -154,7 +159,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       horizontalSpace(10),
                                       TextWidget(
                                         text:
-                                            "${requestsProvider.selectedRequest!.requestId}",
+                                            "${requestsProvider.selectedRequest!.id}",
                                         textSize: 14,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black,
@@ -165,7 +170,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                   Row(
                                     children: [
                                       const TextWidget(
-                                        text: "Date :",
+                                        text: "Date:",
                                         textSize: 18,
                                         fontWeight: FontWeight.w500,
                                         color: Colors.black,
@@ -173,7 +178,25 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       horizontalSpace(10),
                                       TextWidget(
                                         text:
-                                            "${requestsProvider.selectedRequest!.date}",
+                                            "${requestsProvider.selectedRequest!.slotsDate}",
+                                        textSize: 13,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.black,
+                                      ),
+                                    ],
+                                  ),
+                                  verticalSpace(16),
+                                  Row(
+                                    children: [
+                                      const TextWidget(
+                                        text: "Time:",
+                                        textSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black,
+                                      ),
+                                      horizontalSpace(10),
+                                      TextWidget(
+                                        text: requestsProvider.selectedRequest!.slots !=null ? requestsProvider.selectedRequest!.slots!.isNotEmpty ? '${requestsProvider.selectedRequest!.slots![0].startAt}' : '${requestsProvider.selectedRequest!.time}': '${requestsProvider.selectedRequest!.time}',
                                         textSize: 14,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black,
@@ -184,18 +207,19 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                   Row(
                                     children: [
                                       const TextWidget(
-                                        text: "Time :",
+                                        text: "Distance:",
                                         textSize: 18,
                                         fontWeight: FontWeight.w500,
                                         color: Colors.black,
                                       ),
                                       horizontalSpace(10),
-                                      TextWidget(
-                                        text:
-                                            "${requestsProvider.selectedRequest!.time}",
-                                        textSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.black,
+                                      Expanded(
+                                        child: TextWidget(
+                                          text: double.parse( requestsProvider.selectedRequest!.distance!.toString()).toStringAsFixed(2),
+                                          textSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -235,7 +259,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       horizontalSpace(10),
                                       TextWidget(
                                         text: requestsProvider
-                                            .selectedRequest!.customer!.id
+                                            .selectedRequest!.customer!.fwid
                                             .toString(),
                                         textSize: 14,
                                         fontWeight: FontWeight.w400,
@@ -288,10 +312,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                                   EdgeInsets
                                                                       .zero,
                                                               image: DecorationImage(
-                                                                  image: CachedNetworkImageProvider(requestsProvider
-                                                                      .selectedRequest!
-                                                                      .locationRequest!
-                                                                      .image!))),
+                                                                  image: CachedNetworkImageProvider(
+                                                                      '${requestsProvider.selectedRequest!.locationRequest?.image}'
+                                                                  ))),
                                                         ],
                                                       ),
                                                     ));
@@ -301,10 +324,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                           padding: EdgeInsets.zero,
                                           image: DecorationImage(
                                               image: CachedNetworkImageProvider(
-                                                  requestsProvider
-                                                      .selectedRequest!
-                                                      .locationRequest!
-                                                      .image!))),
+                                                  '${requestsProvider.selectedRequest!.locationRequest?.image}'))),
                                       horizontalSpace(65),
                                       CustomContainer(
                                         onTap: () {
@@ -425,7 +445,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       horizontalSpace(10),
                                       TextWidget(
                                         text:
-                                            "${requestsProvider.selectedRequest!.vehicleRequest!.vehicleTypeName}",
+                                            "${requestsProvider.selectedRequest!.vehicleRequest?.vehicleTypeName}",
                                         textSize: 14,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black,
@@ -451,7 +471,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                   ),
                                   verticalSpace(16),
                                   if (requestsProvider.selectedRequest!
-                                          .vehicleRequest!.vehicleTypeId !=
+                                          .vehicleRequest?.vehicleTypeId !=
                                       2)
                                     Column(
                                       children: [
@@ -466,7 +486,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                             horizontalSpace(10),
                                             TextWidget(
                                               text:
-                                                  "${requestsProvider.selectedRequest!.vehicleRequest!.subVehicleTypeName}",
+                                                  "${requestsProvider.selectedRequest!.vehicleRequest?.subVehicleTypeName}",
                                               textSize: 14,
                                               fontWeight: FontWeight.w400,
                                               color: Colors.black,
@@ -487,7 +507,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       horizontalSpace(10),
                                       TextWidget(
                                         text:
-                                            "${requestsProvider.selectedRequest!.vehicleRequest!.manufacturerName}",
+                                            "${requestsProvider.selectedRequest!.vehicleRequest?.manufacturerName}",
                                         textSize: 14,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black,
@@ -506,7 +526,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       horizontalSpace(10),
                                       TextWidget(
                                         text:
-                                            "${requestsProvider.selectedRequest!.vehicleRequest!.vehicleModelName}",
+                                            "${requestsProvider.selectedRequest!.vehicleRequest?.vehicleModelName}",
                                         textSize: 14,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black,
@@ -528,7 +548,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                           ),
                                           verticalSpace(10),
                                           requestsProvider.selectedRequest!
-                                                      .vehicleRequest!.color !=
+                                                      .vehicleRequest?.color !=
                                                   null
                                               ? CustomContainer(
                                                   height: 25,
@@ -590,7 +610,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                     padding: EdgeInsets.zero,
                                                     child: TextWidget(
                                                       text:
-                                                          "${requestsProvider.selectedRequest!.vehicleRequest!.lettersInArabic}",
+                                                          "${requestsProvider.selectedRequest!.vehicleRequest?.lettersInArabic}",
                                                       textSize: 10,
                                                       colorDark: Colors.black,
                                                     ),
@@ -607,7 +627,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                     alignment: Alignment.center,
                                                     child: TextWidget(
                                                       text:
-                                                          "${requestsProvider.selectedRequest!.vehicleRequest!.letters}",
+                                                          "${requestsProvider.selectedRequest!.vehicleRequest?.letters}",
                                                       textSize: 10,
                                                       colorDark: Colors.black,
                                                     ),
@@ -624,7 +644,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                     alignment: Alignment.center,
                                                     child: TextWidget(
                                                       text:
-                                                          "${requestsProvider.selectedRequest!.vehicleRequest!.numbers}",
+                                                          "${requestsProvider.selectedRequest!.vehicleRequest?.numbers}",
                                                       textSize: 10,
                                                       colorDark: Colors.black,
                                                     ),
@@ -641,7 +661,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                                     alignment: Alignment.center,
                                                     child: TextWidget(
                                                       text:
-                                                          "${requestsProvider.selectedRequest!.vehicleRequest!.numbers}",
+                                                          "${requestsProvider.selectedRequest!.vehicleRequest?.numbers}",
                                                       textSize: 10,
                                                       colorDark: Colors.black,
                                                     ),
@@ -726,8 +746,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       ),
                                       horizontalSpace(10),
                                       TextWidget(
-                                        text:
-                                            "${requestsProvider.selectedRequest!.services![0].title}",
+                                        text: requestsProvider.selectedRequest!.services !=null
+                                            ? requestsProvider.selectedRequest!.services!.isNotEmpty
+                                            ? "${requestsProvider.selectedRequest!.services![0].title}" : 'Monthly Package'
+                                            : 'Monthly Package',
                                         textSize: 14,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black,
@@ -761,7 +783,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                           itemBuilder: (context, index) {
                                             return TextWidget(
                                               text:
-                                                  "${requestsProvider.selectedRequest!.extraServices![index].title}",
+                                                  "${requestsProvider.selectedRequest!.extraServices![index].count} ${requestsProvider.selectedRequest!.extraServices![index].title}",
                                               textSize: 14,
                                               fontWeight: FontWeight.w400,
                                               color: Colors.black,
@@ -825,8 +847,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                         color: Colors.black,
                                       ),
                                       horizontalSpace(10),
-                                      const TextWidget(
-                                        text: "Cash",
+                                      TextWidget(
+                                        text: "${requestsProvider.selectedRequest!.payBy}",
                                         textSize: 14,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black,
@@ -843,8 +865,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                         color: Colors.black,
                                       ),
                                       horizontalSpace(10),
-                                      const TextWidget(
-                                        text: "200 SR",
+                                      TextWidget(
+                                        text: "${requestsProvider.selectedRequest!.amount} SR",
                                         textSize: 14,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black,
@@ -861,8 +883,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                         color: Colors.black,
                                       ),
                                       horizontalSpace(10),
-                                      const TextWidget(
-                                        text: "30 SR",
+                                      TextWidget(
+                                        text: "${requestsProvider.selectedRequest!.tax} SR",
                                         textSize: 14,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black,
@@ -880,7 +902,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       ),
                                       horizontalSpace(10),
                                       TextWidget(
-                                        text: "0 SR",
+                                        text: "${requestsProvider.selectedRequest!.discountAmount} SR",
                                         textSize: 14,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.red[800]!,
@@ -897,8 +919,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                         color: Colors.black,
                                       ),
                                       horizontalSpace(10),
-                                      const TextWidget(
-                                        text: "214.50 SR",
+                                      TextWidget(
+                                        text: "${requestsProvider.selectedRequest!.totalAmount} SR",
                                         textSize: 18,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black,

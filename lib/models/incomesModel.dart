@@ -21,10 +21,10 @@ class IncomeData {
   int? id;
   String? requestId;
   String? status;
-  String? rate;
+  dynamic rate;
   String? payBy;
   String? feedback;
-  String? packageId;
+  dynamic packageId;
   String? amount;
   String? lateTime;
   String? actualTime;

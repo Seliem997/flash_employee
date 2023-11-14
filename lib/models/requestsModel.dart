@@ -21,10 +21,11 @@ class RequestData {
   int? id;
   String? requestId;
   String? status;
-  dynamic? rate;
+  dynamic distance;
+  dynamic rate;
   String? payBy;
-  dynamic? feedback;
-  dynamic? packageId;
+  dynamic feedback;
+  dynamic packageId;
   String? amount;
   dynamic tax;
   String? discountAmount;
@@ -32,6 +33,7 @@ class RequestData {
   String? totalDuration;
   String? time;
   String? date;
+  String? slotsDate;
   Customer? customer;
   City? city;
   Employee? employee;
@@ -41,11 +43,13 @@ class RequestData {
   List<Services>? extraServices;
   List<Services>? basicServices;
   List<Services>? otherServices;
+  List<Slots>? slots;
 
   RequestData(
       {this.id,
       this.requestId,
       this.status,
+      this.distance,
       this.rate,
       this.payBy,
       this.feedback,
@@ -57,15 +61,19 @@ class RequestData {
       this.totalDuration,
       this.time,
       this.date,
-      this.customer,
+        this.slotsDate,
+        this.customer,
       this.city,
       this.employee,
-      this.services});
+      this.services,
+        this.slots
+      });
 
   RequestData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     requestId = json['request_id'];
     status = json['status'];
+    distance = json['distance'];
     rate = json['rate'];
     payBy = json['pay_by'];
     feedback = json['feedback'];
@@ -77,6 +85,7 @@ class RequestData {
     totalDuration = json['total_duration'];
     time = json['time'];
     date = json['date'];
+    slotsDate = json['slots_date'];
     customer = json['customer'] != null
         ? new Customer.fromJson(json['customer'])
         : null;
@@ -114,19 +123,27 @@ class RequestData {
         basicServices!.add(Services.fromJson(v));
       });
     }
+    if (json['slots'] != null) {
+      slots = <Slots>[];
+      json['slots'].forEach((v) {
+        slots!.add(Slots.fromJson(v));
+      });
+    }
   }
 }
 
 class Customer {
   int? id;
+  String? fwid;
   String? name;
   String? phone;
   List<Location>? location;
 
-  Customer({this.id, this.name, this.location});
+  Customer({this.id, this.fwid, this.name, this.location});
 
   Customer.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    fwid = json['fwid'];
     name = json['name'];
     phone = json['phone'];
     if (json['location'] != null) {
@@ -345,6 +362,51 @@ class Services {
     data['type'] = this.type;
     data['duration'] = this.duration;
     data['countable'] = this.countable;
+    return data;
+  }
+}
+
+class Slots {
+  int? id;
+  String? startAt;
+  String? endAt;
+  int? employeeId;
+  int? shiftId;
+  String? status;
+  int? gapTime;
+  String? createdAt;
+
+  Slots(
+      {this.id,
+        this.startAt,
+        this.endAt,
+        this.employeeId,
+        this.shiftId,
+        this.status,
+        this.gapTime,
+        this.createdAt});
+
+  Slots.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    startAt = json['start_at'];
+    endAt = json['end_at'];
+    employeeId = json['employee_id'];
+    shiftId = json['shift_id'];
+    status = json['status'];
+    gapTime = json['gap_time'];
+    createdAt = json['created_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['id'] = this.id;
+    data['start_at'] = this.startAt;
+    data['end_at'] = this.endAt;
+    data['employee_id'] = this.employeeId;
+    data['shift_id'] = this.shiftId;
+    data['status'] = this.status;
+    data['gap_time'] = this.gapTime;
+    data['created_at'] = this.createdAt;
     return data;
   }
 }

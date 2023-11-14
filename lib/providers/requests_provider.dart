@@ -9,6 +9,8 @@ import 'package:flash_employee/utils/enum/status_types.dart';
 import 'package:flash_employee/utils/enum/statuses.dart';
 import 'package:flash_employee/utils/snack_bars.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -22,8 +24,6 @@ import '../models/manufacturersModel.dart';
 import '../models/servicesModel.dart';
 import '../models/vehiclesModelsModel.dart';
 import '../services/vehicle_service.dart';
-import '../ui/request_details/widgets/pdf_viewer_screen.dart';
-import '../ui/widgets/navigate.dart';
 
 import 'package:pdf/widgets.dart' as pw;
 
@@ -52,6 +52,7 @@ class RequestsProvider extends ChangeNotifier {
   DateTime? _selectedDate;
 
   DateTime? get selectedDate => _selectedDate;
+
 
   set selectedDate(DateTime? value) {
     _selectedDate = value;
@@ -162,7 +163,6 @@ class RequestsProvider extends ChangeNotifier {
       loadingRequests = false;
       if (value.status == Status.success) {
         requests = value.data as List<RequestData>?;
-        // requests!.addAll(value.data as List<RequestData>);
       }
     });
     notifyListeners();
@@ -193,18 +193,19 @@ class RequestsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future getRequestDetails({String? reqId}) async {
+  Future getRequestDetails({String? reqId, double? lat, double? long,}) async {
     loadingRequestDetails = true;
     _editingMode = false;
     notifyListeners();
     await requestsService
-        .getRequestDetails(reqId ?? selectedRequestId!)
+        .getRequestDetails(reqId ?? selectedRequestId!, lat, long)
         .then((value) {
       loadingRequestDetails = false;
       if (value.status == Status.success) {
         selectedRequest = value.data as RequestData?;
       }
     });
+
     notifyListeners();
   }
 
@@ -348,7 +349,7 @@ class RequestsProvider extends ChangeNotifier {
 
     pdf.addPage(pw.MultiPage(
       pageFormat: PdfPageFormat.a4,
-      margin: pw.EdgeInsets.all(32),
+      margin: const pw.EdgeInsets.all(32),
       build: (pw.Context context) {
         return <pw.Widget>[
           pw.Header(
@@ -371,17 +372,16 @@ class RequestsProvider extends ChangeNotifier {
                       decoration: pw.BoxDecoration(
                           color: selectedRequest!.status ==
                                   StatusType.completed.key
-                              ? PdfColor.fromInt(AppColor.completedButton.value)
+                              ? PdfColor.fromInt(Colors.green.value)
                               : selectedRequest!.status ==
                                       StatusType.pending.key
-                                  ? PdfColor.fromInt(
-                                      AppColor.pendingButton.value)
-                                  : PdfColor.fromInt(
-                                      AppColor.onTheWayButton.value),
+                                  ? PdfColor.fromInt(Colors.orange.value)
+                                  : selectedRequest!.status == StatusType.arrived.key || selectedRequest!.status == StatusType.onTheWay.key
+                              ? PdfColor.fromInt(Colors.yellow.value) : PdfColor.fromInt(Colors.red.value),
                           borderRadius: pw.BorderRadius.circular(3)),
                       alignment: pw.Alignment.center,
                       child: pw.Text("${selectedRequest!.status}",
-                          style: pw.TextStyle(
+                          style: const pw.TextStyle(
                               fontSize: 15, color: PdfColors.white)),
                     ),
                   ])),
@@ -390,7 +390,7 @@ class RequestsProvider extends ChangeNotifier {
                   color: PdfColor.fromHex("E0E0E0"),
                   border: pw.Border.all(color: PdfColors.grey),
                   borderRadius: pw.BorderRadius.circular(5)),
-              padding: pw.EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+              padding: const pw.EdgeInsets.symmetric(horizontal: 15, vertical: 15),
               child: pw.Column(children: [
                 pw.Row(
                     mainAxisAlignment: pw.MainAxisAlignment.start,
@@ -399,7 +399,19 @@ class RequestsProvider extends ChangeNotifier {
                           style: pw.TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold)),
                       pw.Text(selectedRequest?.requestId.toString() ?? "01",
+                          style: const pw.TextStyle(
+                            fontSize: 14,
+                          )),
+                    ]),
+                pw.SizedBox(height: 5),
+                pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.start,
+                    children: <pw.Widget>[
+                      pw.Text('employee name: ',
                           style: pw.TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                      pw.Text(selectedRequest?.employee?.name.toString() ?? "Employee",
+                          style: const pw.TextStyle(
                             fontSize: 14,
                           )),
                     ]),
@@ -410,8 +422,8 @@ class RequestsProvider extends ChangeNotifier {
                       pw.Text('Date: ',
                           style: pw.TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold)),
-                      pw.Text(selectedRequest?.date ?? "1/5/2023",
-                          style: pw.TextStyle(fontSize: 14)),
+                      pw.Text(selectedRequest?.slotsDate ?? "00/00/2050",
+                          style: const pw.TextStyle(fontSize: 14)),
                     ]),
                 pw.SizedBox(height: 5),
                 pw.Row(
@@ -420,8 +432,8 @@ class RequestsProvider extends ChangeNotifier {
                       pw.Text('Time: ',
                           style: pw.TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold)),
-                      pw.Text(selectedRequest?.time ?? "12:00 AM",
-                          style: pw.TextStyle(fontSize: 14)),
+                      pw.Text(selectedRequest?.slots?[0].startAt ?? "00:00 AM",
+                          style: const pw.TextStyle(fontSize: 14)),
                     ]),
               ])),
           pw.SizedBox(height: 20),
@@ -432,7 +444,7 @@ class RequestsProvider extends ChangeNotifier {
                   color: PdfColor.fromHex("E0E0E0"),
                   border: pw.Border.all(color: PdfColors.grey),
                   borderRadius: pw.BorderRadius.circular(5)),
-              padding: pw.EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+              padding: const pw.EdgeInsets.symmetric(horizontal: 15, vertical: 15),
               child: pw.Column(children: [
                 pw.Row(
                     mainAxisAlignment: pw.MainAxisAlignment.start,
@@ -440,8 +452,8 @@ class RequestsProvider extends ChangeNotifier {
                       pw.Text('Customer ID: ',
                           style: pw.TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold)),
-                      pw.Text(selectedRequest?.customer?.id.toString() ?? "1",
-                          style: pw.TextStyle(
+                      pw.Text(selectedRequest?.customer?.fwid.toString() ?? "1",
+                          style: const pw.TextStyle(
                             fontSize: 14,
                           )),
                     ]),
@@ -453,7 +465,17 @@ class RequestsProvider extends ChangeNotifier {
                           style: pw.TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold)),
                       pw.Text(selectedRequest?.customer?.phone ?? "",
-                          style: pw.TextStyle(fontSize: 14)),
+                          style: const pw.TextStyle(fontSize: 14)),
+                    ]),
+                pw.SizedBox(height: 5),
+                pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.start,
+                    children: <pw.Widget>[
+                      pw.Text('Location Name: ',
+                          style: pw.TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                      pw.Text(selectedRequest?.locationRequest?.locationName ?? "Not Selected",
+                          style: const pw.TextStyle(fontSize: 14)),
                     ]),
               ])),
           pw.SizedBox(height: 20),
@@ -465,125 +487,24 @@ class RequestsProvider extends ChangeNotifier {
                   border: pw.Border.all(
                       color: PdfColor.fromInt(AppColor.primary.value)),
                   borderRadius: pw.BorderRadius.circular(5)),
-              padding: pw.EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-              child: pw.Column(children: [
-                pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.start,
-                    children: <pw.Widget>[
-                      pw.Text('Type: ',
-                          style: pw.TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold)),
-                      pw.Text(
-                          selectedRequest?.vehicleRequest?.vehicleTypeName
-                                  .toString() ??
-                              "",
-                          style: pw.TextStyle(
-                            fontSize: 14,
-                          )),
-                    ]),
-                pw.SizedBox(height: 5),
-                pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.start,
-                    children: <pw.Widget>[
-                      pw.Text('Size: ',
-                          style: pw.TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold)),
-                      pw.Text(
-                          selectedRequest?.vehicleRequest?.subVehicleTypeName
-                                  .toString() ??
-                              "",
-                          style: pw.TextStyle(
-                            fontSize: 14,
-                          )),
-                    ]),
-                pw.SizedBox(height: 5),
-                pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.start,
-                    children: <pw.Widget>[
-                      pw.Text('Manufacture: ',
-                          style: pw.TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold)),
-                      pw.Text(
-                          selectedRequest?.vehicleRequest?.manufacturerName
-                                  .toString() ??
-                              "",
-                          style: pw.TextStyle(
-                            fontSize: 14,
-                          )),
-                    ]),
-                pw.SizedBox(height: 5),
-                pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.start,
-                    children: <pw.Widget>[
-                      pw.Text('Model: ',
-                          style: pw.TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold)),
-                      pw.Text(
-                          selectedRequest?.vehicleRequest?.vehicleModelName
-                                  .toString() ??
-                              "",
-                          style: pw.TextStyle(
-                            fontSize: 14,
-                          )),
-                    ]),
-                pw.SizedBox(height: 5),
-                pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.start,
-                    children: <pw.Widget>[
-                      pw.Row(children: [
-                        pw.Text('Color: ',
-                            style: pw.TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold)),
-                        pw.Text(selectedRequest?.vehicleRequest?.color ?? "",
-                            style: pw.TextStyle(
-                              fontSize: 14,
-                            )),
-                        // pw.Container(
-                        //   height: 25,
-                        //   width: 40,
-                        //   decoration: pw.BoxDecoration(
-                        //       color: PdfColor.fromInt(int.tryParse(
-                        //           selectedRequest?.vehicleRequest?.color ??
-                        //               "808080")!),
-                        //       borderRadius: pw.BorderRadius.circular(3)),
-                        // ),
-                      ]),
-                      pw.SizedBox(width: 40),
-                      pw.Row(children: [
-                        pw.Text('Plate: ',
-                            style: pw.TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold)),
-                        pw.Text(selectedRequest?.vehicleRequest?.numbers ?? "",
-                            style: pw.TextStyle(
-                              fontSize: 14,
-                            )),
-                      ]),
-                    ]),
-              ])),
-          pw.SizedBox(height: 20),
-          pw.Text('Services', textScaleFactor: 2),
-          pw.SizedBox(height: 10),
-          pw.Container(
-              decoration: pw.BoxDecoration(
-                  color: PdfColor.fromHex("F1F6FE"),
-                  border: pw.Border.all(
-                      color: PdfColor.fromInt(AppColor.primary.value)),
-                  borderRadius: pw.BorderRadius.circular(5)),
-              padding: pw.EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-              child: pw.Column(
-                  crossAxisAlignment: pw.CrossAxisAlignment.start,
-                  children: [
+              padding: const pw.EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+              child: pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.start,
+                  children: <pw.Widget>[
+                  pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
                     pw.Row(
                         mainAxisAlignment: pw.MainAxisAlignment.start,
                         children: <pw.Widget>[
-                          pw.Text('Service Type: ',
+                          pw.Text('Type: ',
                               style: pw.TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold)),
                           pw.Text(
-                              selectedRequest!.services![0].type == "basic"
-                                  ? "Wash"
-                                  : "Other Service",
-                              style: pw.TextStyle(
+                              selectedRequest?.vehicleRequest?.vehicleTypeName
+                                  .toString() ??
+                                  "",
+                              style: const pw.TextStyle(
                                 fontSize: 14,
                               )),
                         ]),
@@ -591,11 +512,14 @@ class RequestsProvider extends ChangeNotifier {
                     pw.Row(
                         mainAxisAlignment: pw.MainAxisAlignment.start,
                         children: <pw.Widget>[
-                          pw.Text('Basic: ',
+                          pw.Text('Size: ',
                               style: pw.TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold)),
-                          pw.Text("${selectedRequest!.services![0].title}",
-                              style: pw.TextStyle(
+                          pw.Text(
+                              selectedRequest?.vehicleRequest?.subVehicleTypeName
+                                  .toString() ??
+                                  "",
+                              style: const pw.TextStyle(
                                 fontSize: 14,
                               )),
                         ]),
@@ -608,9 +532,118 @@ class RequestsProvider extends ChangeNotifier {
                                   fontSize: 16, fontWeight: FontWeight.bold)),
                           pw.Text(
                               selectedRequest?.vehicleRequest?.manufacturerName
+                                  .toString() ??
+                                  "",
+                              style: const pw.TextStyle(
+                                fontSize: 14,
+                              )),
+                        ]),
+                    pw.SizedBox(height: 5),
+                    pw.Row(
+                        mainAxisAlignment: pw.MainAxisAlignment.start,
+                        children: <pw.Widget>[
+                          pw.Text('Model: ',
+                              style: pw.TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold)),
+                          pw.Text(
+                              selectedRequest?.vehicleRequest?.vehicleModelName
+                                  .toString() ??
+                                  "",
+                              style: const pw.TextStyle(
+                                fontSize: 14,
+                              )),
+                        ]),
+                    pw.SizedBox(height: 5),
+                    pw.Row(
+                        mainAxisAlignment: pw.MainAxisAlignment.start,
+                        children: <pw.Widget>[
+                          pw.Row(children: [
+                            pw.Text('Color: ',
+                                style: pw.TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold)),
+                            pw.Text(selectedRequest?.vehicleRequest?.color ?? "",
+                                style: const pw.TextStyle(
+                                  fontSize: 14,
+                                )),
+                            // pw.Container(
+                            //   height: 25,
+                            //   width: 40,
+                            //   decoration: pw.BoxDecoration(
+                            //       color: PdfColor.fromInt(int.tryParse(
+                            //           selectedRequest?.vehicleRequest?.color ??
+                            //               "808080")!),
+                            //       borderRadius: pw.BorderRadius.circular(3)),
+                            // ),
+                          ]),
+                          pw.SizedBox(width: 40),
+                          pw.Row(children: [
+                            pw.Text('Plate: ',
+                                style: pw.TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold)),
+                            pw.Text(selectedRequest?.vehicleRequest?.numbers ?? "",
+                                style: const pw.TextStyle(
+                                  fontSize: 14,
+                                )),
+                          ]),
+                        ]),
+
+                  ])
+                ]
+              )),
+          pw.SizedBox(height: 20),
+          pw.Text('Services', textScaleFactor: 2),
+          pw.SizedBox(height: 10),
+          pw.Container(
+              decoration: pw.BoxDecoration(
+                  color: PdfColor.fromHex("F1F6FE"),
+                  border: pw.Border.all(
+                      color: PdfColor.fromInt(AppColor.primary.value)),
+                  borderRadius: pw.BorderRadius.circular(5)),
+              padding: const pw.EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+              child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Row(
+                        mainAxisAlignment: pw.MainAxisAlignment.start,
+                        children: <pw.Widget>[
+                          pw.Text('Service Type: ',
+                              style: pw.TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold)),
+                          pw.Text( selectedRequest!.services != null ? selectedRequest!.services!.isNotEmpty ?
+                              selectedRequest!.services![0].type == "basic"
+                                  ? "Wash"
+                                  : "Other Service" : 'Monthly Package' :'Monthly Package',
+                              style: const pw.TextStyle(
+                                fontSize: 14,
+                              )),
+                        ]),
+                    pw.SizedBox(height: 5),
+                    pw.Row(
+                        mainAxisAlignment: pw.MainAxisAlignment.start,
+                        children: <pw.Widget>[
+                          pw.Text('Basic: ',
+                              style: pw.TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold)),
+                          pw.Text( selectedRequest!.services != null ? selectedRequest!.services!.isNotEmpty ?
+                              "${selectedRequest!.services![0].title}" : '' : '',
+                              style: const pw.TextStyle(
+                                fontSize: 14,
+                              )),
+                        ]),
+                    pw.SizedBox(height: 5),
+
+                    pw.Row(
+                        mainAxisAlignment: pw.MainAxisAlignment.start,
+                        children: <pw.Widget>[
+                          pw.Spacer(),
+                          pw.Text('Total amount: ',
+                              style: pw.TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold)),
+                          pw.Text(
+                              selectedRequest?.totalAmount
                                       .toString() ??
                                   "",
-                              style: pw.TextStyle(
+                              style: const pw.TextStyle(
                                 fontSize: 14,
                               )),
                         ]),
@@ -631,8 +664,8 @@ class RequestsProvider extends ChangeNotifier {
                             itemCount: selectedRequest!.extraServices!.length,
                             itemBuilder: (context, index) {
                               return pw.Text(
-                                "${selectedRequest!.extraServices![index].title}",
-                                style: pw.TextStyle(
+                                "${selectedRequest!.extraServices![index].count} ${selectedRequest!.extraServices![index].title}",
+                                style: const pw.TextStyle(
                                   fontSize: 14,
                                 ),
                               );
@@ -650,7 +683,7 @@ class RequestsProvider extends ChangeNotifier {
                                 style: pw.TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.bold)),
                             pw.Text("${selectedRequest!.totalDuration} Min",
-                                style: pw.TextStyle(
+                                style: const pw.TextStyle(
                                   fontSize: 14,
                                 )),
                           ]),
@@ -760,4 +793,22 @@ class RequestsProvider extends ChangeNotifier {
     selectedManufacture = null;
     notifyListeners();
   }
+
+  String? _placeDistance;
+  String? get placeDistance => _placeDistance;
+
+  set placeDistance(String? value) {
+    _placeDistance = value;
+    notifyListeners();
+  }
+
+  Position? get currentPosition => _currentPosition;
+
+  set currentPosition(Position? value) {
+    _currentPosition = value;
+    notifyListeners();
+  }
+
+  late GoogleMapController mapController;
+  Position? _currentPosition;
 }

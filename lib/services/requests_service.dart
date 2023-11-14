@@ -48,13 +48,13 @@ class RequestsService extends BaseService {
     return ResponseResult(status, requests);
   }
 
-  Future<ResponseResult> getRequestDetails(String requestId) async {
+  Future<ResponseResult> getRequestDetails(String requestId,double? lat,double? long,) async {
     Status status = Status.error;
     RequestData? requestData;
     // Map<String, dynamic> body = {"nameOrEmail": email};
     try {
       await requestFutureData(
-          api: Api.getRequestDetails(requestId),
+          api: Api.getRequestDetails(requestId, lat, long),
           // body: body,
           requestType: Request.get,
           withToken: true,

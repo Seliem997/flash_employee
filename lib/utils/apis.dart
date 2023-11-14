@@ -33,7 +33,7 @@ class Api {
     return path;
   }
 
-  static const String getEmployees = "$baseUrl/employee/all-employees";
+  static String getEmployees(int? other) => "$baseUrl/employee/all-employees?other=$other";
   static const String getWarehouses = "$baseUrl/employee/all-warehouses";
   static String downloadInvoice(int invoiceId) =>
       "$baseUrl/download-invoice/$invoiceId";
@@ -148,8 +148,8 @@ class Api {
     return path;
   }
 
-  static String getRequestDetails(String requestId) =>
-      "$baseUrl/employee/requests/$requestId";
+  static String getRequestDetails(String requestId, double? lat, double? long,) =>
+      "$baseUrl/employee/requests/$requestId?lat=$lat&lang=$long";
 
   static String updateRequestStatus(String requestId) =>
       "$baseUrl/employee/update-request-status/$requestId";

@@ -232,7 +232,7 @@ class TransactionsProvider extends ChangeNotifier {
       selectedEmployee = null;
       loadingEmployees = true;
       notifyListeners();
-      transactionsService.getEmployees().then((value) {
+      transactionsService.getEmployees(other: 1).then((value) {
         loadingEmployees = false;
         if (value.status == Status.success) {
           employees!.addAll(value.data as List<EmployeeData>);

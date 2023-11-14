@@ -32,10 +32,10 @@ class InventoryModel {
 class InventoryItemData {
   int? id;
   String? name;
-  int? quantity;
+  dynamic quantity;
   int neededQuantity = 0;
   ReasonData? reason;
-  int? price;
+  dynamic price;
   int? taxId;
   Tax? tax;
   int? warehouseId;

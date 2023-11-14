@@ -22,6 +22,8 @@ class AppColor {
   static const Color redColor = Color(0xffC30000);
   static const Color requestContainerColor = Color(0xff747474);
   static const Color filterGrey = Color(0xff565656);
+  static const Color textRed = Color(0xffB85F66);
+  static const Color subTextGrey = Color(0xFF393939);
 
   static const Color dark = Color(0xff353535);
   static const Color white = Color(0xffFFFFFF);

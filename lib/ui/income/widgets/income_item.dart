@@ -90,7 +90,7 @@ class IncomeItem extends StatelessWidget {
                     SvgPicture.asset('assets/svg/alarm.svg'),
                     horizontalSpace(15),
                     TextWidget(
-                      text: '${income.time} PM',
+                      text: '${income.time}',
                       textSize: 14,
                       fontWeight: MyFontWeight.medium,
                       color: AppColor.grey,
@@ -126,7 +126,10 @@ class IncomeItem extends StatelessWidget {
                       Provider.of<RequestsProvider>(context, listen: false);
                   AppLoader.showLoader(context);
                   await requestsProvider.getRequestDetails(
-                      reqId: income.id.toString());
+                      reqId: income.id.toString(),
+                    long: requestsProvider.currentPosition!.longitude,
+                    lat: requestsProvider.currentPosition!.latitude,
+                  );
                   AppLoader.stopLoader();
                   requestsProvider.savePdf(context);
                 },
@@ -139,7 +142,7 @@ class IncomeItem extends StatelessWidget {
               ),
               verticalSpace(10),
               TextWidget(
-                text: '${income.amount} SR',
+                text: '${income.totalAmount} SR',
                 fontWeight: MyFontWeight.bold,
                 textSize: 18,
               ),

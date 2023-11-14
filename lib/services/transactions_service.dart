@@ -74,13 +74,13 @@ class TransactionsService extends BaseService {
     return ResponseResult(status, warehouses);
   }
 
-  Future<ResponseResult> getEmployees() async {
+  Future<ResponseResult> getEmployees({int? other}) async {
     Status status = Status.error;
     List<EmployeeData>? employees;
     // Map<String, dynamic> body = {"nameOrEmail": email};
     try {
       await requestFutureData(
-          api: Api.getEmployees,
+          api: Api.getEmployees(other),
           // body: body,
           requestType: Request.get,
           withToken: true,

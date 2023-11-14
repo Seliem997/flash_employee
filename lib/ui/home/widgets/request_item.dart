@@ -8,6 +8,7 @@ import 'package:flash_employee/utils/enum/status_types.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 import '../../../providers/requests_provider.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/font_styles.dart';
@@ -30,10 +31,10 @@ class RequestItem extends StatelessWidget {
     return CustomContainer(
       onTap: () async {
         requestsProvider.selectedRequestId = request.id.toString();
-        navigateTo(context, RequestDetailsScreen());
+        navigateTo(context, const RequestDetailsScreen());
       },
       width: 345,
-      height: 118,
+      height: 163,
       radiusCircular: 6,
       borderColor: MyApp.themeMode(context) ? Colors.grey : null,
       backgroundColor: MyApp.themeMode(context) ? null : AppColor.borderGray,
@@ -51,7 +52,39 @@ class RequestItem extends StatelessWidget {
                       fontWeight: MyFontWeight.semiBold,
                     ),
                     TextWidget(
-                      text: '${request.id}',
+                      text: '${request.requestId}',
+                      textSize: MyFontSize.size12,
+                      fontWeight: MyFontWeight.medium,
+                      color: AppColor.grey,
+                    ),
+                  ],
+                ),
+                verticalSpace(12),
+                Row(
+                  children: [
+                    TextWidget(
+                      text: 'Client Name : ',
+                      textSize: MyFontSize.size12,
+                      fontWeight: MyFontWeight.semiBold,
+                    ),
+                    TextWidget(
+                      text: '${request.customer!.name == null || request.customer!.name == '' ? 'Customer' : request.customer!.name}',
+                      textSize: MyFontSize.size12,
+                      fontWeight: MyFontWeight.medium,
+                      color: AppColor.grey,
+                    ),
+                  ],
+                ),
+                verticalSpace(12),
+                Row(
+                  children: [
+                    TextWidget(
+                      text: 'Client number : ',
+                      textSize: MyFontSize.size12,
+                      fontWeight: MyFontWeight.semiBold,
+                    ),
+                    TextWidget(
+                      text: '${request.customer!.phone}',
                       textSize: MyFontSize.size12,
                       fontWeight: MyFontWeight.medium,
                       color: AppColor.grey,
@@ -67,7 +100,9 @@ class RequestItem extends StatelessWidget {
                       fontWeight: MyFontWeight.semiBold,
                     ),
                     TextWidget(
-                      text: '${request.services![0].title}',
+                      text: request.services !=null
+                          ? request.services!.isNotEmpty ? '${request.services![0].title}' : 'Monthly Package'
+                          : 'Monthly Package',
                       textSize: MyFontSize.size12,
                       fontWeight: MyFontWeight.medium,
                       color: AppColor.grey,
@@ -75,18 +110,22 @@ class RequestItem extends StatelessWidget {
                   ],
                 ),
                 verticalSpace(12),
-                Row(
+                request.status != StatusType.canceled.key
+                    ? Row(
                   children: [
                     SvgPicture.asset('assets/svg/alarm.svg'),
                     horizontalSpace(15),
                     TextWidget(
-                      text: '${request.time}',
+                      text: request.slots !=null
+                          ? request.slots!.isNotEmpty ? '${request.slots![0].startAt}' : '${request.time}'
+                          : '${request.time}',
                       textSize: MyFontSize.size12,
                       fontWeight: MyFontWeight.medium,
                       color: AppColor.grey,
                     ),
                   ],
-                ),
+                )
+                    : const SizedBox(),
                 verticalSpace(10),
                 Row(
                   children: [
@@ -97,7 +136,7 @@ class RequestItem extends StatelessWidget {
                     ),
                     horizontalSpace(15),
                     TextWidget(
-                      text: '${request.date}',
+                      text: '${request.slotsDate}',
                       textSize: MyFontSize.size12,
                       fontWeight: MyFontWeight.medium,
                       color: AppColor.grey,
@@ -110,21 +149,37 @@ class RequestItem extends StatelessWidget {
           Column(
             children: [
               DefaultButton(
-                height: 21,
-                padding: EdgeInsets.zero,
-                width: 64,
+                padding: EdgeInsets.symmetric(horizontal: 2.w),
                 text: "${request.status}",
                 fontSize: MyFontSize.size9,
                 fontWeight: MyFontWeight.semiBold,
                 backgroundColor: request.status == StatusType.completed.key
-                    ? AppColor.completedButton
+                    ? Colors.green
                     : request.status == StatusType.pending.key
-                        ? AppColor.pendingButton
-                        : AppColor.onTheWayButton,
+                    ? Colors.orange
+                    : request.status == StatusType.arrived.key ||  request.status == StatusType.onTheWay.key
+                    ? Colors.yellow
+                    : request.status == StatusType.canceled.key
+                    ? Colors.red
+                    : AppColor.textRed,
+                textColor: Colors.black,
                 onPressed: () {},
               ),
               const Spacer(),
-              const Icon(
+              TextWidget(
+                text: 'Total:',
+                fontWeight: MyFontWeight.bold,
+                textSize: MyFontSize.size12,
+
+              ),
+              verticalSpace(12),
+              TextWidget(
+                text: '${request.totalAmount}',
+                fontWeight: MyFontWeight.bold,
+                textSize: MyFontSize.size9,
+
+              ),
+             /* const Icon(
                 Icons.location_on_outlined,
                 size: 35,
               ),
@@ -132,7 +187,8 @@ class RequestItem extends StatelessWidget {
                 text: '2 Km',
                 fontWeight: MyFontWeight.bold,
                 textSize: MyFontSize.size9,
-              ),
+
+              ),*/
             ],
           )
         ],
