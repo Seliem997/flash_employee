@@ -239,6 +239,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   userDataProvider.userImage = userData.image;
                                   userDataProvider.email = userData.email;
                                   userDataProvider.duties = userData.duties;
+                                  userDataProvider.rate = userData.rate;
                                 }
                                 navigateAndFinish(context, HomeScreen());
                               } else if (value.status ==

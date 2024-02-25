@@ -29,7 +29,7 @@ class VehicleModelsModel {
 class VehiclesModelsData {
   int? id;
   String? name;
-  int? manufacturerId;
+  dynamic manufacturerId;
   String? image;
   // ManufacturerData? manufacturer;
 

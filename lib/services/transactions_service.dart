@@ -74,7 +74,7 @@ class TransactionsService extends BaseService {
     return ResponseResult(status, warehouses);
   }
 
-  Future<ResponseResult> getEmployees({int? other}) async {
+  Future<ResponseResult> getEmployees({ other}) async {
     Status status = Status.error;
     List<EmployeeData>? employees;
     // Map<String, dynamic> body = {"nameOrEmail": email};

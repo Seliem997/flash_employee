@@ -123,7 +123,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       "${requestsProvider.selectedRequest!.status}",
                                   textSize: 15,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.white,
+                                  color: Colors.black,
                                 ),
                               ),
                             ),

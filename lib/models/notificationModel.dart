@@ -34,7 +34,7 @@ class NotificationData {
   String? date;
   String? time;
   String? type;
-  int? isShow;
+  dynamic isShow;
 
   NotificationData(
       {this.id,

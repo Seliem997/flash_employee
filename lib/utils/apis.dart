@@ -14,7 +14,18 @@ class Api {
   static const String getProblemSignIn = "$baseUrl/employee/maintenanceAll";
   static const String loginSocial = "$baseUrl/login-by-social-media";
   static const String forgotPassword = "$baseUrl/employee/forget-password";
+  // static const String  = "$baseUrl/employee/my-invoices/sum";
 
+  static String getInvoicesSum({String date = ""}) {
+    String path = "$baseUrl/employee/my-invoices/sum";
+    if (date.isNotEmpty) {
+      path += "${path.contains("?") ? "&" : "?"}date=$date";
+    } else {
+      path +=
+          "${path.contains("?") ? "&" : "?"}date=${DateFormat(DFormat.ymd.key).format(DateTime.now())}";
+    }
+    return path;
+  }
   static String getInvoices(
       {String invoiceId = "", String category = "", String date = ""}) {
     String path = "$baseUrl/employee/my-invoices";
@@ -33,7 +44,7 @@ class Api {
     return path;
   }
 
-  static String getEmployees(int? other) => "$baseUrl/employee/all-employees?other=$other";
+  static String getEmployees( other) => "$baseUrl/employee/all-employees?other=$other";
   static const String getWarehouses = "$baseUrl/employee/all-warehouses";
   static String downloadInvoice(int invoiceId) =>
       "$baseUrl/download-invoice/$invoiceId";
@@ -95,7 +106,6 @@ class Api {
 
   static String getInventoryItemsOfWarehouse(int warehouseId) =>
       "$baseUrl/employee/materials/any-warehouse/$warehouseId";
-  static const String getInvoicesSum = "$baseUrl/employee/my-invoices/sum";
   static const String getInvoiceTypes = "$baseUrl/employee/invoice-types";
   static const String addInvoice = "$baseUrl/employee/invoices";
   static const String addTransactions = "$baseUrl/employee/add-transactions";

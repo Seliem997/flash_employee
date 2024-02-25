@@ -119,7 +119,9 @@ class InvoicesProvider extends ChangeNotifier {
         invoices = value.data as List<InvoiceData>?;
       }
     });
-    await invoicesService.getInvoicesSum().then((value) {
+    await invoicesService.getInvoicesSum(date: _selectedDate != null
+        ? DateFormat(DFormat.ymd.key).format(_selectedDate!)
+        : "").then((value) {
       loadingInvoices = false;
       if (value.status == Status.success) {
         invoicesTypes = value.data as List<InvoiceTypeData>?;

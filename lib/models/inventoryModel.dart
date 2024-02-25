@@ -36,13 +36,13 @@ class InventoryItemData {
   int neededQuantity = 0;
   ReasonData? reason;
   dynamic price;
-  int? taxId;
+  dynamic taxId;
   Tax? tax;
-  int? warehouseId;
+  dynamic warehouseId;
   // Warehouse? warehouse;
-  int? employeeId;
+  dynamic employeeId;
   // Employee? employee;
-  int? countTypeId;
+  dynamic countTypeId;
   CountType? countType;
   String? createdAt;
   String? updatedAt;
@@ -99,7 +99,7 @@ class Tax {
   int? id;
   String? name;
   String? percent;
-  int? isActive;
+  dynamic isActive;
   String? createdAt;
   String? updatedAt;
 
@@ -141,12 +141,12 @@ class Employee {
   String? email;
   String? phone;
   String? busNumber;
-  int? isInventoryControl;
-  int? isEditRequest;
+  dynamic isInventoryControl;
+  dynamic isEditRequest;
   String? mada;
   String? stcId;
   String? countryCode;
-  int? gapTime;
+  dynamic gapTime;
   String? password;
   String? position;
   Null? otp;
@@ -278,7 +278,7 @@ class Warehouse {
   int? id;
   String? name;
   String? type;
-  int? cityId;
+  dynamic cityId;
   String? createdAt;
   String? updatedAt;
 

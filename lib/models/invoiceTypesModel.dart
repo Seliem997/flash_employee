@@ -31,7 +31,7 @@ class InvoiceTypeData {
   int? id;
   String? name;
   String? createdAt;
-  int? amountSum;
+  dynamic amountSum;
 
   InvoiceTypeData({this.id, this.name, this.createdAt, this.amountSum});
 

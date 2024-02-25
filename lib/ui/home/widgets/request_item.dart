@@ -34,7 +34,7 @@ class RequestItem extends StatelessWidget {
         navigateTo(context, const RequestDetailsScreen());
       },
       width: 345,
-      height: 163,
+      height: 210,
       radiusCircular: 6,
       borderColor: MyApp.themeMode(context) ? Colors.grey : null,
       backgroundColor: MyApp.themeMode(context) ? null : AppColor.borderGray,
@@ -43,17 +43,18 @@ class RequestItem extends StatelessWidget {
         children: [
           Expanded(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
                     TextWidget(
                       text: 'Request ID : ',
-                      textSize: MyFontSize.size12,
+                      textSize: MyFontSize.size15,
                       fontWeight: MyFontWeight.semiBold,
                     ),
                     TextWidget(
                       text: '${request.requestId}',
-                      textSize: MyFontSize.size12,
+                      textSize: MyFontSize.size15,
                       fontWeight: MyFontWeight.medium,
                       color: AppColor.grey,
                     ),
@@ -64,12 +65,12 @@ class RequestItem extends StatelessWidget {
                   children: [
                     TextWidget(
                       text: 'Client Name : ',
-                      textSize: MyFontSize.size12,
+                      textSize: MyFontSize.size15,
                       fontWeight: MyFontWeight.semiBold,
                     ),
                     TextWidget(
                       text: '${request.customer!.name == null || request.customer!.name == '' ? 'Customer' : request.customer!.name}',
-                      textSize: MyFontSize.size12,
+                      textSize: MyFontSize.size15,
                       fontWeight: MyFontWeight.medium,
                       color: AppColor.grey,
                     ),
@@ -80,30 +81,31 @@ class RequestItem extends StatelessWidget {
                   children: [
                     TextWidget(
                       text: 'Client number : ',
-                      textSize: MyFontSize.size12,
+                      textSize: MyFontSize.size15,
                       fontWeight: MyFontWeight.semiBold,
                     ),
                     TextWidget(
                       text: '${request.customer!.phone}',
-                      textSize: MyFontSize.size12,
+                      textSize: MyFontSize.size15,
                       fontWeight: MyFontWeight.medium,
                       color: AppColor.grey,
                     ),
                   ],
                 ),
                 verticalSpace(12),
-                Row(
+                Column(
                   children: [
                     TextWidget(
                       text: 'Type of Service : ',
-                      textSize: MyFontSize.size12,
+                      textSize: MyFontSize.size15,
                       fontWeight: MyFontWeight.semiBold,
                     ),
+                    verticalSpace(10),
                     TextWidget(
                       text: request.services !=null
                           ? request.services!.isNotEmpty ? '${request.services![0].title}' : 'Monthly Package'
                           : 'Monthly Package',
-                      textSize: MyFontSize.size12,
+                      textSize: MyFontSize.size15,
                       fontWeight: MyFontWeight.medium,
                       color: AppColor.grey,
                     ),
@@ -114,12 +116,12 @@ class RequestItem extends StatelessWidget {
                     ? Row(
                   children: [
                     SvgPicture.asset('assets/svg/alarm.svg'),
-                    horizontalSpace(15),
+                    horizontalSpace(8),
                     TextWidget(
                       text: request.slots !=null
                           ? request.slots!.isNotEmpty ? '${request.slots![0].startAt}' : '${request.time}'
                           : '${request.time}',
-                      textSize: MyFontSize.size12,
+                      textSize: MyFontSize.size15,
                       fontWeight: MyFontWeight.medium,
                       color: AppColor.grey,
                     ),
@@ -134,10 +136,10 @@ class RequestItem extends StatelessWidget {
                       size: 12,
                       color: Color(0xff616161),
                     ),
-                    horizontalSpace(15),
+                    horizontalSpace(8),
                     TextWidget(
                       text: '${request.slotsDate}',
-                      textSize: MyFontSize.size12,
+                      textSize: 12.8,
                       fontWeight: MyFontWeight.medium,
                       color: AppColor.grey,
                     ),
@@ -147,6 +149,7 @@ class RequestItem extends StatelessWidget {
             ),
           ),
           Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               DefaultButton(
                 padding: EdgeInsets.symmetric(horizontal: 2.w),
@@ -167,28 +170,18 @@ class RequestItem extends StatelessWidget {
               ),
               const Spacer(),
               TextWidget(
-                text: 'Total:',
+                text: '(Total)',
                 fontWeight: MyFontWeight.bold,
-                textSize: MyFontSize.size12,
+                textSize: MyFontSize.size15,
 
               ),
               verticalSpace(12),
               TextWidget(
                 text: '${request.totalAmount}',
                 fontWeight: MyFontWeight.bold,
-                textSize: MyFontSize.size9,
+                textSize: MyFontSize.size14,
 
               ),
-             /* const Icon(
-                Icons.location_on_outlined,
-                size: 35,
-              ),
-              TextWidget(
-                text: '2 Km',
-                fontWeight: MyFontWeight.bold,
-                textSize: MyFontSize.size9,
-
-              ),*/
             ],
           )
         ],

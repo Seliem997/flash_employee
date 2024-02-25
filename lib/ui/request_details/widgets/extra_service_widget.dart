@@ -76,8 +76,8 @@ class ExtraServicesWidget extends StatelessWidget {
                         requestsProvider.notifyListeners();
                       }
                     },
-                    width: 20,
-                    height: 20,
+                    width: 25,
+                    height: 25,
                     clipBehavior: Clip.hardEdge,
                     borderRadius: BorderRadius.zero,
                     backgroundColor: Colors.transparent,
@@ -98,8 +98,8 @@ class ExtraServicesWidget extends StatelessWidget {
                       extraService.quantity++;
                       requestsProvider.notifyListeners();
                     },
-                    width: 20,
-                    height: 20,
+                    width: 25,
+                    height: 25,
                     clipBehavior: Clip.hardEdge,
                     borderRadius: BorderRadius.zero,
                     backgroundColor: Colors.transparent,
@@ -126,7 +126,7 @@ class ExtraServicesWidget extends StatelessWidget {
                     ? AppColor.primary
                     : AppColor.subTextGrey,
                 child: extraService.isSelected
-                    ? const Icon(Icons.check, color: Colors.white, size: 13)
+                    ? Image.asset('assets/images/checkIcon.png')
                     : Container(),
               ),
             ),

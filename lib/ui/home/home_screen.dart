@@ -40,6 +40,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late TextEditingController searchController;
+  final GlobalKey<ScaffoldState> globalKey = GlobalKey();
 
   @override
   void initState() {
@@ -116,7 +117,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> globalKey = GlobalKey();
     final UserProvider userDataProvider = Provider.of<UserProvider>(context);
     final RequestsProvider requestsProvider =
         Provider.of<RequestsProvider>(context);

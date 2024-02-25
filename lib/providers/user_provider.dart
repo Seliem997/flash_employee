@@ -15,6 +15,7 @@ class UserProvider extends ChangeNotifier {
   String? _userName;
   String? _userImage;
   String? _phone;
+  double? rate;
   int _selectedTap = 1;
 
   ProblemSignInData? problemSignInData;

@@ -164,15 +164,15 @@ class VehicleRequest {
   String? color;
   String? year;
   String? mainImage;
-  int? customerId;
-  int? manufacturerId;
+  dynamic customerId;
+  dynamic manufacturerId;
   String? manufacturerName;
   String? manufacturerLogo;
-  int? vehicleModelId;
+  dynamic vehicleModelId;
   String? vehicleModelName;
-  int? vehicleTypeId;
+  dynamic vehicleTypeId;
   String? vehicleTypeName;
-  int? subVehicleTypeId;
+  dynamic subVehicleTypeId;
   String? subVehicleTypeName;
 
   VehicleRequest(
@@ -245,7 +245,7 @@ class Location {
   String? latitude;
   String? langitude;
   String? locationName;
-  int? customerId;
+  dynamic customerId;
 
   Location(
       {this.id,
@@ -282,8 +282,8 @@ class Location {
 class City {
   int? id;
   String? name;
-  int? minAmount;
-  int? status;
+  dynamic minAmount;
+  dynamic status;
 
   City({this.id, this.name, this.minAmount, this.status});
 
@@ -329,9 +329,9 @@ class Services {
   String? image;
   String? info;
   String? type;
-  int? duration;
+  dynamic duration;
   bool? countable;
-  int? count;
+  dynamic count;
 
   Services(
       {this.id,
@@ -370,10 +370,10 @@ class Slots {
   int? id;
   String? startAt;
   String? endAt;
-  int? employeeId;
-  int? shiftId;
+  dynamic employeeId;
+  dynamic shiftId;
   String? status;
-  int? gapTime;
+  dynamic gapTime;
   String? createdAt;
 
   Slots(

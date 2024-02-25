@@ -37,7 +37,6 @@ class ProfileScreen extends StatelessWidget {
       body: Column(
         children: [
           CustomContainer(
-            height: 301,
             borderRadius: BorderRadius.only(
                 bottomRight: Radius.circular(45),
                 bottomLeft: Radius.circular(45)),
@@ -87,12 +86,14 @@ class ProfileScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
-                verticalSpace(10),
-                const TextWidget(
-                    text: "Position in Admin",
-                    textSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xff00567B)),
+                Padding(
+                  padding: symmetricEdgeInsets(vertical: 10),
+                  child: TextWidget(
+                      text: CacheHelper.returnData(key: CacheKey.position),
+                      textSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xff00567B)),
+                ),
               ],
             ),
           ),
@@ -119,14 +120,14 @@ class ProfileScreen extends StatelessWidget {
                           children: [
                             const TextWidget(
                               text: "Emp ID :",
-                              textSize: 18,
+                              textSize: 17,
                               fontWeight: FontWeight.w500,
                               color: Colors.black,
                             ),
                             horizontalSpace(10),
                             TextWidget(
                               text: CacheHelper.returnData(key: CacheKey.empId),
-                              textSize: 14,
+                              textSize: 17,
                               fontWeight: FontWeight.w400,
                               color: Colors.black,
                             ),
@@ -137,7 +138,7 @@ class ProfileScreen extends StatelessWidget {
                           children: [
                             const TextWidget(
                               text: "Bus NO.:",
-                              textSize: 18,
+                              textSize: 17,
                               fontWeight: FontWeight.w500,
                               color: Colors.black,
                             ),
@@ -146,7 +147,7 @@ class ProfileScreen extends StatelessWidget {
                               text:
                                   CacheHelper.returnData(key: CacheKey.busNo) ??
                                       "Not Assigned",
-                              textSize: 14,
+                              textSize: 17,
                               fontWeight: FontWeight.w400,
                               color: Colors.black,
                             ),
@@ -157,7 +158,7 @@ class ProfileScreen extends StatelessWidget {
                           children: [
                             const TextWidget(
                               text: "Mada machine NO.:",
-                              textSize: 18,
+                              textSize: 17,
                               fontWeight: FontWeight.w500,
                               color: Colors.black,
                             ),
@@ -166,7 +167,7 @@ class ProfileScreen extends StatelessWidget {
                               text: CacheHelper.returnData(
                                       key: CacheKey.madaMachineId) ??
                                   "Not Assigned",
-                              textSize: 14,
+                              textSize: 17,
                               fontWeight: FontWeight.w400,
                               color: Colors.black,
                             ),
@@ -177,7 +178,7 @@ class ProfileScreen extends StatelessWidget {
                           children: [
                             const TextWidget(
                               text: "STC pay ID :",
-                              textSize: 18,
+                              textSize: 17,
                               fontWeight: FontWeight.w500,
                               color: Colors.black,
                             ),
@@ -186,7 +187,7 @@ class ProfileScreen extends StatelessWidget {
                               text:
                                   CacheHelper.returnData(key: CacheKey.stcId) ??
                                       "Not Assigned",
-                              textSize: 14,
+                              textSize: 17,
                               fontWeight: FontWeight.w400,
                               color: Colors.black,
                             ),
@@ -217,7 +218,7 @@ class ProfileScreen extends StatelessWidget {
                               CacheHelper.returnData(key: CacheKey.rate) ?? 0,
                           minRating: 1,
                           direction: Axis.horizontal,
-                          allowHalfRating: true,
+                          allowHalfRating: false,
                           ignoreGestures: true,
                           itemCount: 5,
                           itemPadding: EdgeInsets.symmetric(horizontal: 4.0),

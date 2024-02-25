@@ -15,6 +15,7 @@ enum CacheKey {
   madaMachineId('madaMachineId'),
   stcId('stcId'),
   rate('rate'),
+  position('position'),
   address('address'),
   hasAddress('hasAddress'),
   darkMode('darkMode'),

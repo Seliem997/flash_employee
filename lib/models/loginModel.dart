@@ -46,6 +46,7 @@ class Data {
 class UserData {
   int? id;
   String? fwId;
+  String? position;
   String? name;
   String? email;
   String? phone;
@@ -60,6 +61,7 @@ class UserData {
   UserData(
       {this.id,
       this.fwId,
+      this.position,
       this.name,
       this.email,
       this.phone,
@@ -70,6 +72,7 @@ class UserData {
   UserData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     fwId = json['fw_id'];
+    position = json['position'];
     name = json['username'];
     email = json['email'];
     phone = json['phone'];
@@ -91,6 +94,7 @@ class UserData {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['fw_id'] = this.fwId;
+    data['position'] = this.position;
     data['name'] = this.name;
     data['email'] = this.email;
     data['phone'] = this.phone;
@@ -109,7 +113,7 @@ class Duties {
   String? shift;
   String? startAt;
   String? endAt;
-  int? employeeId;
+  dynamic employeeId;
   String? createdAt;
   String? updatedAt;
 

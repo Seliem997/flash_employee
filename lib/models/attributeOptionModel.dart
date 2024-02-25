@@ -10,9 +10,9 @@ class AttributeOption {
   final String title;
 
   static final List<AttributeOption> statusOptions = [
-    AttributeOption(StatusType.arrived.key, StatusType.arrived2.key),
     AttributeOption(StatusType.pending.key, StatusType.pending2.key),
     AttributeOption(StatusType.onTheWay.key, StatusType.onTheWay2.key),
+    AttributeOption(StatusType.arrived.key, StatusType.arrived2.key),
     AttributeOption(StatusType.canceled.key, StatusType.canceled2.key),
     AttributeOption(StatusType.completed.key, StatusType.completed2.key),
   ];

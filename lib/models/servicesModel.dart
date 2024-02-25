@@ -24,7 +24,7 @@ class ServiceData {
   String? info;
   String? type;
   String? testAttribute;
-  int? duration;
+  dynamic duration;
   bool? countable;
   bool isSelected = false;
   int quantity = 0;
@@ -110,8 +110,8 @@ class ServicePrices {
 class Price {
   String? value;
   String? unit;
-  int? vehicleType;
-  int? vehicleSubType;
+  dynamic vehicleType;
+  dynamic vehicleSubType;
 
   Price({this.value, this.unit, this.vehicleType, this.vehicleSubType});
 

@@ -30,9 +30,9 @@ class TransactionsModel {
 class TransactionData {
   int? id;
   String? type;
-  int? employeeId;
-  int? employeeIdTo;
-  int? warehouseId;
+  dynamic employeeId;
+  dynamic employeeIdTo;
+  dynamic warehouseId;
   String? createdAt;
   Warehouse? warehouse;
   List<TransactionMaterials>? transactionMaterials;
@@ -99,7 +99,7 @@ class Warehouse {
   int? id;
   String? name;
   String? type;
-  int? cityId;
+  dynamic cityId;
   String? createdAt;
   String? updatedAt;
 
@@ -134,11 +134,11 @@ class Warehouse {
 
 class TransactionMaterials {
   int? id;
-  int? quantity;
-  int? materialId;
+  dynamic quantity;
+  dynamic materialId;
   String? materialName;
   String? materialCountTypeName;
-  int? transactionReasonId;
+  dynamic transactionReasonId;
   String? transactionReasonName;
   String? createdAt;
   String? updatedAt;
@@ -192,14 +192,14 @@ class TransactionMaterials {
 class Material {
   int? id;
   String? name;
-  int? quantity;
-  int? price;
-  int? taxId;
+  dynamic quantity;
+  dynamic price;
+  dynamic taxId;
   Tax? tax;
-  int? warehouseId;
+  dynamic warehouseId;
   Warehouse? warehouse;
-  int? employeeId;
-  int? countTypeId;
+  dynamic employeeId;
+  dynamic countTypeId;
   CountType? countType;
   String? createdAt;
   String? updatedAt;
@@ -268,7 +268,7 @@ class Tax {
   int? id;
   String? name;
   String? percent;
-  int? isActive;
+  dynamic isActive;
   String? createdAt;
   String? updatedAt;
 

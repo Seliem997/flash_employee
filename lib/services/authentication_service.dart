@@ -182,6 +182,8 @@ class AuthenticationService extends BaseService {
                   key: CacheKey.madaMachineId, value: userData!.mada);
               await CacheHelper.saveData(
                   key: CacheKey.rate, value: userData!.rate);
+              await CacheHelper.saveData(
+                  key: CacheKey.position, value: userData!.position);
             } else if (response["status_code"] == 400) {
               if (response["message"].toString().contains("not active")) {
                 status = Status.employeeNotActive;

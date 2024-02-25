@@ -30,12 +30,12 @@ class InvoicesModel {
 class InvoiceData {
   int? id;
   String? image;
-  int? amount;
+  dynamic amount;
   String? category;
   String? date;
   String? time;
-  int? employeeId;
-  int? invoiceTypeId;
+  dynamic employeeId;
+  dynamic invoiceTypeId;
   String? createdAt;
   InvoiceType? invoiceType;
 

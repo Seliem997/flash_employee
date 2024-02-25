@@ -31,7 +31,7 @@ class WarehouseData {
   int? id;
   String? name;
   String? type;
-  int? cityId;
+  dynamic cityId;
   String? cityNameAr;
   String? cityNameEn;
   String? createdAt;

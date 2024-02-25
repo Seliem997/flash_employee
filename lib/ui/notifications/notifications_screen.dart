@@ -62,7 +62,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         padding:
                             symmetricEdgeInsets(horizontal: 15, vertical: 10),
                         radiusCircular: 5,
-                        height: 105,
+                        height: 125,
                         backgroundColor: AppColor.borderGray,
                         child: Column(
                           children: [
@@ -75,20 +75,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                   child: TextWidget(
                                     text:
                                         "${notificationsProvider.notifications![index].content}",
-                                    textSize: 13,
+                                    textSize: 18,
                                     height: 1.2,
                                     maxLines: 3,
                                   ),
                                 ),
-                                // CustomContainer(
-                                //   width: 78,
-                                //   height: 65,
-                                //   radiusCircular: 5,
-                                //   borderColorDark: Colors.transparent,
-                                //   image: DecorationImage(
-                                //       image: AssetImage("assets/images/Nature.png"),
-                                //       fit: BoxFit.cover),
-                                // )
                               ],
                             ),
                             const Spacer(),
@@ -103,7 +94,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                 TextWidget(
                                   text:
                                       "${notificationsProvider.notifications![index].time} - ${notificationsProvider.notifications![index].date}",
-                                  textSize: 10,
+                                  textSize: 14,
                                 ),
                               ],
                             )

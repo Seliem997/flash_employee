@@ -43,13 +43,13 @@ class InvoicesService extends BaseService {
     return ResponseResult(status, invoices);
   }
 
-  Future<ResponseResult> getInvoicesSum() async {
+  Future<ResponseResult> getInvoicesSum({String date = ""}) async {
     Status status = Status.error;
     List<InvoiceTypeData>? invoices;
     // Map<String, dynamic> body = {"nameOrEmail": email};
     try {
       await requestFutureData(
-          api: Api.getInvoicesSum,
+          api: Api.getInvoicesSum(date: date,),
           // body: body,
           requestType: Request.get,
           withToken: true,

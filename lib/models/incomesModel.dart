@@ -153,7 +153,7 @@ class Location {
   String? latitude;
   String? langitude;
   String? locationName;
-  int? customerId;
+  dynamic customerId;
 
   Location(
       {this.id,
@@ -183,15 +183,15 @@ class Vehicle {
   String? color;
   String? year;
   String? mainImage;
-  int? customerId;
-  int? manufacturerId;
+  dynamic customerId;
+  dynamic manufacturerId;
   String? manufacturerName;
   String? manufacturerLogo;
-  int? vehicleModelId;
+  dynamic vehicleModelId;
   String? vehicleModelName;
-  int? vehicleTypeId;
+  dynamic vehicleTypeId;
   String? vehicleTypeName;
-  int? subVehicleTypeId;
+  dynamic subVehicleTypeId;
   String? subVehicleTypeName;
   Customer? customer;
 
@@ -240,10 +240,10 @@ class Vehicle {
 }
 
 class City {
-  int? id;
+  dynamic id;
   String? name;
-  int? minAmount;
-  int? status;
+  dynamic minAmount;
+  dynamic status;
 
   City({this.id, this.name, this.minAmount, this.status});
 
@@ -256,7 +256,7 @@ class City {
 }
 
 class Employee {
-  int? id;
+  dynamic id;
   String? name;
 
   Employee({this.id, this.name});
@@ -268,15 +268,15 @@ class Employee {
 }
 
 class Services {
-  int? id;
+  dynamic id;
   String? title;
   String? image;
   String? info;
   String? type;
-  int? duration;
+  dynamic duration;
   bool? countable;
   String? requestServicePrice;
-  int? requestServiceCount;
+  dynamic requestServiceCount;
   String? requestServiceTotalPrice;
 
   Services(

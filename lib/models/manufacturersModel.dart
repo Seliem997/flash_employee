@@ -31,9 +31,9 @@ class ManufacturerData {
   int? id;
   String? name;
   String? image;
-  int? vehicleTypeId;
-  int? subVehicleTypeId;
-  int? isActive;
+  dynamic vehicleTypeId;
+  dynamic subVehicleTypeId;
+  dynamic isActive;
 
   ManufacturerData(
       {this.id,

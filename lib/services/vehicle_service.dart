@@ -99,9 +99,9 @@ class VehicleService extends BaseService {
     required String? color,
     required String? letters,
     required String? numbers,
-    required int? manufacturerId,
-    required int? vehicleModelId,
-    required int? subVehicleTypeId,
+    required  manufacturerId,
+    required  vehicleModelId,
+    required  subVehicleTypeId,
   }) async {
     Status result = Status.error;
     Map<String, String> headers = const {'Content-Type': 'application/json'};

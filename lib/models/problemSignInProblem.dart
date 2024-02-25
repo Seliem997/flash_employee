@@ -25,19 +25,19 @@ class ProblemSignInModel {
 }
 
 class ProblemSignInData {
-  int? currentPage;
+  dynamic currentPage;
   List<Data>? data;
   String? firstPageUrl;
-  int? from;
-  int? lastPage;
+  dynamic from;
+  dynamic lastPage;
   String? lastPageUrl;
   List<Links>? links;
   Null? nextPageUrl;
   String? path;
-  int? perPage;
+  dynamic perPage;
   Null? prevPageUrl;
-  int? to;
-  int? total;
+  dynamic to;
+  dynamic total;
 
   ProblemSignInData(
       {this.currentPage,
